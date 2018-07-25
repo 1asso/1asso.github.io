@@ -1,9 +1,448 @@
-extends partial/layout
-block content
-	.autopagerize_page_element: .content
-		- page.posts.each(function (item) {
-			include mixins
-			+make_post(item, false)
-		- })
-		include mixins
-		+make_pager(__('prev'), __('next'))
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Kousz&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Kousz&#39;s blog">
+<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:site_name" content="Kousz&#39;s blog">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kousz&#39;s blog">
+  
+    <link rel="alternate" href="/atom.xml" title="Kousz&#39;s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kousz&#39;s blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-KMP-Algorithm" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/19/KMP-Algorithm/" class="article-date">
+  <time datetime="2017-04-19T12:25:54.000Z" itemprop="datePublished">2017-04-19</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/19/KMP-Algorithm/">The Knuth-Morris-Pratt Algorithm</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>在计算机科学中，Knuth-Morris-Pratt 字符串查找算法（常简称为“KMP算法”）可在一个主“文本字符串”S内查找一个“词”W的出现位置。此算法通过运用对这个词在不匹配时本身就包含足够的信息来确定下一个匹配将在哪里开始的发现，从而避免重新检查先前匹配的字符。（from wikipedia）</strong></p>
+<hr>
+
+<p>关于KMP算法的实现思想，官方的解释较为复杂，这里我给出一个较为简单的解释，至于KMP算法为什么比朴素的字符串匹配算法更有效率，在很多算法书中已经解释得够好了，我就不赘述了。</p>
+<p>先介绍一个关键的东西：<strong>“The Partial Match Table” （部分匹配表）</strong>，这是KMP算法的精华所在。</p>
+<p>想必理解这个算法的主要障碍就是部分匹配表中的这些数字究竟意味着什么，我现在试着用比较简单的话来解释它们。</p>
+<p>以下是字符串 <strong>“abababca”</strong>  的部分匹配表：</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">char:  |<span class="string"> a </span>|<span class="string"> b </span>|<span class="string"> a </span>|<span class="string"> b </span>|<span class="string"> a </span>|<span class="string"> b </span>|<span class="string"> c </span>|<span class="string"> a </span>|</span><br><span class="line">index: |<span class="string"> 0 </span>|<span class="string"> 1 </span>|<span class="string"> 2 </span>|<span class="string"> 3 </span>|<span class="string"> 4 </span>|<span class="string"> 5 </span>|<span class="string"> 6 </span>|<span class="string"> 7 </span>|<span class="string"> </span></span><br><span class="line"><span class="string">value: </span>|<span class="string"> 0 </span>|<span class="string"> 0 </span>|<span class="string"> 1 </span>|<span class="string"> 2 </span>|<span class="string"> 3 </span>|<span class="string"> 4 </span>|<span class="string"> 0 </span>|<span class="string"> 1 </span>|</span><br></pre></td></tr></table></figure>
+<p>如果有一个八个字符的字符串 <em>“abababca”</em> ，我的部分匹配表将有八个单元格。如果我们正在看表中的第八个（最后一个）单元格，那么我们对整个字符串 <em>“abababca”</em> 感兴趣 。如果我们正在看表格中的第七个单元格，那么我们对字符串中的前七个字符 <em>“abababc”</em>  感兴趣，即第八个 <em>“a”</em> 是不相关的，可以无视它，依此类推。</p>
+<p>现在，我们需要知道什么是<strong>“正确前缀（Proper prefix）”</strong>和<strong>“正确后缀（Proper suffix）”</strong>。</p>
+<p><strong>正确前缀</strong>：一个字符串尾部截去一个或多个字符形成的子串。 </p>
+<p>“S”, “Su”, “Sus”和”Sush”都是”Sushi”的正确的前缀。</p>
+<p><strong>正确后缀</strong>：一个字符串头部截去一个或多个字符形成的子串。 </p>
+<p>“ashimi”, “shimi”, “himi”, “imi”, “mi”, “i”都是“Sashimi”的正确后缀。</p>
+<p>考虑到这一点，我们现在可以给部分匹配表中的 <em>“value”</em> 下一个定义：</p>
+<p><strong>“部分匹配值（value）”就是“正确前缀”和“正确后缀”的最长的共有元素的长度。</strong></p>
+<p>下面来举几个例子。</p>
+<p>比如我们正在看第三个单元格。正如之前所说，我们只对前三个字符（”aba”）感兴趣。在”aba”中，有两个正确前缀（”a”和”ab”）和两个正确后缀（”a”和”ba”）。显然，这两个集合中的公共元素是”a”。因此，在这种情况下，“正确前缀”和“正确后缀”的最长的共有元素的长度为1，即单元格三的value为1。</p>
+<p>我们来试试第四个单元格。在这里，我们对前四个字符（”abab”）感兴趣。我们有三个正确前缀（”a”, “ab”和”aba”）和三个正确后缀（”b”, “ab”和”bab”）。这一次，公共元素”ab”长度为2，所以单元格四的value为2。</p>
+<p>至于第五个单元格，前五个字符为“ababa”。我们有四个正确前缀（”a”, “ab”, “aba”和”abab”）和四个正确后缀（”a”, “ba”, “aba”和”baba”）。现在我们有两个公共元素：”a”和”aba”，由于”aba”比”a”长，因此获胜，单元格五的value为3。</p>
+<p>我们跳到单元格七，前七个字符为”abababc”。即使没有列举所有正确前缀和正确后缀，很明显，不会有任何公共元素：所有正确后缀将以”c”字母结尾，并且所有正确前缀都不会以”c”结尾。所以单元格七的value为0。</p>
+<p>最后，我们来看看第八个单元格，它关注整个字符串”abababca”。由于它们以”a”开头和结尾，所以我们知道value至少为1。长度为1以上的子串中，所有正确后缀都包含”c”，而只有最后一个正确前缀”abababc”包含”c”。这个七个字符的正确前缀与七个字符的正确后缀”bababca”不匹配，所以单元格八的value为1。</p>
+<hr>
+
+
+<p><strong>接下来介绍一下如何使用“部分匹配表”</strong></p>
+<p>当我们找到部分匹配（无法完全匹配）时，我们可以使用部分匹配表中的值来跳过一些字符（而不是重做一些不必要的旧比较）。公式如下：</p>
+<p><strong>移动位数 = 已匹配的字符数(m) - 对应的部分匹配值(value[m-1])</strong></p>
+<p>假设我们将字符串<strong>“abababca”</strong>与被比较字符串<strong>“bacbababaababbbb”</strong>相匹配，这是我们的部分匹配表，方便参考:</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">char:  |<span class="string"> a </span>|<span class="string"> b </span>|<span class="string"> a </span>|<span class="string"> b </span>|<span class="string"> a </span>|<span class="string"> b </span>|<span class="string"> c </span>|<span class="string"> a </span>|</span><br><span class="line">index: |<span class="string"> 0 </span>|<span class="string"> 1 </span>|<span class="string"> 2 </span>|<span class="string"> 3 </span>|<span class="string"> 4 </span>|<span class="string"> 5 </span>|<span class="string"> 6 </span>|<span class="string"> 7 </span>|<span class="string"> </span></span><br><span class="line"><span class="string">value: </span>|<span class="string"> 0 </span>|<span class="string"> 0 </span>|<span class="string"> 1 </span>|<span class="string"> 2 </span>|<span class="string"> 3 </span>|<span class="string"> 4 </span>|<span class="string"> 0 </span>|<span class="string"> 1 </span>|</span><br></pre></td></tr></table></figure>
+<p>第一次我们在这里遇到了部分匹配：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bacbababaabcbab</span><br><span class="line"> <span class="string">|</span></span><br><span class="line"> abababca</span><br></pre></td></tr></table></figure>
+<p>我们注意到已匹配的字符数为1，而对应的部分匹配值为value[1-1] = 0，根据公式得到移动位数为1，也就是说无需跳过。</p>
+<p>接下来我们得到的部分匹配是在这里：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bacbababaabcbab</span><br><span class="line">    <span class="params">||</span><span class="params">||</span><span class="params">|</span></span><br><span class="line"><span class="params">    abababca</span></span><br></pre></td></tr></table></figure>
+<p>我们注意到已匹配的字符数为5，而对应的部分匹配值为value[5-1] = 3，根据公式得到移动位数为2，即：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// x 代表移动的位数</span></span><br><span class="line"></span><br><span class="line">bacbababaabcbab</span><br><span class="line">    xx<span class="string">|||</span></span><br><span class="line">      abababca</span><br></pre></td></tr></table></figure>
+<p>这时已匹配的字符数为3，而对应的部分匹配值为value[3-1] = 1，根据公式得到移动位数为2，即：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// x 代表移动的位数</span></span><br><span class="line"></span><br><span class="line">bacbababaabcbab</span><br><span class="line">      xx<span class="string">|</span></span><br><span class="line">        abababca</span><br></pre></td></tr></table></figure>
+<p>此时，我们的字符串已经比被比较字符串要长了，所以我们知道没有匹配。</p>
+<hr>
+
+<p><strong>总结</strong></p>
+<p>就像我之前说的那样，这篇文章不是KMP算法的证明或者是详尽的解释，只是帮助刚接触KMP算法的同学们能够更轻松地理解KMP算法是如何实现的。如果有更好的解释，欢迎联系。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/04/19/KMP-Algorithm/" data-id="cjk159j330002wcglwjb4qtx0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-servletFilter" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2017/04/18/servletFilter/" class="article-date">
+  <time datetime="2017-04-18T04:17:34.000Z" itemprop="datePublished">2017-04-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/04/18/servletFilter/">Filter the html special characters by servlet</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>一般地，如果servlet想要生成含有类如 <strong>&lt;</strong> 或者 <strong>&gt;</strong> 等字符的HTML，只需简单地使用标准的HTML字符字体—— <strong>&amp;lt;</strong> 或者 <strong>&amp;gt;</strong>。</p>
+<p>类似地，如果servlet要在HTML属性值中使用 <strong>&quot;</strong> 或 <strong>&amp;</strong> 符号，只需要使用 <strong>&amp;quot;</strong> 或 <strong>&amp;amp;</strong>。</p>
+<p>如果不做这些替换，最终生成的HTML代码将会不正确，因为 <strong>&lt;</strong> 或者 <strong>&gt;</strong> 常常被解释为HTML标记中标签的一部分，属性值中的双引号可能会被解释为属性值的结尾，而 <strong>&amp;</strong> 符号根本不允许出现在属性值中。</p>
+<p>如果用一般的方法在表单中提交 <strong>&lt;b&gt;Test</strong> 的话，最终的显示结果是  <strong>Test（粗体）</strong> ，即加粗后的文字。</p>
+<p>解决办法是，自己编写一个ServletUtilities类，利用其中的filter方法，将一个字符串中的这些特殊符号转换成标准的HTML字符字体。 <strong>&lt;b&gt;Test</strong> 也可以正常地显示成 <strong>&lt;b&gt;Test</strong>。</p>
+<p><strong>实现起来比较简单，代码如下:</strong></p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">class ServletUtilities &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">String</span> <span class="built_in">filter</span>(<span class="keyword">String</span> input) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!hasSpecialChars(input)) &#123;</span><br><span class="line">            <span class="keyword">return</span> (input);</span><br><span class="line">        &#125;</span><br><span class="line">        StringBuffer filtered = <span class="keyword">new</span> StringBuffer(input.length());</span><br><span class="line">        <span class="built_in">char</span> c;</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; input.length(); i++) &#123;</span><br><span class="line">            c = input.charAt(i);</span><br><span class="line">            <span class="keyword">switch</span> (c) &#123;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'&lt;'</span>:</span><br><span class="line">                    filtered.<span class="built_in">append</span>(<span class="string">"&amp;lt"</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'&gt;'</span>:</span><br><span class="line">                    filtered.<span class="built_in">append</span>(<span class="string">"&amp;gt"</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'"'</span>:</span><br><span class="line">                    filtered.<span class="built_in">append</span>(<span class="string">"&amp;quot"</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> <span class="string">'&amp;'</span>:</span><br><span class="line">                    filtered.<span class="built_in">append</span>(<span class="string">"&amp;amp"</span>);</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">default</span>:</span><br><span class="line">                    filtered.<span class="built_in">append</span>(c);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (filtered.toString());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="built_in">boolean</span> hasSpecialChars(<span class="keyword">String</span> input) &#123;</span><br><span class="line">        <span class="built_in">boolean</span> flag = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span> ((input != <span class="keyword">null</span>) &amp;&amp; (input.length() &gt; <span class="number">0</span>)) &#123;</span><br><span class="line">            <span class="built_in">char</span> c;</span><br><span class="line">            <span class="keyword">for</span> (<span class="built_in">int</span> i = <span class="number">0</span>; i &lt; input.length(); i++) &#123;</span><br><span class="line">                c = input.charAt(i);</span><br><span class="line">                <span class="keyword">switch</span> (c) &#123;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">'&lt;'</span>:</span><br><span class="line">                        flag = <span class="keyword">true</span>;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">'&gt;'</span>:</span><br><span class="line">                        flag = <span class="keyword">true</span>;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">'"'</span>:</span><br><span class="line">                        flag = <span class="keyword">true</span>;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="keyword">case</span> <span class="string">'&amp;'</span>:</span><br><span class="line">                        flag = <span class="keyword">true</span>;</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (flag);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2017/04/18/servletFilter/" data-id="cjk159j3a0007wcgl8jpfn3f1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Html/">Html</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Servlet/">Servlet</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Reference" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/24/Reference/" class="article-date">
+  <time datetime="2016-11-24T05:12:48.000Z" itemprop="datePublished">2016-11-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/24/Reference/">Pass an array by reference in C++</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>If you try it just like this:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">double</span>&amp; *arr)</span></span></span><br></pre></td></tr></table></figure>
+<p>Seems it doesn’t work.</p>
+<p><strong>Arrays can only be passed by reference, actually:</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">void foo(double (&amp;arr)[10])</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// Example</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>or</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">void foo(double (&amp;arr)[])</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// Example</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><em>(Be aware that when matching, double [10] and double [] are different types. If you have an array of an unknown dimension, it will match the second, but not the first, and if you have an array with 10 elements, it will match the first but not the second. )</em></p>
+<p>This prevents you from doing things like:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> arr[<span class="number">20</span>];</span><br><span class="line">foo(arr); <span class="comment">// won't compile</span></span><br></pre></td></tr></table></figure>
+<p>To be able to pass an arbitrary size array to foo, make it a template and capture the size of the array at compile time:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">size_t</span> N&gt;</span><br><span class="line">void foo(T (&amp;bar)[N])</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// use N here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>You should seriously consider using <code>std::vector</code>, or if you have a compiler that supports C++11, <code>std::array.</code></strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/24/Reference/" data-id="cjk159j390006wcglf0remnf6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Hanoi" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/20/Hanoi/" class="article-date">
+  <time datetime="2016-11-20T12:30:11.000Z" itemprop="datePublished">2016-11-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/20/Hanoi/">Hanoi</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>首先要认识到汉诺塔的目标：将A柱上的N个盘子移动到C柱子上。</p>
+<p>我们可以运用递归的思想，就是把这个总目标分解成三个子目标：</p>
+<p><em>子目标1: 将前n-1个盘子从A柱移动到B柱上</em></p>
+<p><em>子目标2: 将最底下的最后一个盘子从A柱移动到C柱上</em></p>
+<p><em>子目标3: 将B柱上的n-1个盘子移动到C柱上</em></p>
+<p>然后每一个子目标又可以看作一次独立的汉诺塔游戏，可以继续分解直到N为1。</p>
+<p><strong>以下为代码实现：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">move</span><span class="params">(n, a, b, c)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> n == <span class="number">1</span>:</span><br><span class="line">        print(a, <span class="string">'--&gt;'</span>, c)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        move(n<span class="number">-1</span>, a, c, b) <span class="comment">#子目标1</span></span><br><span class="line">        move(<span class="number">1</span>, a, b, c) <span class="comment">#子目标2</span></span><br><span class="line">        move(n<span class="number">-1</span>, b, a, c) <span class="comment">#子目标3</span></span><br><span class="line"></span><br><span class="line">n = input(<span class="string">'Enter the number:'</span>)</span><br><span class="line">move(int(n), <span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>)</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/20/Hanoi/" data-id="cjk159j2z0000wcgl3opd6kgd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-PokerII" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/20/PokerII/" class="article-date">
+  <time datetime="2016-11-20T12:29:00.000Z" itemprop="datePublished">2016-11-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/11/20/PokerII/">PokerII</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>先看看 PokerII 的键位图吧：</strong></p>
+<p><img src="http://ogvucbt7e.bkt.clouddn.com/771e688ebf60535c8d2cb389ee316529_articlex.jpeg" alt=""></p>
+<p>是不是发现能精简的按键全精简了呢，Esc 跟 `~ 都合并成了一个键，而且没有方向键在使用上会有许多不便。</p>
+<p><strong>键位思考与改造方案：</strong></p>
+<p>键盘的背面有 4 个拨动开关的，他们的功能分别是：</p>
+<p>开关 1：Caps 与左 Win 切换<br>开关 2：右 Ctrl 与 ~ 切换<br>开关 3：左 Win 与 Fn 切换<br>开关 4：键盘写保护，键位编程</p>
+<p>结合这 4 个开关，有一个绝佳的方案，就是把 CapsLock 换成 Fn，那方向键的问题就完美解决了，顺手也把 Cmd + ` 的问题给解决了，都能用单手操作了。</p>
+<p><strong>方案最终实现的目标如下：</strong></p>
+<p><img src="http://ogvucbt7e.bkt.clouddn.com/e3bb6b0795439625b665b211b27e2ef1_articlex.png" alt=""></p>
+<p><strong>改造步骤</strong></p>
+<ol>
+<li>将开关 1 和 3 都拨到 ON 的位置，效果：Caps 变成了 Fn，左 Win 变成了 Caps，右 Fn 还是 Fn</li>
+<li>打开 Mac 的系统偏好设置，在键盘的修饰键修改中，选择 PokerII</li>
+<li>更改修饰键，如下：<br>Caps Lock -&gt; Option<br>Control -&gt; Control<br>Option -&gt; Command<br>Command -&gt; Option</li>
+<li>用拔键器把左侧的 Alt 和 Win 键帽互换个位置，这样就更接近 Mac 的标准布局了。</li>
+</ol>
+<p>这样，就可以通过 <em>Caps + wasd</em> 来调整方向，<em>Cmd + Caps + Esc</em> 也能在程序里切换窗口了，都只要一只手搞定哦。</p>
+<p>作者：fenbox<br>来源：segmentfault</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/20/PokerII/" data-id="cjk159j380005wcgly89vl42x" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Life/">Life</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Poker/">Poker</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Html/">Html</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Life/">Life</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Poker/">Poker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Servlet/">Servlet</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/Cpp/" style="font-size: 10px;">Cpp</a> <a href="/tags/Html/" style="font-size: 10px;">Html</a> <a href="/tags/Life/" style="font-size: 10px;">Life</a> <a href="/tags/Poker/" style="font-size: 10px;">Poker</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Servlet/" style="font-size: 10px;">Servlet</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/04/19/KMP-Algorithm/">The Knuth-Morris-Pratt Algorithm</a>
+          </li>
+        
+          <li>
+            <a href="/2017/04/18/servletFilter/">Filter the html special characters by servlet</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/24/Reference/">Pass an array by reference in C++</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/20/Hanoi/">Hanoi</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/20/PokerII/">PokerII</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Kousz<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

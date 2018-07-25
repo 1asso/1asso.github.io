@@ -1,26 +1,240 @@
-include mixins
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
 
-extends partial/layout
+  
+  <title>Pass an array by reference in C++ | Kousz&#39;s blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="If you try it just like this: 1void foo(double&amp;amp; *arr) Seems it doesn’t work. Arrays can only be passed by reference, actually: 1234void foo(double (&amp;amp;arr)[10])&amp;#123;  // Example&amp;#125; or 1234vo">
+<meta name="keywords" content="Cpp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pass an array by reference in C++">
+<meta property="og:url" content="http://yoursite.com/2016/11/24/Reference/index.html">
+<meta property="og:site_name" content="Kousz&#39;s blog">
+<meta property="og:description" content="If you try it just like this: 1void foo(double&amp;amp; *arr) Seems it doesn’t work. Arrays can only be passed by reference, actually: 1234void foo(double (&amp;amp;arr)[10])&amp;#123;  // Example&amp;#125; or 1234vo">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-04-18T06:21:53.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Pass an array by reference in C++">
+<meta name="twitter:description" content="If you try it just like this: 1void foo(double&amp;amp; *arr) Seems it doesn’t work. Arrays can only be passed by reference, actually: 1234void foo(double (&amp;amp;arr)[10])&amp;#123;  // Example&amp;#125; or 1234vo">
+  
+    <link rel="alternate" href="/atom.xml" title="Kousz&#39;s blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
 
-block site_title
-    != page.title + " · " + config.title
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Kousz&#39;s blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Reference" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/11/24/Reference/" class="article-date">
+  <time datetime="2016-11-24T05:12:48.000Z" itemprop="datePublished">2016-11-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Pass an array by reference in C++
+    </h1>
+  
 
-block description
-    - var desc = page.desc || strip_html(page.content).replace(/^\s*/, '').replace(/\s*$/, '').substring(0, 150);
-    meta(name="description", content=desc)
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>If you try it just like this:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(<span class="keyword">double</span>&amp; *arr)</span></span></span><br></pre></td></tr></table></figure>
+<p>Seems it doesn’t work.</p>
+<p><strong>Arrays can only be passed by reference, actually:</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">void foo(double (&amp;arr)[10])</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// Example</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>or</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">void foo(double (&amp;arr)[])</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">// Example</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><em>(Be aware that when matching, double [10] and double [] are different types. If you have an array of an unknown dimension, it will match the second, but not the first, and if you have an array with 10 elements, it will match the first but not the second. )</em></p>
+<p>This prevents you from doing things like:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> arr[<span class="number">20</span>];</span><br><span class="line">foo(arr); <span class="comment">// won't compile</span></span><br></pre></td></tr></table></figure>
+<p>To be able to pass an arbitrary size array to foo, make it a template and capture the size of the array at compile time:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">size_t</span> N&gt;</span><br><span class="line">void foo(T (&amp;bar)[N])</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// use N here</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>You should seriously consider using <code>std::vector</code>, or if you have a compiler that supports C++11, <code>std::array.</code></strong></p>
 
-block content
-  .autopagerize_page_element: .content: .post-page
-    include mixins
-    +make_post(page, true)
-    - var prev = page.prev ? page.prev.path : false;
-    - var next = page.next ? page.next.path : false;
-    .pagination
-      ul.clearfix
-        if prev
-          li.pre.pagbuttons
-            a.btn(role="navigation",href=url_for(prev), title=page.prev.title)!= __('prev_post')
-        if next
-          li.next.pagbuttons
-            a.btn(role="navigation",href=url_for(next), title=page.next.title)!= __('next_post')
-    include partial/comments
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/11/24/Reference/" data-id="cjk159j390006wcglf0remnf6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2017/04/18/servletFilter/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Filter the html special characters by servlet
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/11/20/Hanoi/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Hanoi</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Algorithm/">Algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Html/">Html</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Life/">Life</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Poker/">Poker</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Servlet/">Servlet</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Algorithm/" style="font-size: 20px;">Algorithm</a> <a href="/tags/Cpp/" style="font-size: 10px;">Cpp</a> <a href="/tags/Html/" style="font-size: 10px;">Html</a> <a href="/tags/Life/" style="font-size: 10px;">Life</a> <a href="/tags/Poker/" style="font-size: 10px;">Poker</a> <a href="/tags/Python/" style="font-size: 10px;">Python</a> <a href="/tags/Servlet/" style="font-size: 10px;">Servlet</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/11/">November 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2017/04/19/KMP-Algorithm/">The Knuth-Morris-Pratt Algorithm</a>
+          </li>
+        
+          <li>
+            <a href="/2017/04/18/servletFilter/">Filter the html special characters by servlet</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/24/Reference/">Pass an array by reference in C++</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/20/Hanoi/">Hanoi</a>
+          </li>
+        
+          <li>
+            <a href="/2016/11/20/PokerII/">PokerII</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Kousz<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
