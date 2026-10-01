@@ -63,7 +63,7 @@
   --display: clamp(2.75rem, 8.6vw, 8.5rem);
   --text: clamp(1.125rem, 0.9375rem + 0.390625vw, 1.25rem);   /* 18px, rising to 20px at 1280px */
   --meta: clamp(0.8125rem, 0.75rem + 0.125vw, 0.875rem);        /* 13px, rising to 14px */
-  --ui: 1.0625rem;           /* header only (nav and footer don't count as content) */
+  --ui: 1.0625rem;           /* the wordmark and the skip link only (the header doesn't count as content) */
 
   /* Grid */
   --m: clamp(24px, 3.75vw, 72px);    /* outer margin */
@@ -309,7 +309,6 @@ a { color: inherit; text-decoration: none; }
   min-height: 44px;
   padding-inline: 8px;
   color: var(--ink-2);
-  font-size: var(--ui);
   transition: color 200ms var(--ease);
 }
 .site-nav a:hover { color: var(--ink); }
@@ -793,5 +792,5 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 400px) {
   :root { --m: 20px; }
   .brand { gap: 9px; font-size: 1rem; }
-  .site-nav a { font-size: 1rem; padding-inline: 6px; }
+  .site-nav a { padding-inline: 6px; }
 }

@@ -1,6 +1,7 @@
 {%- comment -%}
   Site header: the mark and wordmark (home), then Studio and Contact, the two sections of the home
   page that sit well below the first screen. The apps need no link: they're on the first screen.
+  The links are set in meta, like the titles of the sections they lead to and the footer's links.
   The same on every page.
 {%- endcomment -%}
 <header class="site-head wrap">
@@ -9,7 +10,7 @@
     <span class="brand__name">{{ site.title }}</span>
   </a>
   <nav class="site-nav" aria-label="Main">
-    <ul role="list">
+    <ul class="meta" role="list">
       <li><a href="{{ '/#studio' | relative_url }}">Studio</a></li>
       <li><a href="{{ '/#contact' | relative_url }}">Contact</a></li>
     </ul>
