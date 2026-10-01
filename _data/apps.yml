@@ -10,8 +10,6 @@
 #   pitch               one or two sentences, shown under the name in the app's room
 #   store               the App Store url (leave it out for an app that isn't out yet).
 #                       With a url, the room shows the App Store badge and "On view" links to the store.
-#   availability        the parts of the line printed next to the badge (or in place of it), joined by " · ":
-#                       price, devices and the iOS it needs
 #   color, color_dark   a note only: the app's own color. The site's colors are set in
 #                       assets/css/site.css (--kozeni, --lark), used for bits and status marks, never text
 #   icon                file prefix in /assets/images/icons/: <icon>-light-<size>.webp, <icon>-dark-<size>.webp
@@ -34,7 +32,6 @@ kozeni:
   pitch: A private expense and income tracker. Log what you spend, see where it goes, and keep a budget. No subscription, no account, no&nbsp;ads.
   store:
     url: https://apps.apple.com/us/app/kozeni-spending-budgets/id6760676910
-  availability: [Free, iPhone and iPad, iOS 26.1 or later]
   color: "#EF5F31"
   color_dark: "#FF7A47"
   icon: kozeni
@@ -64,7 +61,6 @@ lark:
   status: development
   status_label: In development
   pitch: Practice speaking a language by shadowing real&nbsp;material.
-  availability: [Coming to iPhone and iPad]
   color: "#3E8995"
   color_dark: "#36A9B5"
   icon: lark

@@ -43,7 +43,6 @@ file explains each field. The ones you're most likely to touch:
 - `status` and `status_label`: `available` / "On the App Store" (a filled square) or
   `development` / "In development" (a hollow square)
 - `store`: the App Store link. With a link, the App Store badge appears in the app's room.
-- `availability`: the line beside the badge, such as "Free · iPhone and iPad · iOS 26.1 or later"
 - `points`: the four short points in the app's room
 - `label`: the museum label beside the app's icon
 - `gloss`: the line under Kozeni's name. Delete the line to remove it.
@@ -54,8 +53,8 @@ When Lark ships:
 
 1. Give Lark a `store:` block (copy Kozeni's and change the link).
 2. Set `status: available` and `status_label: On the App Store`.
-3. Update its `availability` (for example `[Free, iPhone and iPad, iOS 27 or later]`) and its
-   label's `credit` line, which now says "On the workbench, not yet on the App Store".
+3. Update its label's `credit` line, which now says "On the workbench, not yet on the App Store"
+   (Kozeni's says "Free, with an optional tip jar").
 
 Its room then shows the badge and the filled square, and "On view" links to the App Store.
 

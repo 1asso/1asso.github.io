@@ -1,16 +1,15 @@
 {%- comment -%}
-  Apple's official black "Download on the App Store" badge, scaled but unaltered, always with the
-  price and requirements beside it at text size. For an app without a store entry it prints the
-  availability line alone. The alt starts with the badge's own words, so "Download on the App
-  Store" is something a voice-control user can say, then names the app.
+  Apple's official black "Download on the App Store" badge, scaled but unaltered. It prints nothing
+  for an app without a store entry, so Lark's room shows a badge as soon as Lark has a store: url.
+  The alt starts with the badge's own words, so "Download on the App Store" is something a
+  voice-control user can say, then names the app.
   Params
     app     required  key in _data/apps.yml
     class   optional  extra classes on the wrapper
 {%- endcomment -%}
 {%- assign app = site.data.apps[include.app] -%}
+{%- if app.store.url %}
 <div class="store{% if include.class %} {{ include.class }}{% endif %}">
-  {%- if app.store.url %}
   <a class="store__badge" href="{{ app.store.url }}"><img src="{{ '/assets/images/badges/app-store-black.svg' | relative_url }}" width="132" height="44" alt="Download on the App Store: {{ app.name }}"></a>
-  {%- endif %}
-  {% include availability.html app=include.app class="store__line" %}
 </div>
+{%- endif %}

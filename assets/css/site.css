@@ -258,12 +258,6 @@ a.status::after { content: ""; position: absolute; inset: -10px -4px; }
   content: "·" / "";
   padding-inline: 0.55em;
 }
-.availability > span { white-space: nowrap; }
-.availability > span:not(:last-child)::after {
-  /* the dot stays with the words before it, so a line can break after it but never start with it */
-  content: "\a0·";
-  content: "\a0·" / ",";
-}
 
 /* A text link with an arrow. 44px tall to the finger, no taller to the eye. */
 .more {
@@ -392,7 +386,6 @@ a.status::after { content: ""; position: absolute; inset: -10px -4px; }
 .store { display: grid; justify-items: start; gap: 14px; }
 .store__badge { display: block; border-radius: 8px; }
 .store__badge img { width: auto; height: 44px; }
-.availability { color: var(--ink-2); }
 
 /* ---------------------------------------------------------------- Hero */
 
