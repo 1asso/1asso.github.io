@@ -94,6 +94,7 @@ assets/js/site.js    small extras only: the spotlights and the covered sentence
 assets/fonts/        Inter Tight and IBM Plex Mono, self-hosted (OFL.txt is their license)
 assets/images/       icons/ (app icons), og/ (the link-preview card), badges/ (App Store), logo/
 favicon.*, apple-touch-icon.png, icon-*.png, site.webmanifest, robots.txt
+                     if you replace the icons, bump the ?v= on their links in _includes/head.html
 CNAME                keeps the site on tinybit.studio. Don't delete it.
 Gemfile              for previewing the site on your Mac (GitHub Pages ignores it)
 ```

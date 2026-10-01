@@ -12,8 +12,9 @@
 {%- for sheet in page.styles %}
 <link rel="stylesheet" href="{{ '/assets/css/' | append: sheet | append: '.css' | relative_url }}?v={{ site.time | date: '%s' }}">
 {%- endfor %}
-<link rel="icon" href="{{ '/favicon.ico' | relative_url }}" sizes="48x48">
-<link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml">
-<link rel="apple-touch-icon" href="{{ '/apple-touch-icon.png' | relative_url }}">
+{%- comment -%} Safari keeps an icon by its address, and the old blog had a /favicon.ico too, so the ?v= is what makes a device that saw the old site fetch these. Bump it whenever the icons change. {%- endcomment %}
+<link rel="icon" href="{{ '/favicon.ico' | relative_url }}?v=2" sizes="48x48">
+<link rel="icon" href="{{ '/favicon.svg' | relative_url }}?v=2" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ '/apple-touch-icon.png' | relative_url }}?v=2">
 <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
 <script src="{{ '/assets/js/site.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>
