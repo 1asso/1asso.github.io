@@ -56,7 +56,7 @@ When Lark ships:
 3. Update its label's `credit` line, which now says "On the workbench, not yet on the App Store"
    (Kozeni's says "Free, with an optional tip jar").
 
-Its room then shows the badge and the filled square, and "On view" links to the App Store.
+Its room then shows the badge and the filled square.
 
 ## Addresses for App Store Connect
 
@@ -116,7 +116,7 @@ in sizes 96, 192, 256, 384, 512 and 768.
    `<article class="room room--kozeni is-kozeni" id="kozeni" …>` block. Change `kozeni` to the new
    key everywhere in it, except in `room--kozeni`, which names the room's layout. At the top of
    the file, next to `{%- assign kozeni = site.data.apps.kozeni -%}`, add the same line for the new
-   key. The "On view" row and the footer link appear by themselves.
+   key. Its footer link appears by itself.
 5. **Its privacy section:** add a section to `privacy.md` with the app's key as its id, like the
    existing ones.
 

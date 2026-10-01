@@ -10,28 +10,7 @@ layout: default
 {%- assign lark = site.data.apps.lark -%}
 <section class="hero wrap" aria-labelledby="hero-title">
   <h1 class="display hero__title" id="hero-title">Get the tiny bits&nbsp;right{% include stop.html %}</h1>
-  <div class="hero__foot grid">
-    <p class="hero__lede">Tiny Bit Studio makes apps for iPhone and iPad. Every sheet, figure and haptic in them is a decision, not a&nbsp;default.</p>
-    <div class="onview">
-      <h2 class="onview__title meta" id="onview-title">On view</h2>
-      <ul class="onview__list" role="list" aria-labelledby="onview-title">
-        {%- for pair in site.data.apps %}
-        {%- assign key = pair[0] %}{% assign app = pair[1] %}
-        <li class="onview__row is-{{ key }}">
-          <a class="onview__link" href="{{ app.url | relative_url }}">
-            <span class="onview__tile">{% include app-icon.html app=key px=96 eager=true %}</span>
-            <span class="onview__words"><span class="onview__name">{{ app.name }}</span><span class="onview__kind">{{ app.kind | escape_once }}</span></span>
-          </a>
-          {%- if app.store.url %}
-          {% include status.html app=key href=app.store.url class="onview__status" %}
-          {%- else %}
-          {% include status.html app=key tag="span" class="onview__status" %}
-          {%- endif %}
-        </li>
-        {%- endfor %}
-      </ul>
-    </div>
-  </div>
+  <p class="hero__lede">Tiny Bit Studio makes apps for iPhone and iPad. Every sheet, figure and haptic in them is a decision, not a&nbsp;default.</p>
 </section>
 
 <section class="rooms" id="apps" aria-labelledby="apps-title">
