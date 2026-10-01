@@ -228,7 +228,7 @@ Lark can’t see your photo library or your files. It gets only the item you pic
 ### Deleting
 {: .margin}
 
-- **A material.** Deleting one removes its card, its transcript, your progress in it, and the file it played from, unless another material uses the same file. If you delete an episode while its transcript is being made, the copy Lark downloads for it stays until you use Clear Out Unused Files. The deletion syncs, so it goes from your other devices too. Marking a material Done deletes nothing.
+- **A material.** Deleting one removes its card, its transcript, your progress in it, and the file it played from, unless another material uses the same file. The deletion syncs, so it goes from your other devices too. Marking a material Done deletes nothing.
 - **Your practice record.** You&nbsp;→ Reset Practice Record forgets every day you’ve practiced, on this device and your other devices. Your library and progress stay.
 - **Leftover files.** You&nbsp;→ Storage&nbsp;→ Clear Out Unused Files deletes files no material uses, such as a canceled transcript’s audio.
 - **Recent searches.** Clear, on the search page, removes them.
