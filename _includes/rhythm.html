@@ -1,0 +1,12 @@
+{%- comment -%}
+  Rhythm: Lark's drill drawn as runs of squares in teal. Filled while Lark plays the sentence, hollow
+  for your turn (which lasts 1.7 times the sentence at the default "Time to Speak"), filled again as
+  it plays the sentence again. It is one image to assistive tech (role="img"), named in words.
+  Params
+    class   optional  extra classes
+{%- endcomment -%}
+<div class="rhythm is-lark{% if include.class %} {{ include.class }}{% endif %}" role="img" aria-label="A turn in Lark: Lark plays a sentence, you say it back, and it plays again, until you move on.">
+  <div class="rhythm__run rhythm__run--play"><span class="rhythm__bits"></span><span class="rhythm__label meta">Lark plays a sentence</span></div>
+  <div class="rhythm__run rhythm__run--turn"><span class="rhythm__bits"></span><span class="rhythm__label meta">You say it back</span></div>
+  <div class="rhythm__run rhythm__run--again"><span class="rhythm__bits"></span><span class="rhythm__label meta">Again, until you move on</span></div>
+</div>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <style>.m{fill:#0D0E10}@media (prefers-color-scheme:dark){.m{fill:#EDEEF0}}</style>
+  <path class="m" d="M0 4H9V7H12V16H0Z"/>
+  <rect class="m" x="13" y="0" width="3" height="3"/>
+</svg>

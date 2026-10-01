@@ -1,0 +1,44 @@
+{%- comment -%}
+  Covered: Lark's exhibit. A sentence shown covered, the way Lark covers a line during your turn:
+  one bar per word, punctuation included, so each word keeps its length and no glyph shows. "Show the sentence"
+  (a real toggle button, aria-pressed) uncovers it with its English meaning. Without JavaScript the
+  sentence and meaning simply show and the button stays hidden. One per page (ids).
+  Params
+    text     optional  the sentence; default "Petit à petit, l’oiseau fait son nid."
+    lang     optional  its language; default fr
+    meaning  optional  what it means, in English
+    caption  optional  default "Your turn"
+    id       optional  id prefix; default covered
+    class    optional  extra classes on the <figure>
+{%- endcomment -%}
+{%- assign text = include.text | default: 'Petit à petit, l’oiseau fait son nid.' -%}
+{%- assign lang = include.lang | default: 'fr' -%}
+{%- assign meaning = include.meaning | default: 'Little by little, the bird builds its nest.' -%}
+{%- assign id = include.id | default: 'covered' -%}
+{%- assign words = text | split: ' ' -%}
+<figure class="covered is-lark{% if include.class %} {{ include.class }}{% endif %}" data-covered>
+  <figcaption class="covered__turn meta"><span class="bit bit--hollow" aria-hidden="true"></span>{{ include.caption | default: 'Your turn' }}</figcaption>
+  <p class="covered__line display" lang="{{ lang }}" id="{{ id }}-line">
+    {%- assign count = words | size -%}
+    {%- for w in words -%}
+      {%- assign mark = w | slice: -1 -%}
+      {%- if mark == ',' or mark == '.' or mark == '!' or mark == '?' or mark == ';' or mark == ':' -%}
+        {%- assign n = w.size | minus: 1 -%}{%- assign core = w | slice: 0, n -%}
+      {%- else -%}
+        {%- assign core = w -%}{%- assign mark = '' -%}
+      {%- endif -%}
+      {%- comment -%} A word's bar covers its punctuation too; the last two words travel together. {%- endcomment -%}
+      {%- if count > 1 and forloop.rindex == 2 -%}
+        <span class="covered__unit"><span class="covered__word">{{ core }}{{ mark }}</span>{{ ' ' }}
+      {%- elsif count > 1 and forloop.last -%}
+        <span class="covered__word">{{ core }}{{ mark }}</span></span>
+      {%- else -%}
+        <span class="covered__unit"><span class="covered__word">{{ core }}{{ mark }}</span></span>{% unless forloop.last %}{{ ' ' }}{% endunless %}
+      {%- endif -%}
+    {%- endfor -%}
+  </p>
+  <div class="covered__foot">
+    <button class="covered__toggle" type="button" aria-pressed="false" aria-controls="{{ id }}-line {{ id }}-meaning" hidden>Show the sentence</button>
+    <p class="covered__meaning" id="{{ id }}-meaning">“{{ meaning }}”</p>
+  </div>
+</figure>

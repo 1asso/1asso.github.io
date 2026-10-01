@@ -1,0 +1,16 @@
+{%- comment -%}
+  Site footer: the mark, the copyright line (the year comes from the build), then the apps (each
+  links to its room on the home page, from url in _data/apps.yml) and Privacy.
+  The dots between links are drawn in CSS and are silent to screen readers.
+{%- endcomment -%}
+<footer class="site-foot wrap">
+  <p class="site-foot__sign meta">{% include mark.html class="site-foot__mark" %}<span>© {{ site.time | date: '%Y' }} {{ site.title }}</span></p>
+  <nav class="site-foot__nav" aria-label="Footer">
+    <ul class="dots meta" role="list">
+      {%- for pair in site.data.apps %}
+      <li><a href="{{ pair[1].url | relative_url }}">{{ pair[1].name }}</a></li>
+      {%- endfor %}
+      <li><a href="{{ '/privacy/' | relative_url }}">Privacy</a></li>
+    </ul>
+  </nav>
+</footer>

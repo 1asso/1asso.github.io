@@ -1,0 +1,14 @@
+{%- comment -%}
+  The workbench: commit subjects from _data/workbench.yml, each marked with its app's bit and name,
+  ending "…and a few hundred more." Twelve on wider screens, the first eight on phones.
+  Params
+    limit   optional  how many to show on wide screens (default 12)
+{%- endcomment -%}
+{%- assign limit = include.limit | default: 12 -%}
+<ul class="workbench" role="list">
+  {%- for item in site.data.workbench limit: limit %}
+  {%- assign app = site.data.apps[item.app] %}
+  <li class="workbench__item is-{{ item.app }}"><span class="workbench__app meta"><span class="bit" aria-hidden="true"></span>{{ app.name }}<span class="visually-hidden">:</span></span> <span class="workbench__text">{{ item.text }}</span></li>
+  {%- endfor %}
+</ul>
+<p class="workbench__more">…and a few hundred more.</p>

@@ -1,0 +1,23 @@
+---
+layout: default
+---
+{%- comment -%}
+  Long-form prose (the privacy page). Front matter: title, description, updated (a date, shown as
+  "Last updated …"); optional heading (the display title, if it should differ from title) and
+  label (the mono margin label beside the title; default: the studio's name).
+  Markdown flows into the text column with no classes. A short line with {: .margin} under it is a
+  margin label ("### Label" makes it a heading too); {: #id} on the line after a heading fixes its
+  id; {: .display} on a ## heading sets it at display size; tables can take {: .wide}.
+{%- endcomment -%}
+<article class="doc" aria-labelledby="doc-title">
+  <header class="doc__head wrap grid">
+    <p class="doc__label meta">{{ page.label | default: site.title }}</p>
+    <h1 class="display doc__title" id="doc-title">{{ page.heading | default: page.title }}</h1>
+    {%- if page.updated %}
+    <p class="doc__updated meta">Last updated <time datetime="{{ page.updated | date: '%Y-%m-%d' }}">{{ page.updated | date: '%B %-d, %Y' }}</time></p>
+    {%- endif %}
+  </header>
+  <div class="doc__body prose wrap grid">
+{{ content }}
+  </div>
+</article>

@@ -1,0 +1,19 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F8F9FA">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121315">
+<script>document.documentElement.classList.add('js')</script>
+{%- comment -%} The tab title is ours: the studio's name alone on the home page, "Page · Tiny Bit Studio" elsewhere. {%- endcomment %}
+<title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+{% seo title=false %}
+<link rel="preload" href="{{ '/assets/fonts/inter-tight-latin.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}?v={{ site.time | date: '%s' }}">
+{%- for sheet in page.styles %}
+<link rel="stylesheet" href="{{ '/assets/css/' | append: sheet | append: '.css' | relative_url }}?v={{ site.time | date: '%s' }}">
+{%- endfor %}
+<link rel="icon" href="{{ '/favicon.ico' | relative_url }}" sizes="48x48">
+<link rel="icon" href="{{ '/favicon.svg' | relative_url }}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ '/apple-touch-icon.png' | relative_url }}">
+<link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
+<script src="{{ '/assets/js/site.js' | relative_url }}?v={{ site.time | date: '%s' }}" defer></script>

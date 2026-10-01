@@ -1,0 +1,18 @@
+---
+layout: default
+title: Not found
+description: There’s nothing at this address. The page may have moved to another room, or it was never here.
+permalink: /404.html
+sitemap: false
+---
+<section class="lost wrap grid" aria-labelledby="lost-title">
+  <h1 class="display lost__title" id="lost-title">Nothing on view&nbsp;here{% include stop.html %}</h1>
+  <div class="plinth plinth--room lost__plinth" data-light></div>
+  <div class="lost__info">
+    <div class="lost__head">
+      <p class="lost__note">This address isn’t in the collection. The work may have moved to another room, or it was never&nbsp;here.</p>
+      {% include link-arrow.html href="/" text="Back to the entrance" class="more--block lost__more" %}
+    </div>
+    {% include label.html title="Untitled (404)" medium="Space, on a plinth" art_term="Work" art_light="An empty plinth, in daylight" art_dark="An empty plinth, lit anyway" credit="Gift of a broken link" %}
+  </div>
+</section>

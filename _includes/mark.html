@@ -1,0 +1,9 @@
+{%- comment -%}
+  The Tiny Bit Studio mark: a square with a one-unit notch out of its top-right corner, and the
+  missing bit floating one gap up and to the right. 26 x 26 units; drawn at 26px, one unit is one pixel.
+  Params: class (optional, extra classes), px (optional, default 26; keep it a multiple of 26).
+  (Never name an include parameter size, first or last: Liquid reads those as properties of the list.)
+  The mark is decorative (aria-hidden): the link or text beside it carries the name.
+{%- endcomment -%}
+{%- assign size = include.px | default: 26 -%}
+<svg class="mark{% if include.class %} {{ include.class }}{% endif %}" width="{{ size }}" height="{{ size }}" viewBox="0 0 26 26" aria-hidden="true" focusable="false"><path d="M0 6H15V11H20V26H0Z"/><rect class="mark__bit" x="21" y="0" width="5" height="5"/></svg>

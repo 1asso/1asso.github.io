@@ -1,0 +1,14 @@
+{%- comment -%}
+  A plinth: the app's icon centered on a flat field (5:4, height capped), with a spotlight that comes
+  up once in dark mode, tinted with the app's color like a gel.
+  Params
+    app     required  key in _data/apps.yml
+    eager   optional  true when the plinth is in the first screen; otherwise the icon lazy-loads
+    alt     optional  alt text for the icon; default is the app's icon_alt. Pass alt="" if a label
+                      right next to it already describes the icon to screen readers.
+    class   optional  extra classes on the plinth
+{%- endcomment -%}
+{%- if include.alt == nil -%}{%- assign alt = true -%}{%- else -%}{%- assign alt = include.alt -%}{%- endif -%}
+<div class="plinth plinth--room is-{{ include.app }}{% if include.class %} {{ include.class }}{% endif %}" data-light>
+  {% include app-icon.html app=include.app sizes="(min-width: 1080px) 23vw, (min-width: 720px) 21vw, 50vw" alt=alt class="plinth__icon" eager=include.eager %}
+</div>

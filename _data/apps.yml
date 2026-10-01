@@ -1,0 +1,88 @@
+# The apps, one entry each. The home page (the "On view" index and each app's room) and the footer
+# read from here, and the privacy page can too, so a fact changed here changes
+# everywhere it's shown. The order here is the order of the "On view" index and the footer.
+#
+# Fields
+#   name, subtitle      the App Store name is "name: subtitle" (subtitle is a note only; the site doesn't read it)
+#   kind                the short line in the home page's "On view" index
+#   gloss               optional line under the name in the home page room (raw HTML allowed)
+#   status              available (filled bit) or development (hollow bit); status_label is the words
+#   pitch               one or two sentences, shown under the name in the app's room
+#   store               the App Store url (leave it out for an app that isn't out yet).
+#                       With a url, the room shows the App Store badge and "On view" links to the store.
+#   availability        the parts of the line printed next to the badge (or in place of it), joined by " · ":
+#                       price, devices and the iOS it needs
+#   color, color_dark   a note only: the app's own color. The site's colors are set in
+#                       assets/css/site.css (--kozeni, --lark), used for bits and status marks, never text
+#   icon                file prefix in /assets/images/icons/: <icon>-light-<size>.webp, <icon>-dark-<size>.webp
+#   icon_alt            the icon's alt text wherever the icon is the subject
+#   url                 the app's room on the home page (/#key); the footer and "On view" link here
+#   privacy             a note only: the app's section of /privacy/, the address to give App Store
+#                       Connect (with https://tinybit.studio in front). The site doesn't read it, but
+#                       the id after # must match a section id on that page, so keep both stable.
+#   label               the museum label beside the plinth; icon_light and icon_dark describe the icon
+#                       as it looks in each color scheme
+#   points              four run-in feature points in the app's room (title ends with a full stop)
+
+kozeni:
+  name: Kozeni
+  subtitle: Spending & Budgets
+  kind: Spending & Budgets
+  gloss: '<span lang="ja">小銭</span>, Japanese for small change'
+  status: available
+  status_label: On the App Store
+  pitch: A private expense and income tracker. Log what you spend, see where it goes, and keep a budget. No subscription, no account, no&nbsp;ads.
+  store:
+    url: https://apps.apple.com/us/app/kozeni-spending-budgets/id6760676910
+  availability: [Free, iPhone and iPad, iOS 26.1 or later]
+  color: "#EF5F31"
+  color_dark: "#FF7A47"
+  icon: kozeni
+  icon_alt: "The Kozeni app icon: a coral coin with a hole, hanging from a cord."
+  url: /#kozeni
+  privacy: /privacy/#kozeni
+  label:
+    title: "Kozeni: Spending & Budgets"
+    medium: SwiftUI, for iPhone and iPad
+    icon_light: Coral coin on a black cord, warm white ground
+    icon_dark: Coral coin on a cream cord, black ground
+    credit: Free, with an optional tip jar
+  points:
+    - title: Log an entry in a few taps.
+      text: A clean keypad, a category, and a note if you want. Recurring entries add themselves when you open Kozeni on the day they’re&nbsp;due.
+    - title: See where it goes.
+      text: Charts by week, month or year. Tap a point or a category to reach the entries behind&nbsp;it.
+    - title: Keep a budget.
+      text: Weekly, monthly or yearly, for one category or for everything, with what’s used and what’s&nbsp;left.
+    - title: Private by default.
+      text: Your data stays on your devices and syncs through your own iCloud. There’s no server of ours to send it&nbsp;to.
+
+lark:
+  name: Lark
+  subtitle: Language practice
+  kind: Language practice
+  status: development
+  status_label: In development
+  pitch: Practice speaking a language by echoing real&nbsp;material.
+  availability: [Coming to iPhone and iPad]
+  color: "#3E8995"
+  color_dark: "#36A9B5"
+  icon: lark
+  icon_alt: "The Lark app icon: a lark in flight, in silhouette."
+  url: /#lark
+  privacy: /privacy/#lark
+  label:
+    title: Lark
+    medium: SwiftUI, for iPhone and iPad
+    icon_light: A lark in flight, black on white
+    icon_dark: A lark in flight, white on black
+    credit: On the workbench, not yet on the App Store
+  points:
+    - title: Real material.
+      text: Podcasts, with search built in. YouTube videos, where YouTube allows. Your own videos from Photos, and video or audio files from&nbsp;Files.
+    - title: Hear the difference.
+      text: Turn on Record Attempts and Lark plays each try back to you, just before the original plays&nbsp;again.
+    - title: Ask what it means.
+      text: With Apple Intelligence, tap the bubble beside a sentence for its meaning and a note or two, written on your&nbsp;device.
+    - title: What syncs.
+      text: iCloud syncs your cards, progress and practice days. Media files, transcripts and recordings stay on the&nbsp;device.

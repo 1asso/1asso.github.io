@@ -1,0 +1,18 @@
+{%- comment -%}
+  A status: a bit in the app's color, then the words. Filled means "On the App Store", hollow means
+  "In development". The words are always there; the bit is decoration.
+  Params
+    app     required  key in _data/apps.yml (its status and status_label are used)
+    tag     optional  p (default) or span
+    href    optional  makes the status a link (the home index links Kozeni's to the App Store);
+                      the app's name is added for screen readers so the link makes sense alone
+    class   optional  extra classes
+{%- endcomment -%}
+{%- assign app = site.data.apps[include.app] -%}
+{%- assign tag = include.tag | default: 'p' -%}
+{%- if app.status == 'available' -%}{%- assign bit = 'bit' -%}{%- else -%}{%- assign bit = 'bit bit--hollow' -%}{%- endif -%}
+{%- if include.href -%}
+<a class="status meta is-{{ include.app }}{% if include.class %} {{ include.class }}{% endif %}" href="{{ include.href }}"><span class="{{ bit }}" aria-hidden="true"></span><span class="visually-hidden">{{ app.name }}: </span>{{ app.status_label | escape_once }}</a>
+{%- else -%}
+<{{ tag }} class="status meta is-{{ include.app }}{% if include.class %} {{ include.class }}{% endif %}"><span class="{{ bit }}" aria-hidden="true"></span>{{ app.status_label | escape_once }}</{{ tag }}>
+{%- endif -%}

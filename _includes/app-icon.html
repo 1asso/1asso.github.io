@@ -1,0 +1,29 @@
+{%- comment -%}
+  An app icon as <picture>: the light rendering, swapped for the dark one in dark mode.
+  Params
+    app     required  key in _data/apps.yml (kozeni, lark)
+    px      one of    fixed CSS size in px (96, 192, 256 or 384): 1x/2x srcset. Use for small, fixed icons.
+    sizes   or        a sizes attribute for fluid icons (plinths): 256w-768w srcset
+    alt     optional  alt text; default "" (decorative, when the name is next to it).
+                      Pass alt=true to use the app's icon_alt.
+    class   optional  extra class on the <img>
+    eager   optional  true for icons in the first screen; otherwise loading="lazy"
+{%- endcomment -%}
+{%- assign app = site.data.apps[include.app] -%}
+{%- assign base = '/assets/images/icons/' | append: app.icon | relative_url -%}
+{%- if include.alt == true -%}{%- assign alt = app.icon_alt -%}{%- else -%}{%- assign alt = include.alt | default: '' -%}{%- endif -%}
+{%- if include.sizes -%}
+  {%- capture light %}{{ base }}-light-256.webp 256w, {{ base }}-light-384.webp 384w, {{ base }}-light-512.webp 512w, {{ base }}-light-768.webp 768w{% endcapture -%}
+  {%- capture dark %}{{ base }}-dark-256.webp 256w, {{ base }}-dark-384.webp 384w, {{ base }}-dark-512.webp 512w, {{ base }}-dark-768.webp 768w{% endcapture -%}
+  {%- assign w = 512 -%}
+{%- else -%}
+  {%- assign w = include.px | default: 96 -%}
+  {%- assign w2 = w | times: 2 -%}
+  {%- if w2 > 768 -%}{%- assign w2 = 768 -%}{%- endif -%}
+  {%- capture light %}{{ base }}-light-{{ w }}.webp 1x, {{ base }}-light-{{ w2 }}.webp 2x{% endcapture -%}
+  {%- capture dark %}{{ base }}-dark-{{ w }}.webp 1x, {{ base }}-dark-{{ w2 }}.webp 2x{% endcapture -%}
+{%- endif -%}
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="{{ dark }}"{% if include.sizes %} sizes="{{ include.sizes }}"{% endif %}>
+  <img class="app-icon{% if include.class %} {{ include.class }}{% endif %}" src="{{ base }}-light-{{ w }}.webp" srcset="{{ light }}"{% if include.sizes %} sizes="{{ include.sizes }}"{% endif %} width="{{ w }}" height="{{ w }}" alt="{{ alt }}"{% unless include.eager %} loading="lazy"{% endunless %} decoding="async">
+</picture>

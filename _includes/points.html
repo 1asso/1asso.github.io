@@ -1,0 +1,13 @@
+{%- comment -%}
+  Points: run-in feature points ("Log an entry in a few taps. A clean keypad…"), four across on desktop,
+  two on tablets, one on phones.
+  Params
+    app     required  key in _data/apps.yml (uses its points: list)
+    class   optional  extra classes on the <ul> (it is already a .grid inside .wrap; pass "wrap" if needed)
+{%- endcomment -%}
+{%- assign points = site.data.apps[include.app].points -%}
+<ul class="points grid{% if include.class %} {{ include.class }}{% endif %}" role="list">
+  {%- for p in points %}
+  <li><strong>{{ p.title | escape_once }}</strong> {{ p.text | escape_once }}</li>
+  {%- endfor %}
+</ul>

@@ -1,0 +1,23 @@
+{%- comment -%}
+  The museum label beside a plinth: studio, title, medium, a description of the icon art (which
+  changes with the color scheme) and a credit line. A <dl> whose terms are visually hidden.
+  Params
+    app        key in _data/apps.yml; the label comes from its label: block
+  or, for a label that isn't an app's (the 404 page, for instance):
+    title, medium, art_light, art_dark, credit   the five lines (studio is always site.title)
+    art_term   optional  the hidden term for the art line; default "Icon"
+    class      optional  extra classes on the <dl>
+{%- endcomment -%}
+{%- if include.app -%}
+  {%- assign l = site.data.apps[include.app].label -%}
+  {%- assign title = l.title -%}{%- assign medium = l.medium -%}{%- assign art_light = l.icon_light -%}{%- assign art_dark = l.icon_dark -%}{%- assign credit = l.credit -%}
+{%- else -%}
+  {%- assign title = include.title -%}{%- assign medium = include.medium -%}{%- assign art_light = include.art_light -%}{%- assign art_dark = include.art_dark -%}{%- assign credit = include.credit -%}
+{%- endif -%}
+<dl class="label meta{% if include.class %} {{ include.class }}{% endif %}">
+  <dt class="visually-hidden">Studio</dt><dd class="label__lead">{{ site.title }}</dd>
+  <dt class="visually-hidden">Title</dt><dd>{{ title | escape_once }}</dd>
+  <dt class="visually-hidden">Medium</dt><dd>{{ medium | escape_once }}</dd>
+  <dt class="visually-hidden">{{ include.art_term | default: 'Icon' }}</dt><dd><span class="only-light">{{ art_light | escape_once }}</span><span class="only-dark">{{ art_dark | default: art_light | escape_once }}</span></dd>
+  <dt class="visually-hidden">Credit</dt><dd>{{ credit | escape_once }}</dd>
+</dl>

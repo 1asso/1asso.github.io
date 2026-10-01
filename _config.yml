@@ -1,0 +1,52 @@
+# Tiny Bit Studio: site settings
+#
+# The things to edit are title, description, email and support_email, just below.
+# They feed the page titles, the search and social previews, and every contact link.
+# Everything else can stay as it is. See README.md for more.
+
+title: Tiny Bit Studio
+description: >-                          # 160 characters at most: search results and social cards
+  Tiny Bit Studio makes apps for iPhone and iPad: Kozeni, a private spending and budget tracker, and Lark, for speaking practice.
+email: hello@tinybit.studio
+support_email: support@tinybit.studio   # where the apps' in-app Feedback emails go; named on the privacy page
+
+url: https://tinybit.studio
+baseurl: ""
+lang: en
+locale: en_US                            # link previews' language (og:locale); lang above is the pages' own
+author:                                  # the studio, not a person, in search engines' structured data
+  name: Tiny Bit Studio
+  type: Organization
+image: /assets/images/og/tinybit.png     # the social card, 1200 x 630 (every page gets it through the defaults below)
+logo: /assets/images/logo/tinybit-mark-512.png
+# Social cards use the large-image Twitter/X card whenever a page has an image, which every page does.
+# (A `twitter:` block is left out on purpose: without a username it only adds an empty "twitter:site".)
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+theme: null                              # no GitHub Pages theme; the site brings its own layouts
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  auto_ids: true
+  footnote_backlink: "&#8593;"
+
+# Kept out of the published site. (CNAME is published on purpose: it keeps the custom domain.)
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      image:
+        path: /assets/images/og/tinybit.png
+        width: 1200
+        height: 630
+        alt: The Tiny Bit Studio mark and the line “Get the tiny bits right.”

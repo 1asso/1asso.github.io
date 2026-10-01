@@ -1,0 +1,11 @@
+{%- comment -%}
+  A text link with an arrow: underlined, the underline takes the app's color on hover (inside an
+  .is-kozeni / .is-lark block), and the arrow nudges. The hit area is at least 44px tall.
+  Params
+    href    required  root-relative path (it goes through relative_url) or a full URL
+    text    required  the link text
+    class   optional  extra classes
+{%- endcomment -%}
+{%- assign first = include.href | slice: 0 -%}
+{%- if first == '/' -%}{%- assign url = include.href | relative_url -%}{%- else -%}{%- assign url = include.href -%}{%- endif -%}
+<a class="more{% if include.class %} {{ include.class }}{% endif %}" href="{{ url }}">{{ include.text }}<span class="more__arrow" aria-hidden="true">→</span></a>

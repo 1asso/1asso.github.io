@@ -1,0 +1,9 @@
+{%- comment -%}
+  The availability line, "Free · iPhone and iPad · iOS 26.1 or later", from the app's availability list.
+  The dots are drawn in CSS and read as a pause, not as "dot".
+  Params
+    app     required  key in _data/apps.yml
+    class   optional  extra classes on the <p>
+{%- endcomment -%}
+{%- assign app = site.data.apps[include.app] -%}
+<p class="availability{% if include.class %} {{ include.class }}{% endif %}">{% for part in app.availability %}<span>{{ part | escape_once }}</span>{% unless forloop.last %}{{ ' ' }}{% endunless %}{% endfor %}</p>
