@@ -587,6 +587,14 @@ a.status::after { content: ""; position: absolute; inset: -10px -4px; }
   -webkit-mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10'><rect width='10' height='10'/></svg>") left center / calc(var(--rb) + var(--rgap)) var(--rb) space no-repeat;
   mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10'><rect width='10' height='10'/></svg>") left center / calc(var(--rb) + var(--rgap)) var(--rb) space no-repeat;
 }
+/* Whole squares only. Safari ignores "space" in mask-repeat and ends a run on a sliver of a square,
+   so where round() exists the run is cut to a whole number of squares and the mask simply repeats. */
+@supports (width: round(down, 1px, 1px)) {
+  .rhythm__bits {
+    width: round(down, calc(100% + var(--rgap)), calc(var(--rb) + var(--rgap)));
+    margin-right: 0;
+  }
+}
 .rhythm__run--turn .rhythm__bits {
   -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10'><rect x='0.75' y='0.75' width='8.5' height='8.5' fill='none' stroke='black' stroke-width='1.5'/></svg>");
   mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10'><rect x='0.75' y='0.75' width='8.5' height='8.5' fill='none' stroke='black' stroke-width='1.5'/></svg>");
@@ -833,6 +841,10 @@ a.status::after { content: ""; position: absolute; inset: -10px -4px; }
   .rhythm__run { flex: none; gap: 10px; }
   .rhythm__run--play .rhythm__bits, .rhythm__run--again .rhythm__bits { width: calc(42% + var(--rgap)); }
   .rhythm__run--turn .rhythm__bits { width: calc(71% + var(--rgap)); }
+  @supports (width: round(down, 1px, 1px)) {
+    .rhythm__run--play .rhythm__bits, .rhythm__run--again .rhythm__bits { width: round(down, calc(42% + var(--rgap)), calc(var(--rb) + var(--rgap))); }
+    .rhythm__run--turn .rhythm__bits { width: round(down, calc(71% + var(--rgap)), calc(var(--rb) + var(--rgap))); }
+  }
 
   .workbench { gap: 16px; }
   .workbench__item { grid-template-columns: 1fr; row-gap: 2px; }
