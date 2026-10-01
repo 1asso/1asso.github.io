@@ -256,3 +256,14 @@ If what this website or either app does with your data changes, we’ll update t
 {: #contact}
 
 Write to [{{ site.email }}](mailto:{{ site.email }}) with any question about privacy, or about this page.
+
+## Credits
+{: #credits}
+
+Lark’s App Store screenshots show stills from these videos, and lines of the first one’s narration, transcribed and translated by Lark. All three are licensed under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/).
+
+- [里海ー北海道知床半島](https://www.youtube.com/watch?v=0uEZ1OdLhC4) by UN University
+- [田舎暮らしvlog｜雨の日の夜をお菓子作りして過ごす｜プリン｜パエリアディナー](https://www.youtube.com/watch?v=7UObm37dc_4) by nekoniwa
+- [ALBALATE DEL ARZOBISPO \| Pueblos con encanto a vista de dron](https://www.youtube.com/watch?v=fgS2YxBWT5c) by La COMARCA TV
+
+Their creators aren’t connected with Tiny Bit Studio and don’t endorse Lark.
