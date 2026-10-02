@@ -1,7 +1,8 @@
 {%- comment -%}
   Covered: Lark's exhibit. A sentence shown covered, the way Lark covers a line during your turn:
   one bar per word, punctuation included, so each word keeps its length and no glyph shows. "Show the sentence"
-  (a real toggle button, aria-pressed) uncovers it with its English meaning. Without JavaScript the
+  uncovers it with its English meaning, then reads "Cover the sentence" (the label names what a press
+  does, so there is no aria-pressed to contradict it). Without JavaScript the
   sentence and meaning simply show and the button stays hidden. One per page (ids).
   Params
     text     optional  the sentence; default "Petit à petit, l’oiseau fait son nid."
@@ -38,7 +39,7 @@
     {%- endfor -%}
   </p>
   <div class="covered__foot">
-    <button class="covered__toggle" type="button" aria-pressed="false" aria-controls="{{ id }}-line {{ id }}-meaning" hidden>Show the sentence</button>
+    <button class="covered__toggle" type="button" aria-controls="{{ id }}-line {{ id }}-meaning" data-shown-label="Cover the sentence" hidden>Show the sentence</button>
     <p class="covered__meaning" id="{{ id }}-meaning">“{{ meaning }}”</p>
   </div>
 </figure>

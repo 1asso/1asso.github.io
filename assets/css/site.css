@@ -502,7 +502,7 @@ a { color: inherit; text-decoration: none; }
   text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
 }
 .covered__toggle:hover { text-decoration-color: var(--app, currentColor); }
-.covered__toggle[aria-pressed="true"] { text-decoration-color: currentColor; }
+.covered:not(.is-covered) .covered__toggle { text-decoration-color: currentColor; }
 /* Its state, to the eye: a bit that fills while the sentence is shown. */
 .covered__toggle::before {
   content: "";
@@ -513,10 +513,10 @@ a { color: inherit; text-decoration: none; }
   vertical-align: 0.02em;
   box-shadow: inset 0 0 0 1px var(--app, currentColor);
 }
-.covered__toggle[aria-pressed="true"]::before { background: var(--app, currentColor); }
+.covered:not(.is-covered) .covered__toggle::before { background: var(--app, currentColor); }
 @media (forced-colors: active) {
   .covered__toggle::before { forced-color-adjust: none; box-shadow: inset 0 0 0 1px ButtonText; }
-  .covered__toggle[aria-pressed="true"]::before { background: ButtonText; }
+  .covered:not(.is-covered) .covered__toggle::before { background: ButtonText; }
 }
 .covered__toggle[hidden] { display: none; }
 

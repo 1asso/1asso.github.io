@@ -20,20 +20,23 @@
   }
 
   // 2. Covered sentences: covered during "your turn", shown by the toggle (or a click on the bars).
+  //    The toggle's label says what it will do: "Show the sentence", then "Cover the sentence".
   document.querySelectorAll('[data-covered]').forEach(function (figure) {
-    var button = figure.querySelector('button[aria-pressed]');
+    var button = figure.querySelector('.covered__toggle');
     var line = figure.querySelector('.covered__line');
     if (!button || !line) return;
+    var showLabel = button.textContent;
+    var coverLabel = button.getAttribute('data-shown-label') || showLabel;
     var show = function (shown) {
       figure.classList.toggle('is-covered', !shown);
-      button.setAttribute('aria-pressed', shown ? 'true' : 'false');
+      button.textContent = shown ? coverLabel : showLabel;
       // Covered, the line is only bars: screen readers get the caption and the button instead.
       if (shown) line.removeAttribute('aria-hidden'); else line.setAttribute('aria-hidden', 'true');
     };
     show(false);
     button.hidden = false;
     button.addEventListener('click', function () {
-      show(button.getAttribute('aria-pressed') !== 'true');
+      show(figure.classList.contains('is-covered'));
     });
     line.addEventListener('click', function () {
       if (figure.classList.contains('is-covered')) show(true);
