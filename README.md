@@ -40,23 +40,23 @@ Everything about an app is in `_data/apps.yml`, one entry per app. The comment a
 file explains each field. The ones you're most likely to touch:
 
 - `pitch`: the sentences under the app's name on the home page
-- `status` and `status_label`: `available` / "On the App Store" (a filled square) or
-  `development` / "In development" (a hollow square)
-- `store`: the App Store link. With a link, the App Store badge appears in the app's room.
+- `status` and `status_label`: `available` / "On the App Store" (a filled square), or
+  `coming` / "Coming soon" or `development` / "In development" (a hollow square)
+- `store`: the App Store link. With a link, the App Store badge appears in the app's room. With
+  the block there but the link left empty, the badge appears without a link.
 - `points`: the four short points in the app's room
 - `label`: the museum label beside the app's icon
 - `gloss`: the line under Kozeni's name. Delete the line to remove it.
 
 `&nbsp;` in a value keeps the last two words together on one line. Leave it in.
 
-When Lark ships:
+Lark is in App Review, so its room says "Coming soon" and shows the badge without a link. When
+Lark is out:
 
-1. Give Lark a `store:` block (copy Kozeni's and change the link).
+1. Paste its App Store link after `url:` in Lark's `store:` block (Kozeni's shows the form).
 2. Set `status: available` and `status_label: On the App Store`.
-3. Update its label's `credit` line, which now says "On the workbench, not yet on the App Store"
-   (Kozeni's says "Free, with an optional tip jar").
 
-Its room then shows the badge and the filled square.
+Its room then shows a working badge and the filled square.
 
 ## Addresses for App Store Connect
 

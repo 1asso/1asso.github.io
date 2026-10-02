@@ -40,10 +40,10 @@ layout: default
         {% include status.html app="lark" %}
         <h3 class="display room__name" id="lark-title">{{ lark.name }}</h3>
       </div>
-      <p class="room__pitch">{{ lark.pitch }}</p>
-      {%- if lark.store.url %}
-      {% include store-badge.html app="lark" class="room__store" %}
-      {%- endif %}
+      <div class="room__intro">
+        <p class="room__pitch">{{ lark.pitch }}</p>
+        {% include store-badge.html app="lark" class="room__store" %}
+      </div>
       <div class="plinth stage is-lark" data-light>
         <div class="stage__object">{% include app-icon.html app="lark" sizes="(min-width: 1080px) 17vw, (min-width: 720px) 21vw, 40vw" alt=true class="plinth__icon" %}</div>
         {% include covered.html class="stage__piece" %}

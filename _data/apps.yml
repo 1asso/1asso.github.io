@@ -5,10 +5,11 @@
 # Fields
 #   name, subtitle      the App Store name is "name: subtitle" (subtitle is a note only; the site doesn't read it)
 #   gloss               optional line under the name in the home page room (raw HTML allowed)
-#   status              available (filled bit) or development (hollow bit); status_label is the words
+#   status              available (filled bit), or coming or development (hollow bit); status_label is the words
 #   pitch               one or two sentences, shown under the name in the app's room
-#   store               the App Store url (leave it out for an app that isn't out yet).
-#                       With a url, the room shows the App Store badge.
+#   store               the App Store url (leave the block out for an app that isn't out yet).
+#                       With a url, the room shows the App Store badge. With an empty url (an app
+#                       in App Review), it shows the badge without a link.
 #   color, color_dark   a note only: the app's own color. The site's colors are set in
 #                       assets/css/site.css (--kozeni, --lark), used for bits and status marks, never text
 #   icon                file prefix in /assets/images/icons/: <icon>-light-<size>.webp, <icon>-dark-<size>.webp
@@ -55,9 +56,11 @@ kozeni:
 lark:
   name: Lark
   subtitle: Language practice
-  status: development
-  status_label: In development
+  status: coming
+  status_label: Coming soon
   pitch: Practice speaking a language by shadowing real&nbsp;material.
+  store:
+    url:   # in App Review; paste the App Store link here once Lark is out
   color: "#3E8995"
   color_dark: "#36A9B5"
   icon: lark
@@ -69,7 +72,7 @@ lark:
     medium: SwiftUI, for iPhone and iPad
     icon_light: A lark in flight, black on white
     icon_dark: A lark in flight, white on black
-    credit: On the workbench, not yet on the App Store
+    credit: Free, with an optional tip jar
   points:
     - title: Real material.
       text: Podcasts, with search built in. YouTube videos, where YouTube allows. Your own videos from Photos, and video or audio files from&nbsp;Files.

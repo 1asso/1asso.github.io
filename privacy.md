@@ -3,7 +3,7 @@ layout: doc
 title: Privacy
 description: "How the Tiny Bit Studio website and its apps, Kozeni and Lark, handle your data: no accounts, no analytics, ads or tracking, and nothing collected by us."
 permalink: /privacy/
-updated: 2026-09-30
+updated: 2026-10-01
 ---
 {% comment %}
   One privacy policy for the website and both apps. App Store Connect links to /privacy/#kozeni
@@ -146,7 +146,7 @@ Privacy
 ### In short
 {: .margin}
 
-Lark is in development and isn’t on the App Store yet, so this section describes the version we’re preparing for release. There’s no account, no server of ours, and no analytics, ads or tracking. Lark transcribes, translates and explains on your device. Data leaves the device only for the services you use through Lark, listed below, and for your own iCloud.
+There’s no account, no server of ours, and no analytics, ads or tracking. Lark transcribes, translates and explains on your device. Data leaves the device only for the services you use through Lark, listed below, and for your own iCloud.
 
 ### Going online
 {: .margin}
@@ -238,7 +238,7 @@ Lark can’t see your photo library or your files. It gets only the item you pic
 ### Analytics
 {: .margin}
 
-Lark contains no analytics, crash reporting, advertising or tracking code, and no third-party libraries. It doesn’t use the advertising identifier or ask to track you. It writes a few notes to the device’s own system log, such as a material’s title when its transcript is done, and doesn’t collect them. Once Lark is on the App Store, Apple may give us anonymous crash reports and aggregated statistics about how it’s used, under Apple’s privacy policy. That happens only if you’ve turned on Share With App Developers, in the Settings app under Privacy & Security&nbsp;→ Analytics & Improvements.
+Lark contains no analytics, crash reporting, advertising or tracking code, and no third-party libraries. It doesn’t use the advertising identifier or ask to track you. It writes a few notes to the device’s own system log, such as a material’s title when its transcript is done, and doesn’t collect them. If you’ve turned on Share With App Developers, in the Settings app under Privacy & Security&nbsp;→ Analytics & Improvements, Apple may give us anonymous crash reports and aggregated statistics about how Lark is used. Those come from Apple, under Apple’s privacy policy, not from anything in Lark.
 
 ### Children
 {: .margin}
@@ -250,7 +250,7 @@ Lark collects no data from anyone, children included. YouTube and the other serv
 ## Changes to this policy
 {: #changes}
 
-If what this website or either app does with your data changes, we’ll update this page and the date at the top. Before Lark is released, we’ll check its section against the version that ships.
+If what this website or either app does with your data changes, we’ll update this page and the date at the top.
 
 ## Contact
 {: #contact}

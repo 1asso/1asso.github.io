@@ -1,6 +1,7 @@
 {%- comment -%}
   Apple's official black "Download on the App Store" badge, scaled but unaltered. It prints nothing
-  for an app without a store entry, so Lark's room shows a badge as soon as Lark has a store: url.
+  for an app without a store: entry. With a store: url it links there; with an empty url (an app
+  in App Review) it shows the badge without a link, so the room looks the way it will at launch.
   The alt starts with the badge's own words, so "Download on the App Store" is something a
   voice-control user can say, then names the app.
   Params
@@ -8,8 +9,9 @@
     class   optional  extra classes on the wrapper
 {%- endcomment -%}
 {%- assign app = site.data.apps[include.app] -%}
-{%- if app.store.url %}
+{%- if app.store %}
+{%- capture badge %}<img src="{{ '/assets/images/badges/app-store-black.svg' | relative_url }}" width="132" height="44" alt="Download on the App Store: {{ app.name }}">{% endcapture %}
 <div class="store{% if include.class %} {{ include.class }}{% endif %}">
-  <a class="store__badge" href="{{ app.store.url }}"><img src="{{ '/assets/images/badges/app-store-black.svg' | relative_url }}" width="132" height="44" alt="Download on the App Store: {{ app.name }}"></a>
+  {% if app.store.url %}<a class="store__badge" href="{{ app.store.url }}">{{ badge }}</a>{% else %}<span class="store__badge">{{ badge }}</span>{% endif %}
 </div>
 {%- endif %}
