@@ -8,6 +8,7 @@ layout: default
 {%- endcomment -%}
 {%- assign kozeni = site.data.apps.kozeni -%}
 {%- assign lark = site.data.apps.lark -%}
+{%- assign michi = site.data.apps.michi -%}
 <section class="hero wrap" aria-labelledby="hero-title">
   <h1 class="display hero__title" id="hero-title">Get the tiny bits&nbsp;right{% include stop.html %}</h1>
   <p class="hero__lede">Tiny Bit Studio makes apps for iPhone and iPad. Every sheet, figure and haptic in them is a decision, not a&nbsp;default.</p>
@@ -53,6 +54,22 @@ layout: default
     </div>
 
     {% include points.html app="lark" class="wrap" %}
+  </article>
+
+  <article class="room room--brief is-michi" id="michi" aria-labelledby="michi-title">
+    <div class="room__main wrap grid">
+      <div class="room__head">
+        {% include status.html app="michi" %}
+        <h3 class="display room__name" id="michi-title">{{ michi.name }}</h3>
+        {%- if michi.gloss %}
+        <p class="room__gloss meta">{{ michi.gloss }}</p>
+        {%- endif %}
+      </div>
+      <div class="room__intro">
+        <p class="room__pitch">{{ michi.pitch }}</p>
+        {% include store-badge.html app="michi" class="room__store" %}
+      </div>
+    </div>
   </article>
 </section>
 

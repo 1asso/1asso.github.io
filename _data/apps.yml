@@ -1,6 +1,8 @@
 # The apps, one entry each. The home page (each app's room) and the footer
 # read from here, and the privacy page can too, so a fact changed here changes
 # everywhere it's shown. The order here is the order of the footer's app links.
+# An app in development can have a brief room, like Michi's: it needs only name, status,
+# status_label, pitch, url and the color notes (gloss is optional).
 #
 # Fields
 #   name, subtitle      the App Store name is "name: subtitle" (subtitle is a note only; the site doesn't read it)
@@ -11,7 +13,7 @@
 #                       With a url, the room shows the App Store badge. With an empty url (an app
 #                       in App Review), it shows the badge without a link.
 #   color, color_dark   a note only: the app's own color. The site's colors are set in
-#                       assets/css/site.css (--kozeni, --lark), used for bits and status marks, never text
+#                       assets/css/site.css (--kozeni, --lark, --michi), used for bits and status marks, never text
 #   icon                file prefix in /assets/images/icons/: <icon>-light-<size>.webp, <icon>-dark-<size>.webp
 #   icon_alt            the icon's alt text wherever the icon is the subject
 #   url                 the app's room on the home page (/#key); the footer links here
@@ -82,3 +84,13 @@ lark:
       text: With Apple Intelligence, tap the bubble beside a sentence for its meaning and a note or two, written on your&nbsp;device.
     - title: What syncs.
       text: iCloud syncs your cards, progress and practice days. Media files, transcripts and recordings stay on the&nbsp;device.
+
+michi:
+  name: Michi
+  gloss: '<span lang="ja">道</span>, Japanese for road'
+  status: development
+  status_label: In development
+  pitch: Plan a trip with the people you’re going&nbsp;with.
+  color: "#5A67D8"
+  color_dark: "#8B93F0"
+  url: /#michi

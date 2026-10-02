@@ -46,7 +46,7 @@ file explains each field. The ones you're most likely to touch:
   the block there but the link left empty, the badge appears without a link.
 - `points`: the four short points in the app's room
 - `label`: the museum label beside the app's icon
-- `gloss`: the line under Kozeni's name. Delete the line to remove it.
+- `gloss`: the line under Kozeni's or Michi's name. Delete the line to remove it.
 
 `&nbsp;` in a value keeps the last two words together on one line. Leave it in.
 
@@ -81,7 +81,7 @@ the page instead of where they should.
 
 ```
 _config.yml          site settings (edit the first four)
-_data/apps.yml       both apps, in one place
+_data/apps.yml       every app, in one place
 _data/workbench.yml  the commit messages under "From the workbench" on the home page
 index.html           the home page
 privacy.md           /privacy/
@@ -120,6 +120,12 @@ in sizes 96, 192, 256, 384, 512 and 768.
    key. Its footer link appears by itself.
 5. **Its privacy section:** add a section to `privacy.md` with the app's key as its id, like the
    existing ones.
+
+An app still in development can have a brief room instead, like Michi's: its status, name,
+gloss (if it has one) and pitch, and nothing else. It needs only steps 1 and 3, with just
+`name`, `status`, `status_label`, `pitch`, `url` and the color notes in `_data/apps.yml`, and a
+copy of Michi's `<article class="room room--brief is-michi" …>` block in `index.html`. It gets
+its icons, label, points and privacy section when it's close to release.
 
 ## Preview it on your Mac
 

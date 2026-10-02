@@ -53,8 +53,10 @@
   /* Color belongs to the apps: marks and bits only, never text. */
   --kozeni: #EF5F31;         /* coral, the coin: 3.1:1 on canvas */
   --lark: #3E8995;           /* teal: 3.8:1 on canvas, 3.4:1 on plinth */
+  --michi: #5A67D8;          /* indigo: 4.6:1 on canvas */
   --kozeni-gel: transparent;
   --lark-gel: transparent;
+  --michi-gel: transparent;
 
   --sans: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -92,13 +94,16 @@
 
     --kozeni: #FF7A47;
     --lark: #36A9B5;
+    --michi: #8B93F0;
     --kozeni-gel: rgb(255 122 71 / 0.06);   /* the spotlight's gel */
     --lark-gel: rgb(54 169 181 / 0.065);
+    --michi-gel: rgb(139 147 240 / 0.06);
   }
 }
 
 .is-kozeni { --app: var(--kozeni); --gel: var(--kozeni-gel); }
 .is-lark { --app: var(--lark); --gel: var(--lark-gel); }
+.is-michi { --app: var(--michi); --gel: var(--michi-gel); }
 
 /* ---------------------------------------------------------------- Base */
 
@@ -404,10 +409,11 @@ a { color: inherit; text-decoration: none; }
 
 /* Lark: the name and its line across the top, ending on one baseline (the badge's foot, or without a
    badge the line's last baseline, sits on the name's), then a wide plinth (the icon and the covered
-   sentence), with the label under the icon and the rhythm under the sentence. */
-.room--lark .room__head { grid-column: 1 / span 4; align-self: end; align-self: last baseline; }
-.room--lark .room__intro { grid-column: 5 / span 6; align-self: end; align-self: last baseline; }
-.room--lark .room__pitch { margin-top: 0; }
+   sentence), with the label under the icon and the rhythm under the sentence.
+   A brief room, for an app in development, is that top line alone. */
+.room--lark .room__head, .room--brief .room__head { grid-column: 1 / span 4; align-self: end; align-self: last baseline; }
+.room--lark .room__intro, .room--brief .room__intro { grid-column: 5 / span 6; align-self: end; align-self: last baseline; }
+.room--lark .room__pitch, .room--brief .room__pitch { margin-top: 0; }
 .room--lark .stage { margin-top: var(--step); }
 .room--lark .room__label { grid-column: 1 / span 4; margin-top: var(--beat); }
 .room--lark .room__rhythm { grid-column: 5 / -1; margin-top: var(--beat); }
@@ -709,7 +715,7 @@ a { color: inherit; text-decoration: none; }
   .room--kozeni .room__head { grid-column: 7 / -1; grid-row: 1 / span 2; }
   .room--kozeni .room__label { grid-column: 1 / span 5; grid-row: 2; align-self: start; margin-top: 24px; }
 
-  .room--lark .room__intro { grid-column: 5 / -1; }
+  .room--lark .room__intro, .room--brief .room__intro { grid-column: 5 / -1; }
   .stage__object { width: 70%; }
 
   .points > li { grid-column: span 6; }
@@ -743,7 +749,8 @@ a { color: inherit; text-decoration: none; }
   .plinth__icon { width: 52%; }
 
   .room--lark .room__head, .room--lark .room__intro, .room--lark .room__label, .room--lark .room__rhythm { grid-column: 1 / -1; align-self: auto; }
-  .room--lark .room__pitch { margin-top: 30px; }
+  .room--brief .room__head, .room--brief .room__intro { grid-column: 1 / -1; align-self: auto; }
+  .room--lark .room__pitch, .room--brief .room__pitch { margin-top: 30px; }
   .room--lark .room__label { margin-top: 20px; }
   .room--lark .room__rhythm { margin-top: 36px; }
   .stage { padding: 40px 24px 32px; row-gap: 32px; }
