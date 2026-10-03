@@ -66,14 +66,14 @@ kozeni:
   color: "#EF5F31"
   color_dark: "#FF7A47"
   icon: kozeni
-  icon_alt: "The Kozeni app icon: a coral coin with a hole, hanging from a cord."
+  icon_alt: "The Kozeni app icon: a coral coin with a square hole, tied on a twisted rope."
   url: /#kozeni
   privacy: /privacy/#kozeni
   label:
     title: "Kozeni: Spending & Budgets"
     medium: SwiftUI, for iPhone and iPad
-    icon_light: Coral coin on a black cord, warm white ground
-    icon_dark: Coral coin on a cream cord, black ground
+    icon_light: Square-holed coral coin on a twisted black rope, white ground
+    icon_dark: Square-holed coral coin on a twisted white rope, black ground
     credit: Free, with an optional tip jar
   points:
     - title: Log an entry in a few taps.
