@@ -91,16 +91,16 @@ michi:
   status: development
   status_label: In development
   pitch: Plan a trip with the people you’re going&nbsp;with.
-  color: "#5F86C2"
-  color_dark: "#86A8E0"
+  color: "#3D5FE8"
+  color_dark: "#5278FB"
   icon: michi
-  icon_alt: "The Michi app icon: a perforated paper stamp printed with an evening sky, on black."
+  icon_alt: "The Michi app icon: a cobalt postage stamp printed with a winding road, cancelled by a postmark."
   url: /#michi
   label:
     title: Michi
     medium: SwiftUI, for iPhone and iPad
-    icon_light: A paper stamp printed with an evening sky, black ground
-    icon_dark: A paper stamp printed with an evening sky, black ground
+    icon_light: A cobalt stamp printed with a road, black postmark, white ground
+    icon_dark: A cobalt stamp printed with a road, white postmark, black ground
     credit: A work in progress
   points:
     - title: A stamp for every trip.
