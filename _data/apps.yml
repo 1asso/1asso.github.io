@@ -66,14 +66,14 @@ lark:
   color: "#3E8995"
   color_dark: "#36A9B5"
   icon: lark
-  icon_alt: "The Lark app icon: a lark in flight, in silhouette."
+  icon_alt: "The Lark app icon: a black lark singing, its head thrown back and its gold beak open."
   url: /#lark
   privacy: /privacy/#lark
   label:
     title: Lark
     medium: SwiftUI, for iPhone and iPad
-    icon_light: A lark in flight, black on white
-    icon_dark: A lark in flight, white on black
+    icon_light: A black lark singing, gold beak, white ground
+    icon_dark: A white lark singing, gold beak, black ground
     credit: Free, with an optional tip jar
   points:
     - title: Real material.
