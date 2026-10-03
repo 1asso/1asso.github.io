@@ -1,7 +1,7 @@
 # The apps, one entry each. The home page (each app's room) and the footer
 # read from here, and the privacy page can too, so a fact changed here changes
 # everywhere it's shown. The order here is the order of the footer's app links.
-# An app in development can have a brief room, like Michi's: it needs only name, status,
+# An app in development can have a brief room (see README.md): it needs only name, status,
 # status_label, pitch, url and the color notes (gloss is optional).
 #
 # Fields
@@ -91,6 +91,23 @@ michi:
   status: development
   status_label: In development
   pitch: Plan a trip with the people you’re going&nbsp;with.
-  color: "#5A67D8"
-  color_dark: "#8B93F0"
+  color: "#5F86C2"
+  color_dark: "#86A8E0"
+  icon: michi
+  icon_alt: "The Michi app icon: a perforated paper stamp printed with an evening sky, on black."
   url: /#michi
+  label:
+    title: Michi
+    medium: SwiftUI, for iPhone and iPad
+    icon_light: A paper stamp printed with an evening sky, black ground
+    icon_dark: A paper stamp printed with an evening sky, black ground
+    credit: A work in progress
+  points:
+    - title: A stamp for every trip.
+      text: Each trip is a stamp in your album, printed in its own ink and postmarked when the trip is&nbsp;over.
+    - title: The plan, as a brochure.
+      text: Open a stamp to see the trip day by day, its stops on a map with the route between&nbsp;them.
+    - title: Plan it together.
+      text: Invite the people you’re going with and edit the same plan. It’s shared through iCloud, with no server of ours in&nbsp;between.
+    - title: Photos where they happened.
+      text: Once you’ve been to a stop, add your photos to it, and everyone on the trip sees them&nbsp;there.

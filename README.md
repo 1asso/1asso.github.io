@@ -9,7 +9,7 @@ The website of Tiny Bit Studio. It has three pages:
 | Not found: shown for any address that doesn't exist | (any unknown address) | `404.html` |
 
 There are no separate app pages and no support page. Each app's details live in its room on the home
-page (`/#kozeni`, `/#lark`) and in its section of the privacy page. Support is the email address in
+page (`/#kozeni`, `/#lark`, `/#michi`) and in its section of the privacy page. Support is the email address in
 the home page's Contact section, which the Contact link in every page's header points to.
 
 It's a plain [Jekyll](https://jekyllrb.com) site. GitHub Pages builds it from the `master` branch
@@ -121,11 +121,13 @@ in sizes 96, 192, 256, 384, 512 and 768.
 5. **Its privacy section:** add a section to `privacy.md` with the app's key as its id, like the
    existing ones.
 
-An app still in development can have a brief room instead, like Michi's: its status, name,
-gloss (if it has one) and pitch, and nothing else. It needs only steps 1 and 3, with just
-`name`, `status`, `status_label`, `pitch`, `url` and the color notes in `_data/apps.yml`, and a
-copy of Michi's `<article class="room room--brief is-michi" …>` block in `index.html`. It gets
-its icons, label, points and privacy section when it's close to release.
+An app still in development can have a brief room instead: its status, name, gloss (if it has
+one) and pitch, and nothing else. It needs only steps 1 and 3, with just `name`, `status`,
+`status_label`, `pitch`, `url` and the color notes in `_data/apps.yml`, and an
+`<article class="room room--brief is-<key>" …>` block in `index.html` holding a `room__head` div
+(status, name, gloss) and a `room__intro` div (pitch), the way Lark's room starts. It gets its
+icons, label and points when it has an icon, and its privacy section when it's close to release.
+Michi is at that middle stage: a full room, still "In development", with no privacy section yet.
 
 ## Preview it on your Mac
 

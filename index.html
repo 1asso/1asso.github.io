@@ -56,7 +56,7 @@ layout: default
     {% include points.html app="lark" class="wrap" %}
   </article>
 
-  <article class="room room--brief is-michi" id="michi" aria-labelledby="michi-title">
+  <article class="room room--kozeni is-michi" id="michi" aria-labelledby="michi-title">
     <div class="room__main wrap grid">
       <div class="room__head">
         {% include status.html app="michi" %}
@@ -64,12 +64,14 @@ layout: default
         {%- if michi.gloss %}
         <p class="room__gloss meta">{{ michi.gloss }}</p>
         {%- endif %}
-      </div>
-      <div class="room__intro">
         <p class="room__pitch">{{ michi.pitch }}</p>
         {% include store-badge.html app="michi" class="room__store" %}
       </div>
+      {% include plinth.html app="michi" %}
+      {% include label.html app="michi" class="room__label" %}
     </div>
+
+    {% include points.html app="michi" class="wrap" %}
   </article>
 </section>
 

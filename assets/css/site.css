@@ -53,7 +53,7 @@
   /* Color belongs to the apps: marks and bits only, never text. */
   --kozeni: #EF5F31;         /* coral, the coin: 3.1:1 on canvas */
   --lark: #3E8995;           /* teal: 3.8:1 on canvas, 3.4:1 on plinth */
-  --michi: #5A67D8;          /* indigo: 4.6:1 on canvas */
+  --michi: #5F86C2;          /* sky blue, the stamp's evening sky: 3.5:1 on canvas, 3.1:1 on plinth */
   --kozeni-gel: transparent;
   --lark-gel: transparent;
   --michi-gel: transparent;
@@ -94,10 +94,10 @@
 
     --kozeni: #FF7A47;
     --lark: #36A9B5;
-    --michi: #8B93F0;
+    --michi: #86A8E0;
     --kozeni-gel: rgb(255 122 71 / 0.06);   /* the spotlight's gel */
     --lark-gel: rgb(54 169 181 / 0.065);
-    --michi-gel: rgb(139 147 240 / 0.06);
+    --michi-gel: rgb(134 168 224 / 0.06);
   }
 }
 
