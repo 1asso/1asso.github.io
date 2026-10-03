@@ -359,8 +359,10 @@ a { color: inherit; text-decoration: none; }
 /* With the picture unwrapped, its <source> would become an empty grid item and take a row of its
    own, pushing the icon below the middle. Sources never render, so take them out of the layout. */
 .plinth source { display: none; }
+/* An app's icon is one size in every room, whatever its plinth's width: a quarter of the room's
+   grid (about 44% of a seven-column plinth), never wider than 22.5rem. */
 .plinth__icon {
-  width: min(44%, 22.5rem);
+  width: min(25cqi, 22.5rem);
   height: auto;
   filter: var(--icon-shadow);
 }
@@ -396,7 +398,7 @@ a { color: inherit; text-decoration: none; }
 /* In-page jumps land on the content, not on the space above it (html's scroll-padding adds 24px). */
 .room, .studio, .contact { scroll-margin-top: calc(-1 * var(--room)); }
 .rooms, .rooms > .room:first-of-type { scroll-margin-top: calc(-1 * clamp(4rem, 7vw, 7.5rem)); }
-.room__main { align-items: start; }
+.room__main { align-items: start; container-type: inline-size; }   /* the grid its icon is measured against */
 .room__name { margin-top: 28px; margin-left: -0.055em; }
 .room__gloss { margin-top: 18px; color: var(--ink-3); }
 .room__pitch { margin-top: 30px; max-width: 26em; text-wrap: pretty; }
@@ -436,8 +438,7 @@ a { color: inherit; text-decoration: none; }
     radial-gradient(24% 58% at 17% 50%, var(--glow), transparent 74%),
     radial-gradient(40% 70% at 64% 50%, var(--glow), transparent 76%);
 }
-.stage__object { grid-column: 1 / span 4; justify-self: center; width: 62%; }
-.stage__object .plinth__icon { width: 100%; }
+.stage__object { grid-column: 1 / span 4; justify-self: center; }
 .stage__piece { grid-column: 5 / -1; padding-right: clamp(24px, 4vw, 72px); }
 
 /* Points: run-in feature points. */
@@ -721,7 +722,7 @@ a { color: inherit; text-decoration: none; }
   .room--mirror .room__head { grid-column: 1 / span 6; }
 
   .room--lark .room__intro, .room--brief .room__intro { grid-column: 5 / -1; }
-  .stage__object { width: 70%; }
+  .plinth__icon { width: 18cqi; }   /* about 44% of the five-column plinth */
 
   .points > li { grid-column: span 6; }
 
@@ -751,7 +752,7 @@ a { color: inherit; text-decoration: none; }
   .room--kozeni .room__head, .room--kozeni .plinth, .room--kozeni .room__label { grid-column: 1 / -1; grid-row: auto; }
   .room--kozeni .plinth { margin-top: 44px; aspect-ratio: 1; }
   .room--kozeni .room__label { margin-top: 20px; }
-  .plinth__icon { width: 52%; }
+  .plinth__icon { width: 52cqi; }
 
   .room--lark .room__head, .room--lark .room__intro, .room--lark .room__label, .room--lark .room__rhythm { grid-column: 1 / -1; align-self: auto; }
   .room--brief .room__head, .room--brief .room__intro { grid-column: 1 / -1; align-self: auto; }
@@ -759,7 +760,7 @@ a { color: inherit; text-decoration: none; }
   .room--lark .room__label { margin-top: 20px; }
   .room--lark .room__rhythm { margin-top: 36px; }
   .stage { padding: 40px 24px 32px; row-gap: 32px; }
-  .stage__object { grid-column: 1 / -1; width: 44%; }
+  .stage__object { grid-column: 1 / -1; }
   .stage__piece { grid-column: 1 / -1; padding-right: 0; }
   .stage::before {
     background:
