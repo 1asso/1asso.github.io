@@ -6,8 +6,8 @@ layout: default
   apps is https://tinybit.studio/#contact, and an app's Marketing URL, if set, is its room
   (/#kozeni, /#lark). Keep the ids contact, kozeni and lark, or those links land at the top.
 {%- endcomment -%}
-{%- assign kozeni = site.data.apps.kozeni -%}
 {%- assign lark = site.data.apps.lark -%}
+{%- assign kozeni = site.data.apps.kozeni -%}
 {%- assign michi = site.data.apps.michi -%}
 <section class="hero wrap" aria-labelledby="hero-title">
   <h1 class="display hero__title" id="hero-title">Get the tiny bits&nbsp;right{% include stop.html %}</h1>
@@ -16,24 +16,6 @@ layout: default
 
 <section class="rooms" id="apps" aria-labelledby="apps-title">
   <h2 class="visually-hidden" id="apps-title">Apps</h2>
-
-  <article class="room room--kozeni is-kozeni" id="kozeni" aria-labelledby="kozeni-title">
-    <div class="room__main wrap grid">
-      <div class="room__head">
-        {% include status.html app="kozeni" %}
-        <h3 class="display room__name" id="kozeni-title">{{ kozeni.name }}</h3>
-        {%- if kozeni.gloss %}
-        <p class="room__gloss meta">{{ kozeni.gloss }}</p>
-        {%- endif %}
-        <p class="room__pitch">{{ kozeni.pitch }}</p>
-        {% include store-badge.html app="kozeni" class="room__store" %}
-      </div>
-      {% include plinth.html app="kozeni" eager=true %}
-      {% include label.html app="kozeni" class="room__label" %}
-    </div>
-
-    {% include points.html app="kozeni" class="wrap" %}
-  </article>
 
   <article class="room room--lark is-lark" id="lark" aria-labelledby="lark-title">
     <div class="room__main wrap grid">
@@ -46,7 +28,7 @@ layout: default
         {% include store-badge.html app="lark" class="room__store" %}
       </div>
       <div class="plinth stage is-lark" data-light>
-        <div class="stage__object">{% include app-icon.html app="lark" sizes="(min-width: 1080px) 17vw, (min-width: 720px) 21vw, 40vw" alt=true class="plinth__icon" %}</div>
+        <div class="stage__object">{% include app-icon.html app="lark" sizes="(min-width: 1080px) 17vw, (min-width: 720px) 21vw, 40vw" alt=true class="plinth__icon" eager=true %}</div>
         {% include covered.html class="stage__piece" %}
       </div>
       {% include label.html app="lark" class="room__label" %}
@@ -54,6 +36,24 @@ layout: default
     </div>
 
     {% include points.html app="lark" class="wrap" %}
+  </article>
+
+  <article class="room room--kozeni is-kozeni" id="kozeni" aria-labelledby="kozeni-title">
+    <div class="room__main wrap grid">
+      <div class="room__head">
+        {% include status.html app="kozeni" %}
+        <h3 class="display room__name" id="kozeni-title">{{ kozeni.name }}</h3>
+        {%- if kozeni.gloss %}
+        <p class="room__gloss meta">{{ kozeni.gloss }}</p>
+        {%- endif %}
+        <p class="room__pitch">{{ kozeni.pitch }}</p>
+        {% include store-badge.html app="kozeni" class="room__store" %}
+      </div>
+      {% include plinth.html app="kozeni" %}
+      {% include label.html app="kozeni" class="room__label" %}
+    </div>
+
+    {% include points.html app="kozeni" class="wrap" %}
   </article>
 
   <article class="room room--kozeni room--mirror is-michi" id="michi" aria-labelledby="michi-title">

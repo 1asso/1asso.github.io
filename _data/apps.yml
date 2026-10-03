@@ -24,6 +24,36 @@
 #                       as it looks in each color scheme
 #   points              four run-in feature points in the app's room (title ends with a full stop)
 
+lark:
+  name: Lark
+  subtitle: Language practice
+  status: coming
+  status_label: Coming soon
+  pitch: Practice speaking a language by shadowing real&nbsp;material.
+  store:
+    url:   # in App Review; paste the App Store link here once Lark is out
+  color: "#3E8995"
+  color_dark: "#36A9B5"
+  icon: lark
+  icon_alt: "The Lark app icon: a black lark singing, its head thrown back and its gold beak open."
+  url: /#lark
+  privacy: /privacy/#lark
+  label:
+    title: Lark
+    medium: SwiftUI, for iPhone and iPad
+    icon_light: A black lark singing, gold beak, white ground
+    icon_dark: A white lark singing, gold beak, black ground
+    credit: Free, with an optional tip jar
+  points:
+    - title: Real material.
+      text: Podcasts, with search built in. YouTube videos, where YouTube allows. Your own videos from Photos, and video or audio files from&nbsp;Files.
+    - title: Hear the difference.
+      text: Turn on Record Attempts and Lark plays each try back to you, just before the original plays&nbsp;again.
+    - title: Ask what it means.
+      text: With Apple Intelligence, tap the bubble beside a sentence for its meaning and a note or two, written on your&nbsp;device.
+    - title: What syncs.
+      text: iCloud syncs your cards, progress and practice days. Media files, transcripts and recordings stay on the&nbsp;device.
+
 kozeni:
   name: Kozeni
   subtitle: Spending & Budgets
@@ -54,36 +84,6 @@ kozeni:
       text: Weekly, monthly or yearly, for one category or for everything, with what’s used and what’s&nbsp;left.
     - title: Private by default.
       text: Your data stays on your devices and syncs through your own iCloud. There’s no server of ours to send it&nbsp;to.
-
-lark:
-  name: Lark
-  subtitle: Language practice
-  status: coming
-  status_label: Coming soon
-  pitch: Practice speaking a language by shadowing real&nbsp;material.
-  store:
-    url:   # in App Review; paste the App Store link here once Lark is out
-  color: "#3E8995"
-  color_dark: "#36A9B5"
-  icon: lark
-  icon_alt: "The Lark app icon: a black lark singing, its head thrown back and its gold beak open."
-  url: /#lark
-  privacy: /privacy/#lark
-  label:
-    title: Lark
-    medium: SwiftUI, for iPhone and iPad
-    icon_light: A black lark singing, gold beak, white ground
-    icon_dark: A white lark singing, gold beak, black ground
-    credit: Free, with an optional tip jar
-  points:
-    - title: Real material.
-      text: Podcasts, with search built in. YouTube videos, where YouTube allows. Your own videos from Photos, and video or audio files from&nbsp;Files.
-    - title: Hear the difference.
-      text: Turn on Record Attempts and Lark plays each try back to you, just before the original plays&nbsp;again.
-    - title: Ask what it means.
-      text: With Apple Intelligence, tap the bubble beside a sentence for its meaning and a note or two, written on your&nbsp;device.
-    - title: What syncs.
-      text: iCloud syncs your cards, progress and practice days. Media files, transcripts and recordings stay on the&nbsp;device.
 
 michi:
   name: Michi
