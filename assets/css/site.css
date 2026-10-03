@@ -406,6 +406,9 @@ a { color: inherit; text-decoration: none; }
 .room--kozeni .plinth { grid-column: 1 / span 7; grid-row: 1 / span 2; }
 .room--kozeni .room__head { grid-column: 9 / -1; grid-row: 1; }
 .room--kozeni .room__label { grid-column: 9 / -1; grid-row: 2; align-self: end; margin-top: 48px; }
+/* Mirrored (Michi): the head and label on the left, the object on the right. */
+.room--mirror .plinth { grid-column: 6 / -1; }
+.room--mirror .room__head, .room--mirror .room__label { grid-column: 1 / span 4; }
 
 /* Lark: the name and its line across the top, ending on one baseline (the badge's foot, or without a
    badge the line's last baseline, sits on the name's), then a wide plinth (the icon and the covered
@@ -714,6 +717,8 @@ a { color: inherit; text-decoration: none; }
   .room--kozeni .plinth { grid-column: 1 / span 5; grid-row: 1; aspect-ratio: 1; }
   .room--kozeni .room__head { grid-column: 7 / -1; grid-row: 1 / span 2; }
   .room--kozeni .room__label { grid-column: 1 / span 5; grid-row: 2; align-self: start; margin-top: 24px; }
+  .room--mirror .plinth, .room--mirror .room__label { grid-column: 8 / -1; }
+  .room--mirror .room__head { grid-column: 1 / span 6; }
 
   .room--lark .room__intro, .room--brief .room__intro { grid-column: 5 / -1; }
   .stage__object { width: 70%; }

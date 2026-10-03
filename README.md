@@ -115,7 +115,8 @@ in sizes 96, 192, 256, 384, 512 and 768.
    `.is-<key> { --app: var(--<key>); --gel: var(--<key>-gel); }` next to `.is-kozeni`.
 4. **Its room on the home page:** in `index.html`, copy Kozeni's room, which is the
    `<article class="room room--kozeni is-kozeni" id="kozeni" …>` block. Change `kozeni` to the new
-   key everywhere in it, except in `room--kozeni`, which names the room's layout. At the top of
+   key everywhere in it, except in `room--kozeni`, which names the room's layout (add
+   `room--mirror` after it to put the icon on the right, like Michi's). At the top of
    the file, next to `{%- assign kozeni = site.data.apps.kozeni -%}`, add the same line for the new
    key. Its footer link appears by itself.
 5. **Its privacy section:** add a section to `privacy.md` with the app's key as its id, like the
