@@ -3,7 +3,7 @@ layout: doc
 title: Privacy
 description: "How the Tiny Bit Studio website and its apps, Kozeni and Lark, handle your data: no accounts, no analytics, ads or tracking, and nothing collected by us."
 permalink: /privacy/
-updated: 2026-10-01
+updated: 2026-10-05
 ---
 {% comment %}
   One privacy policy for the website and both apps. App Store Connect links to /privacy/#kozeni
@@ -75,7 +75,7 @@ Kozeni keeps your entries (amount, expense or income, category, note, date and h
 ### iCloud
 {: .margin}
 
-If iCloud is on for Kozeni, your entries, categories, recurring items and budgets sync between your devices through Apple’s CloudKit, in your iCloud account’s private database. Entries in Recently deleted sync too, until they’re removed. Your settings, the widget’s summary and the saved highlights stay on each device, and the tip unlock syncs separately (see Tips). Kozeni has no sync switch of its own: it follows iCloud, which you can turn off for Kozeni in the Settings app, under your name&nbsp;→ iCloud. [Apple’s privacy policy](https://www.apple.com/legal/privacy/en-ww/) covers iCloud.
+If iCloud is on for Kozeni, your entries, categories, recurring items and budgets sync between your devices through Apple’s CloudKit, in your iCloud account’s private database. Entries in Recently deleted sync too, until they’re removed. Your settings, the widget’s summary and the saved highlights stay on each device, and Kozeni Pro doesn’t sync through iCloud at all: each device asks the App Store (see Kozeni Pro). Kozeni has no sync switch of its own: it follows iCloud, which you can turn off for Kozeni in the Settings app, under your name&nbsp;→ iCloud. [Apple’s privacy policy](https://www.apple.com/legal/privacy/en-ww/) covers iCloud.
 
 ### Shortcuts
 {: .margin}
@@ -95,10 +95,10 @@ Where Apple Intelligence is available and turned on, Kozeni uses Apple’s on-de
 
 If you turn them on in Settings&nbsp;→ Preferences&nbsp;→ Notifications, Kozeni schedules its reminders on your device: a daily reminder to log, and a reminder when a recurring item is due, which shows the item’s note or category, its amount and how often it repeats. Nothing is sent from a server. Reminders appear wherever your notification settings allow, such as the Lock Screen.
 
-### Tips
+### Kozeni Pro
 {: .margin}
 
-The tip jar, in Settings&nbsp;→ Support, offers three tips through Apple’s App Store. Apple handles the payment, and we never see your payment details. Kozeni stores only the fact that you’ve tipped, on your device and in your iCloud key-value storage, so the extra Theme colors a tip unlocks follow you to your other devices. It keeps no receipt, amount or date.
+Kozeni Pro, in Settings&nbsp;→ Support, is one purchase through Apple’s App Store, not a subscription. It unlocks the extra Theme colors. Apple handles the payment, and we never see your payment details. Kozeni asks the App Store whether your Apple Account has Kozeni Pro, bought on any of your devices or shared with you through Family Sharing, and keeps only the answer: on your device, and in the storage it shares with the widget, so the widget can use the colors Pro unlocks. It keeps no receipt, amount or date.
 
 ### Ratings
 {: .margin}
@@ -119,7 +119,7 @@ Settings&nbsp;→ Backup&nbsp;→ Export data makes three CSV files, of your ent
 {: .margin}
 
 - **An entry.** Deleting an entry moves it to Settings&nbsp;→ Library&nbsp;→ Recently deleted, where you can swipe left on it to restore it within seven days. After that, it’s removed for good the next time Kozeni opens. The bin button at the top right clears everything there at once.
-- **Everything.** Settings&nbsp;→ Reset&nbsp;→ Erase all data deletes every entry (Recently deleted included), category, recurring item and budget, and the saved highlights. It offers to export first. With iCloud on, the deletion syncs, so it all goes from your other devices and from iCloud too. Your settings and the tip unlock stay, and the widget’s summary is replaced the next time you return to Kozeni.
+- **Everything.** Settings&nbsp;→ Reset&nbsp;→ Erase all data deletes every entry (Recently deleted included), category, recurring item and budget, and the saved highlights. It offers to export first. With iCloud on, the deletion syncs, so it all goes from your other devices and from iCloud too. Your settings and Kozeni Pro stay, and the widget’s summary is replaced the next time you return to Kozeni.
 - **The app.** Deleting Kozeni deletes its data from that device. Backups of your device keep a copy until they’re replaced or deleted.
 - **iCloud.** Your data stays in iCloud, and on your other devices, until you delete it there. To remove it everywhere, use Erase all data before you delete the app. You can also delete Kozeni’s iCloud data from iCloud storage in the Settings app.
 
@@ -191,12 +191,14 @@ When your device is signed in to iCloud, Lark syncs a small record between your 
 
 It also holds the days you practiced and when you last reset them, and the ID and date of each material you delete, kept for 180&nbsp;days so it’s deleted on your other devices too. Files you import don’t sync, but their cards’ titles and authors do. A video from Files is titled with its file name; an audio file takes its title and artist (or album) from its own tags, or its file name if it has none. A renamed card syncs under its new name.
 
-Media files, transcripts, card stills, recordings, explanations, settings and recent searches never sync. Lark has no switch for this; without an iCloud account, it works on the device alone.
+Media files, transcripts, card stills, recordings, explanations, settings, recent searches and the weekly count of AI transcripts never sync. Lark has no switch for this; without an iCloud account, it works on the device alone.
 
-### Tips
+### Lark Pro
 {: .margin}
 
-The tip jar, in You&nbsp;→ Support, offers three tips through Apple’s App Store. Apple handles the payment, and we never see your payment details. A tip unlocks nothing, and Lark stores nothing about it.
+Lark Pro, in You&nbsp;→ Support, is one purchase through Apple’s App Store, not a subscription. It takes the limit off AI transcripts and unlocks every accent color. Apple handles the payment, and we never see your payment details. Lark asks the App Store whether your Apple Account has Lark Pro, bought on any of your devices or shared with you through Family Sharing, and keeps only the answer, on your device. It keeps no receipt, amount or date.
+
+Without Lark Pro, Lark makes three AI transcripts a week. To count them, it keeps a note of each AI transcript you ask for (the material’s ID and the time) and the earliest and latest times your device’s clock has shown, on your device only.
 
 ### Feedback
 {: .margin}

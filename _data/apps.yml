@@ -43,7 +43,7 @@ lark:
     medium: SwiftUI, for iPhone and iPad
     icon_light: A black lark singing, gold beak, white ground
     icon_dark: A white lark singing, gold beak, black ground
-    credit: Free, with an optional tip jar
+    credit: Free, with an optional Lark Pro
   points:
     - title: Real material.
       text: Podcasts, with search built in. YouTube videos, where YouTube allows. Your own videos from Photos, and video or audio files from&nbsp;Files.
@@ -74,7 +74,7 @@ kozeni:
     medium: SwiftUI, for iPhone and iPad
     icon_light: Square-holed coral coin on a twisted black rope, white ground
     icon_dark: Square-holed coral coin on a twisted white rope, black ground
-    credit: Free, with an optional tip jar
+    credit: Free, with an optional Kozeni Pro
   points:
     - title: Log an entry in a few taps.
       text: A clean keypad, a category, and a note if you want. Recurring entries add themselves when you open Kozeni on the day they’re&nbsp;due.
