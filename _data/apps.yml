@@ -39,7 +39,7 @@ michi:
   label:
     title: Michi
     medium: SwiftUI, for iPhone and iPad
-    icon_light: A white stamp printed with a blue sea, black postmark, cream ground
+    icon_light: A white stamp printed with a blue sea, black postmark, white ground
     icon_dark: A white stamp printed with a blue sea, umber postmark, black ground
     credit: Free, with an optional Michi Pro
   points:
