@@ -50,10 +50,10 @@ file explains each field. The ones you're most likely to touch:
 
 `&nbsp;` in a value keeps the last two words together on one line. Leave it in.
 
-Lark is in App Review, so its room says "Coming soon" and shows the badge without a link. When
-Lark is out:
+Lark is in App Review, so its room says "Coming soon" and shows the badge without a link. Michi's
+room shows the badge without a link too, still saying "In development". When either is out:
 
-1. Paste its App Store link after `url:` in Lark's `store:` block (Kozeni's shows the form).
+1. Paste its App Store link after `url:` in its `store:` block (Kozeni's shows the form).
 2. Set `status: available` and `status_label: On the App Store`.
 
 Its room then shows a working badge and the filled square.
@@ -88,9 +88,10 @@ privacy.md           /privacy/
 404.html             the not-found page
 _layouts/            default (the frame around every page) and doc (the privacy page)
 _includes/           the building blocks: header, footer, the logo mark, app icons, plinths,
-                     museum labels, the App Store badge, and so on
+                     museum labels, the App Store badge, and so on, and the exhibits: Lark's
+                     covered sentence and rhythm, Michi's album (album.html)
 assets/css/site.css  the one stylesheet
-assets/js/site.js    small extras only: the spotlights and the covered sentence
+assets/js/site.js    small extras only: the spotlights, the covered sentence and Michi's album
 assets/fonts/        Inter Tight and IBM Plex Mono, self-hosted (OFL.txt is their license)
 assets/images/       icons/ (app icons), og/ (the link-preview card), badges/ (App Store), logo/
 favicon.*, apple-touch-icon.png, icon-*.png, site.webmanifest, robots.txt
@@ -116,7 +117,7 @@ in sizes 96, 192, 256, 384, 512 and 768.
 4. **Its room on the home page:** in `index.html`, copy Kozeni's room, which is the
    `<article class="room room--kozeni is-kozeni" id="kozeni" …>` block. Change `kozeni` to the new
    key everywhere in it, except in `room--kozeni`, which names the room's layout (add
-   `room--mirror` after it to put the icon on the right, like Michi's). At the top of
+   `room--mirror` after it to put the icon on the right). At the top of
    the file, next to `{%- assign kozeni = site.data.apps.kozeni -%}`, add the same line for the new
    key. Its footer link appears by itself.
 5. **Its privacy section:** add a section to `privacy.md` with the app's key as its id, like the
@@ -128,7 +129,15 @@ one) and pitch, and nothing else. It needs only steps 1 and 3, with just `name`,
 `<article class="room room--brief is-<key>" …>` block in `index.html` holding a `room__head` div
 (status, name, gloss) and a `room__intro` div (pitch), the way Lark's room starts. It gets its
 icons, label and points when it has an icon, and its privacy section when it's close to release.
-Michi is at that middle stage: a full room, still "In development", with no privacy section yet.
+An app with an exhibit, something to try on the page, gets a stage room instead, as Lark and Michi
+have: `room--stage`, with the name and pitch across the top and a wide plinth holding the icon and
+the exhibit (Lark's covered sentence, Michi's album of stamps). Michi has one, still "In
+development", with no privacy section yet.
+
+Michi's album is drawn in `_includes/album.html`: five trips' stamps, each an inline SVG in the
+trip's ink, with Michi's own proportions. Their coasts come from Natural Earth's public-domain map
+data, projected as Michi frames a trip's stops, so a new trip means drawing a new stamp rather
+than editing a line.
 
 ## Preview it on your Mac
 

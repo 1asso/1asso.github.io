@@ -408,24 +408,26 @@ a { color: inherit; text-decoration: none; }
 .room__pitch { margin-top: 30px; max-width: 26em; text-wrap: pretty; }
 .room__store { margin-top: 32px; }
 
-/* Kozeni: the object on the left, its head and label on the right. */
+/* Kozeni: the object on the left, its head and label on the right. Mirrored, the other way round. */
 .room--kozeni .plinth { grid-column: 1 / span 7; grid-row: 1 / span 2; }
 .room--kozeni .room__head { grid-column: 9 / -1; grid-row: 1; }
 .room--kozeni .room__label { grid-column: 9 / -1; grid-row: 2; align-self: end; margin-top: 48px; }
-/* Mirrored (Michi): the head and label on the left, the object on the right. */
-.room--mirror .plinth { grid-column: 6 / -1; }
-.room--mirror .room__head, .room--mirror .room__label { grid-column: 1 / span 4; }
+.room--kozeni.room--mirror .plinth { grid-column: 6 / -1; }
+.room--kozeni.room--mirror .room__head, .room--kozeni.room--mirror .room__label { grid-column: 1 / span 4; }
 
-/* Lark: the name and its line across the top, ending on one baseline (the badge's foot, or without a
-   badge the line's last baseline, sits on the name's), then a wide plinth (the icon and the covered
-   sentence), with the label under the icon and the rhythm under the sentence.
+/* A stage room (Lark's, Michi's): the name and its line across the top, ending on one baseline (the
+   badge's foot, or without a badge the line's last baseline, sits on the name's), a gloss under the
+   name, then a wide plinth with the icon and the app's exhibit (Lark's covered sentence, Michi's
+   album), with the label under the icon and, for Lark, the rhythm under the sentence.
    A brief room, for an app in development, is that top line alone. */
-.room--lark .room__head, .room--brief .room__head { grid-column: 1 / span 4; align-self: end; align-self: last baseline; }
-.room--lark .room__intro, .room--brief .room__intro { grid-column: 5 / span 6; align-self: end; align-self: last baseline; }
-.room--lark .room__pitch, .room--brief .room__pitch { margin-top: 0; }
-.room--lark .stage { margin-top: var(--step); }
-.room--lark .room__label { grid-column: 1 / span 4; margin-top: var(--beat); }
-.room--lark .room__rhythm { grid-column: 5 / -1; margin-top: var(--beat); }
+.room--stage .room__head, .room--brief .room__head { grid-column: 1 / span 4; align-self: end; align-self: last baseline; }
+.room--stage .room__intro, .room--brief .room__intro { grid-column: 5 / span 6; align-self: end; align-self: last baseline; }
+.room--stage .room__pitch, .room--brief .room__pitch { margin-top: 0; }
+/* A gloss goes under the name on a row of its own, so the line beside the name still ends on its baseline. */
+.room--stage .room__gloss { grid-column: 1 / span 4; }
+.room--stage .stage { margin-top: var(--step); }
+.room--stage .room__label { grid-column: 1 / span 4; margin-top: var(--beat); }
+.room--stage .room__row { grid-column: 5 / -1; margin-top: var(--beat); }
 
 /* The stage: a wide plinth for an object and a piece beside it. It shares the page grid. */
 .stage {
@@ -563,6 +565,78 @@ a { color: inherit; text-decoration: none; }
 @media (forced-colors: active) {
   .rhythm__bits { background-color: CanvasText; }
 }
+
+/* ---------------------------------------------------------------- Album (Michi's exhibit) */
+
+/* Two shelves of Michi's album side by side, Upcoming then Postmarked, each shelf's name over its stamps.
+   They share one row of equal places, each shelf as wide as its stamps (--count, from site.js; an empty
+   one keeps a place, to be dropped on, and says it's empty), so the row stays full whichever shelf the
+   stamps are on. Under 1080px the shelves stack. A stamp leans by its --lean, left in the first place on
+   its shelf and right in the second, as the album's do, and swings to its new lean when it moves. Picked
+   up (site.js), it's lifted off the page and straightened, and the others make way. */
+.album {
+  --album-gap: clamp(18px, 2.4vw, 36px);
+  display: grid;
+  grid-template-columns: repeat(var(--slots, 5), minmax(0, 1fr));
+  column-gap: var(--album-gap);
+}
+.album__defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+.album__shelf {
+  grid-column: span var(--count, 1);
+  display: grid;
+  grid-template-columns: subgrid;
+  align-content: start;
+}
+.album__name { grid-column: 1 / -1; color: var(--ink-2); text-box: trim-both cap alphabetic; }
+.album__name .bit { margin-right: 10px; }
+.album__stamps {
+  position: relative;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  row-gap: var(--album-gap);
+  margin-top: calc(var(--beat) * 1.25);
+}
+.album__shelf.is-empty .album__stamps { min-height: var(--stamp-height, 0); }
+.album__shelf.is-empty .album__stamps::before {
+  content: attr(data-empty);
+  align-self: center;
+  font-family: var(--mono);
+  font-size: var(--meta);
+  line-height: 1.55;
+  color: var(--ink-3);
+}
+.album__stamp {
+  position: relative;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.album__print { rotate: calc(-1 * var(--lean, 2deg)); }
+.album__stamp:nth-child(even) .album__print { rotate: var(--lean, 2deg); }
+.js .album__stamp { cursor: grab; touch-action: pan-y; }   /* a drag up or down still scrolls the page */
+.album__stamp:focus-visible { outline: none; }
+.album__stamp:focus-visible .album__print { outline: 2px solid var(--ink); outline-offset: 8px; border-radius: 2px; }
+.album__stamp.is-lifted { z-index: 2; cursor: grabbing; }
+.album .album__stamp.is-lifted .album__print { rotate: 0deg; scale: 1.08; filter: drop-shadow(0 18px 16px rgb(0 0 0 / 0.14)); }
+.album__stamp:not(.is-postmarked) .stamp__postmark { opacity: 0; }
+
+/* A stamp: paper that stays light in dark mode, as in Michi, printed in its trip's ink (--ink, set on
+   each stamp's svg), the deep shade Michi prints stamps in. */
+.stamp__svg { display: block; width: 100%; height: auto; overflow: visible; forced-color-adjust: none; }
+.stamp__paper { fill: #FFFDF8; }
+.stamp__ink { fill: var(--ink); }
+.stamp__line, .stamp__casing { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
+.stamp__casing { stroke: #FFFDF8; }
+.stamp__tablet, .stamp__land { fill: #FFFDF8; stroke: var(--ink); }
+.stamp__cancel { fill: none; stroke: #2B2620; opacity: 0.72; }   /* one translucent coat of Michi's cancellation ink, however its strokes cross */
+.stamp__postmark { mix-blend-mode: multiply; }
+.stamp__mark { fill: #2B2620; stroke: none; font-family: var(--sans); font-weight: 700; }
+/* New York where the browser offers it (Safari's ui-serif), else a serif whose numerals stand on the line:
+   Georgia's 3, 4, 5 and 9 hang below it, into the DAYS under them. */
+.stamp__serif { font-family: ui-serif, Charter, "Bitstream Charter", "Sitka Text", Cambria, "Noto Serif", serif; font-variant-numeric: lining-nums; }
+.stamp__caps { font-family: var(--sans); }
 
 /* ---------------------------------------------------------------- Studio */
 
@@ -711,6 +785,15 @@ a { color: inherit; text-decoration: none; }
   .covered__line { transition: color 360ms var(--ease); }
   .covered__word::after { transition: opacity 360ms var(--ease); }
 
+  /* A stamp comes up off the shelf, swings to the lean of its new place, and is pressed into it; a postmark
+     comes down on it, and goes again. */
+  .album__print { transition: rotate 320ms var(--ease), scale 220ms var(--ease), filter 220ms var(--ease); }
+  .album__stamp.is-pressed .album__print { animation: stamp-press 260ms var(--ease); }
+  @keyframes stamp-press { 45% { scale: 0.97; } }
+  .stamp__postmark { transition: opacity 240ms var(--ease); }
+  .album__stamp.is-striking .stamp__postmark { animation: postmark-strike 340ms cubic-bezier(0.55, 0, 0.3, 1) both; }
+  @keyframes postmark-strike { from { opacity: 0; scale: 1.25; } 62% { opacity: 1; scale: 0.985; } }
+
   /* The email's underline draws itself in on hover. */
   .contact__link { transition: background-size 400ms var(--ease); }
 }
@@ -722,13 +805,18 @@ a { color: inherit; text-decoration: none; }
   .room--kozeni .plinth { grid-column: 1 / span 5; grid-row: 1; aspect-ratio: 1; }
   .room--kozeni .room__head { grid-column: 7 / -1; grid-row: 1 / span 2; }
   .room--kozeni .room__label { grid-column: 1 / span 5; grid-row: 2; align-self: start; margin-top: 24px; }
-  .room--mirror .plinth, .room--mirror .room__label { grid-column: 8 / -1; }
-  .room--mirror .room__head { grid-column: 1 / span 6; }
+  .room--kozeni.room--mirror .plinth, .room--kozeni.room--mirror .room__label { grid-column: 8 / -1; }
+  .room--kozeni.room--mirror .room__head { grid-column: 1 / span 6; }
 
-  .room--lark .room__intro, .room--brief .room__intro { grid-column: 5 / -1; }
+  .room--stage .room__intro, .room--brief .room__intro { grid-column: 5 / -1; }
   .plinth__icon { width: 18cqi; }   /* about 44% of the five-column plinth */
 
   .points > li { grid-column: span 6; }
+
+  /* The shelves stack, three stamps to a row; three across, the leans simply take turns. */
+  .album { display: block; }
+  .album__shelf + .album__shelf { margin-top: calc(var(--beat) * 1.75); }
+  .album__shelf, .album__stamps { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--album-gap); }
 
   .studio__text, .bench { grid-column: 1 / -1; max-width: 40em; }
   .contact__note { grid-column: 1 / -1; }
@@ -758,11 +846,13 @@ a { color: inherit; text-decoration: none; }
   .room--kozeni .room__label { margin-top: 20px; }
   .plinth__icon { width: 52cqi; }
 
-  .room--lark .room__head, .room--lark .room__intro, .room--lark .room__label, .room--lark .room__rhythm { grid-column: 1 / -1; align-self: auto; }
+  .room--stage .room__head, .room--stage .room__intro, .room--stage .room__gloss, .room--stage .room__label, .room--stage .room__row { grid-column: 1 / -1; align-self: auto; }
+  .room--stage .room__head { order: -2; }
+  .room--stage .room__gloss { order: -1; }   /* stacked, the gloss goes back under the name, over the line */
   .room--brief .room__head, .room--brief .room__intro { grid-column: 1 / -1; align-self: auto; }
-  .room--lark .room__pitch, .room--brief .room__pitch { margin-top: 30px; }
-  .room--lark .room__label { margin-top: 20px; }
-  .room--lark .room__rhythm { margin-top: 36px; }
+  .room--stage .room__pitch, .room--brief .room__pitch { margin-top: 30px; }
+  .room--stage .room__label { margin-top: 20px; }
+  .room--stage .room__row { margin-top: 36px; }
   .stage { padding: 40px 24px 32px; row-gap: 32px; }
   .stage__object { grid-column: 1 / -1; }
   .stage__piece { grid-column: 1 / -1; padding-right: 0; }
@@ -774,6 +864,11 @@ a { color: inherit; text-decoration: none; }
   }
 
   .points > li { grid-column: 1 / -1; }
+
+  /* Two to a row, as the album has them on a phone; its second row starts leaning the other way. */
+  .album__shelf, .album__stamps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .album__stamp:nth-child(n) .album__print { rotate: calc(-1 * var(--lean, 2deg)); }
+  .album__stamp:is(:nth-child(4n+2), :nth-child(4n+3)) .album__print { rotate: var(--lean, 2deg); }
 
   /* stacked: the squares keep their proportions (10 : 17 : 10), the captions get the width */
   .rhythm { flex-direction: column; gap: 18px; }

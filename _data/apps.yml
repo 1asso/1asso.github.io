@@ -9,9 +9,8 @@
 #   gloss               optional line under the name in the home page room (raw HTML allowed)
 #   status              available (filled bit), or coming or development (hollow bit); status_label is the words
 #   pitch               one or two sentences, shown under the name in the app's room
-#   store               the App Store url (leave the block out for an app that isn't out yet).
-#                       With a url, the room shows the App Store badge. With an empty url (an app
-#                       in App Review), it shows the badge without a link.
+#   store               the App Store url. With a url, the room shows the App Store badge; with an
+#                       empty url (an app not out yet), the badge without a link; without the block, none.
 #   color, color_dark   a note only: the app's own color. The site's colors are set in
 #                       assets/css/site.css (--kozeni, --lark, --michi), used for bits and status marks, never text
 #   icon                file prefix in /assets/images/icons/: <icon>-light-<size>.webp, <icon>-dark-<size>.webp
@@ -91,6 +90,8 @@ michi:
   status: development
   status_label: In development
   pitch: Plan a trip with the people you’re going&nbsp;with.
+  store:
+    url:   # not out yet; paste the App Store link here once Michi is out
   color: "#3D5FE8"
   color_dark: "#5278FB"
   icon: michi

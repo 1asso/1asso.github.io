@@ -17,7 +17,7 @@ layout: default
 <section class="rooms" id="apps" aria-labelledby="apps-title">
   <h2 class="visually-hidden" id="apps-title">Apps</h2>
 
-  <article class="room room--lark is-lark" id="lark" aria-labelledby="lark-title">
+  <article class="room room--stage is-lark" id="lark" aria-labelledby="lark-title">
     <div class="room__main wrap grid">
       <div class="room__head">
         {% include status.html app="lark" %}
@@ -32,7 +32,7 @@ layout: default
         {% include covered.html class="stage__piece" %}
       </div>
       {% include label.html app="lark" class="room__label" %}
-      {% include rhythm.html class="room__rhythm" %}
+      {% include rhythm.html class="room__row" %}
     </div>
 
     {% include points.html app="lark" class="wrap" %}
@@ -56,18 +56,23 @@ layout: default
     {% include points.html app="kozeni" class="wrap" %}
   </article>
 
-  <article class="room room--kozeni room--mirror is-michi" id="michi" aria-labelledby="michi-title">
+  <article class="room room--stage is-michi" id="michi" aria-labelledby="michi-title">
     <div class="room__main wrap grid">
       <div class="room__head">
         {% include status.html app="michi" %}
         <h3 class="display room__name" id="michi-title">{{ michi.name }}</h3>
-        {%- if michi.gloss %}
-        <p class="room__gloss meta">{{ michi.gloss }}</p>
-        {%- endif %}
+      </div>
+      <div class="room__intro">
         <p class="room__pitch">{{ michi.pitch }}</p>
         {% include store-badge.html app="michi" class="room__store" %}
       </div>
-      {% include plinth.html app="michi" %}
+      {%- if michi.gloss %}
+      <p class="room__gloss meta">{{ michi.gloss }}</p>
+      {%- endif %}
+      <div class="plinth stage is-michi" data-light>
+        <div class="stage__object">{% include app-icon.html app="michi" sizes="(min-width: 1080px) 23vw, (min-width: 720px) 21vw, 50vw" alt=true class="plinth__icon" %}</div>
+        {% include album.html class="stage__piece" %}
+      </div>
       {% include label.html app="michi" class="room__label" %}
     </div>
 
