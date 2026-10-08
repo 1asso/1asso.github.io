@@ -53,7 +53,7 @@
   /* Color belongs to the apps: marks and bits only, never text. */
   --kozeni: #EF5F31;         /* coral, the coin: 3.1:1 on canvas */
   --lark: #3E8995;           /* teal: 3.8:1 on canvas, 3.4:1 on plinth */
-  --michi: #3D5FE8;          /* cobalt, the stamp: 5.0:1 on canvas, 4.4:1 on plinth */
+  --michi: #2F4FA2;          /* ultramarine, the stamp's sea: 7.2:1 on canvas, 6.4:1 on plinth */
   --kozeni-gel: transparent;
   --lark-gel: transparent;
   --michi-gel: transparent;
@@ -94,10 +94,10 @@
 
     --kozeni: #FF7A47;
     --lark: #36A9B5;
-    --michi: #5278FB;
+    --michi: #5A78C8;
     --kozeni-gel: rgb(255 122 71 / 0.06);   /* the spotlight's gel */
     --lark-gel: rgb(54 169 181 / 0.065);
-    --michi-gel: rgb(82 120 251 / 0.06);
+    --michi-gel: rgb(90 120 200 / 0.06);
   }
 }
 
