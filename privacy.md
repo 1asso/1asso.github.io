@@ -1,15 +1,16 @@
 ---
 layout: doc
 title: Privacy
-description: "How the Tiny Bit Studio website and its apps, Kozeni and Lark, handle your data: no accounts, no analytics, ads or tracking, and nothing collected by us."
+description: "How the Tiny Bit Studio website and its apps, Kozeni, Lark and Michi, handle your data: no accounts, no analytics, ads or tracking, and nothing collected by us."
 permalink: /privacy/
-updated: 2026-10-05
+updated: 2026-10-08
 ---
 {% comment %}
-  One privacy policy for the website and both apps. App Store Connect links to /privacy/#kozeni
-  and /privacy/#lark, so keep the ids set below ({: #website .display}, {: #kozeni .display} and
-  {: #lark .display}) as they are. When anything here changes, change the text and the updated:
-  date above.
+  One privacy policy for the website and all three apps. App Store Connect links to
+  /privacy/#kozeni, /privacy/#lark and /privacy/#michi, and Michi's You page links to
+  /privacy/#michi, so keep the ids set below ({: #website .display}, {: #kozeni .display},
+  {: #lark .display} and {: #michi .display}) as they are. When anything here changes, change the
+  text and the updated: date above.
   A margin label is a short line with {: .margin} under it. Written as a heading ("### iCloud"),
   it also names that part of the page for screen readers, so the labels inside a section are
   headings; the "Privacy" line beside each section's title is a label only.
@@ -17,9 +18,9 @@ updated: 2026-10-05
 In short
 {: .margin}
 
-This page covers this website and our two apps, Kozeni and Lark. We don’t collect your data. None of them needs an account, and none has analytics, ads or tracking of our own. What you keep in the apps stays on your device and in your own iCloud, apart from what Lark sends to the services you use through it, such as YouTube. Nothing that identifies you reaches us unless you write to us.
+This page covers this website and our three apps, Kozeni, Lark and Michi. We don’t collect your data. None of them needs an account, and none has analytics, ads or tracking of our own. What you keep in the apps stays on your device and in your own iCloud, apart from the trips you share in Michi, which go to the people you invite, and what Lark and Michi send to the services they use, such as YouTube and Apple Maps. Nothing that identifies you reaches us unless you write to us.
 
-Each has its own section below: [this website](#website), [Kozeni](#kozeni) and [Lark](#lark).
+Each has its own section below: [this website](#website), [Kozeni](#kozeni), [Lark](#lark) and [Michi](#michi).
 
 ---
 
@@ -249,10 +250,120 @@ Lark collects no data from anyone, children included. YouTube and the other serv
 
 ---
 
+Privacy
+{: .margin}
+
+## Michi
+{: #michi .display}
+
+### In short
+{: .margin}
+
+There’s no account, no server of ours, and no analytics, ads or tracking. Your trips are kept on your device and in your own iCloud, and go to no one but the people you invite to them. Everything else Michi sends goes to Apple: to Apple Maps, for places, maps and routes, and, when you plan with Michi, to Apple Intelligence, which may run on Apple’s Private Cloud Compute.
+
+### You
+{: .margin}
+
+The paths below start on Michi’s You page: tap the person button at the top of the album, beside New Trip. A trip’s own options are in its brochure, under Trip Options, the … button.
+
+### On your device
+{: .margin}
+
+Michi keeps your trips in its own storage on your device: each trip’s title, dates and ink (its stamp’s color); its stops, with each one’s name, town, place on the map, day, how long you’ll spend there, how you get there, notes and when you visited it; and its photos. For a shared trip, it also keeps who’s on it (see Sharing) and whether you can make changes. Where you’ve moved your stamps in the album, and whether the full map shows satellite imagery, are kept on the device too. Michi has no networking code of its own; it goes online only through Apple’s iCloud, Apple Maps, Apple Intelligence and App Store, as described below. Backups of your device include all of this, apart from photos iCloud already has, which Michi downloads again if they’re missing.
+
+### iCloud
+{: .margin}
+
+When your device is signed in to iCloud, Michi syncs your trips, their stops and their photos between your devices through Apple’s CloudKit, in your iCloud account’s private database. It keeps what they hold in CloudKit’s encrypted fields, and photos as files CloudKit encrypts. Where your stamps sit in the album, the satellite setting and conversations with Michi stay on each device, and Michi Pro doesn’t sync through iCloud at all: each device asks the App Store (see Michi Pro). Michi shows no notifications; iCloud wakes it silently when a trip changes on another device, so it can fetch the change.
+
+Michi has no sync switch of its own: it follows iCloud, which you can turn off for Michi in the Settings app, under your name&nbsp;→ iCloud. Without iCloud, Michi works on the device alone, and syncs what you made there once you sign in. Signing out of iCloud, or switching to another account, removes every trip and photo from the device, with the maps, routes and places kept for them; what iCloud has comes back when you sign in again, and anything it hadn’t received yet is lost. [Apple’s privacy policy](https://www.apple.com/legal/privacy/en-ww/) covers iCloud.
+
+### Sharing
+{: .margin}
+
+Invite, in the brochure of a trip you made, shares it through iCloud with the people you choose, by whichever app you send the invitation with, such as Messages or Mail. Only the people you invite can join: Michi never offers a link that anyone can open. You choose whether they can make changes or only view the trip. The share iCloud keeps, and the invitation, can’t be encrypted, so Michi never puts the trip’s title there: both say “A trip on Michi”, with Michi’s icon printed in the trip’s ink.
+
+Everyone on a trip sees all of it: its title, dates, stops, notes and photos, whoever added them, and who’s on it, by the names iCloud gives or, where it gives none, by email address or phone number. Anyone who can make changes can add stops and photos, and change or delete any of them. A shared trip is kept in the iCloud of its owner, the person who made it, and counts toward their iCloud storage. Travelers, in the brochure, opens Apple’s sharing sheet, where the owner can invite or remove people and stop sharing, and the others can leave. If you leave a trip, or are removed from it, what you added stays on it.
+
+### Apple Maps
+{: .margin}
+
+Michi finds places, draws maps and works out routes with Apple Maps, through Apple’s MapKit. It never uses your location, and never asks for it. [Apple’s privacy policy](https://www.apple.com/legal/privacy/en-ww/) applies to what Apple Maps receives.
+
+- **Add Stop.** What you type is sent to Apple Maps as you type it, with the area your trip’s stops are in, so places near them come first. Picking a result looks it up, and Michi keeps the place’s name, town and place on the map.
+- **Planning.** When you plan with Michi, it searches Apple Maps for the places, towns and destinations the model names, and for what the model looks for, such as “ramen”, mostly in the area of the trip’s stops or its destination.
+- **Maps.** A brochure’s map, the full map and each stamp’s print show Apple’s map of where the trip’s stops are, loaded from Apple Maps. Stamps’ prints are kept on your device.
+- **Routes.** When you open a brochure, its full map or a stop, Michi asks Apple Maps for the route, or the travel time, from each stop to the next: where the two stops are and how you get there, without their names. Michi keeps routes on your device and asks for them again after 60&nbsp;days, or 14 for travel times. A leg’s route goes once no trip has that leg.
+- **Passport.** When you open You or the passport, Michi asks Apple Maps which country and city each stop is in, from where the stop is and nothing else. The answers are kept on your device until no stop is there.
+
+### Apple Intelligence
+{: .margin}
+
+Plan with Michi, in New Trip, and Ask Michi, in Add Stop, plan with Apple Intelligence, and only when you send them a message. On iOS 27, Michi asks Apple’s Private Cloud Compute first and, whenever it can’t answer, Apple’s on-device model; on iOS 26, it uses the on-device model alone. Private Cloud Compute runs Apple’s models on Apple’s servers, and Apple says what it’s sent is used only to answer, never stored, and can’t be seen by anyone, Apple included. The planner says when your messages may go there. For each message, the model is given:
+
+- your message, and the last three exchanges before it
+- the trip’s title and dates, or what you’ve filled in of New Trip
+- each stop’s name, town and day, how long you’ll spend there and how you get there, and the first line of its notes, up to 110&nbsp;characters, whoever wrote them
+- the names and towns of the places Apple Maps finds for it, and the language to answer in
+
+It isn’t given where the stops are on the map, the trip’s photos, who’s on it, anything from your other trips, or your location. Conversations and drafts are kept in memory only, and are gone once you close the planner. Nothing Michi drafts is saved until you tap Create Trip or Apply Changes; after that, its stops and notes are saved, and sync, like any you add yourself.
+
+### Photos
+{: .margin}
+
+Add Photos, on a stop you’ve visited, opens the system’s photo picker. Michi can’t see your photo library: it gets only the photos you pick, which the picker may first download from iCloud Photos. It keeps a copy of each at full size, without its location, camera details or other metadata, apart from the date it was taken, which it uses to sort them and, for a stop’s first photo, as the day you visited. The copies sync through iCloud, and on a shared trip go to everyone on it.
+
+Save All Photos, in Trip Options, adds every photo of the trip that’s on your device to your photo library, other travelers’ included, without their location or camera details. It asks only to add to your library, never to see it. The share button in the photo viewer shares one photo, and Share as Image, in Trip Options, makes one picture of the brochure, with each stop, the first line of its notes and its photos, but not who’s on the trip; where they go is up to you. Anyone on a trip can use all three, even if they can only view it.
+
+### Passport
+{: .margin}
+
+The passport, at the top of You, is worked out on your device from your trips each time you open it, and isn’t stored or synced. Its countries and cities are Apple Maps’ (see Apple Maps), and the name on it is yours as iCloud gives it on a shared trip. While it’s open, Michi reads the device’s tilt for the hologram, unless Reduce Motion is on, and keeps nothing of it.
+
+### Michi Pro
+{: .margin}
+
+Michi Pro, in You&nbsp;→ Support, is one purchase through Apple’s App Store, not a subscription. It unlocks every ink, and Michi on every trip. Apple handles the payment, and we never see your payment details. Michi asks the App Store whether your Apple Account has Michi Pro, bought on any of your devices or shared with you through Family Sharing, and keeps only the answer, on your device. It keeps no receipt, amount or date.
+
+Without Michi Pro, Michi is free on three trips: the first three a plan or changes from Michi are saved to. To count them, it keeps those trips’ IDs on your device only, even once a trip is deleted.
+
+### Feedback
+{: .margin}
+
+You&nbsp;→ Support&nbsp;→ Send Feedback opens a draft email to {{ site.support_email }} in your mail app, with the subject “Michi feedback”. Below the space for your message, under “Info”, it fills in Michi’s version, your system’s name and version, and your device’s model identifier, such as iPhone17,1. It adds nothing else. You can change any of it, and nothing is sent unless you send it. We use your message only to reply and to fix what you report, and we don’t share it.
+
+### Other apps
+{: .margin}
+
+Open in Maps, on a stop, hands the stop’s name and place to the Maps app, and the links to this website, at the foot of You, open in your browser. What happens there is up to that app and its policy.
+
+### Deleting
+{: .margin}
+
+- **A photo.** Delete Photo, when you touch and hold a photo or in the viewer, deletes it from your devices and from iCloud, and, on a shared trip, for everyone on it.
+- **A stop.** Deleting a stop deletes its photos with it, for everyone on a shared trip.
+- **A trip.** Delete Trip, in Trip Options or the stamp’s menu, deletes the trip, its stops and its photos from your devices and from iCloud, and for everyone you’ve shared it with. It can’t be undone. On a trip someone else shared with you, Leave Trip takes it off your devices instead, and what you added stays on it.
+- **The app.** Deleting Michi deletes what it keeps on that device. Backups of your device keep a copy until they’re replaced or deleted.
+- **iCloud.** Your trips stay in iCloud, and on your other devices, until you delete them in Michi. You can also delete Michi’s data from iCloud storage in the Settings app, which deletes the trips you made for everyone you’ve shared them with too.
+
+Photos you’ve saved to your library, and pictures you’ve shared, stay where they went. There’s no Recently deleted, and nothing expires on its own: Michi keeps your trips until you delete them.
+
+### Analytics
+{: .margin}
+
+Michi contains no analytics, crash reporting, advertising or tracking code, and no third-party libraries. It doesn’t use the advertising identifier or ask to track you. It writes notes about what failed to the device’s own system log, never what you wrote or planned, and doesn’t collect them. If you’ve turned on Share With App Developers, in the Settings app under Privacy & Security&nbsp;→ Analytics & Improvements, Apple may give us anonymous crash reports and aggregated statistics about how Michi is used. Those come from Apple, under Apple’s privacy policy, not from anything in Michi.
+
+### Children
+{: .margin}
+
+Michi collects no data from anyone, children included.
+
+---
+
 ## Changes to this policy
 {: #changes}
 
-If what this website or either app does with your data changes, we’ll update this page and the date at the top.
+If what this website or any of the apps does with your data changes, we’ll update this page and the date at the top.
 
 ## Contact
 {: #contact}

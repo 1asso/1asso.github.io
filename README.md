@@ -66,6 +66,7 @@ These stay the same.
 |---|---|---|
 | Kozeni | https://tinybit.studio/privacy/#kozeni | https://tinybit.studio/#contact |
 | Lark | https://tinybit.studio/privacy/#lark | https://tinybit.studio/#contact |
+| Michi | https://tinybit.studio/privacy/#michi | https://tinybit.studio/#contact |
 
 Apple asks for a Support URL that reaches a page where someone can get help. The home page's
 Contact section is that page: it carries the email address and nothing is in the way of it.
@@ -73,9 +74,9 @@ Contact section is that page: it carries the email address and nothing is in the
 If you fill in the optional Marketing URL, use the app's room: https://tinybit.studio/#kozeni.
 
 The part after `#` is the id of a section on that page. If you rewrite `privacy.md`, keep the
-`#kozeni` and `#lark` ids there; if you rework `index.html`, keep `id="contact"` (the Support URL)
-and `id="kozeni"` (the Marketing URL). Otherwise the links in App Store Connect open at the top of
-the page instead of where they should.
+`#kozeni`, `#lark` and `#michi` ids there (Michi's You page links to `#michi` too); if you rework
+`index.html`, keep `id="contact"` (the Support URL) and `id="kozeni"` (the Marketing URL).
+Otherwise the links in App Store Connect open at the top of the page instead of where they should.
 
 ## What's where
 
@@ -132,7 +133,7 @@ icons, label and points when it has an icon, and its privacy section when it's c
 An app with an exhibit, something to try on the page, gets a stage room instead, as Lark and Michi
 have: `room--stage`, with the name and pitch across the top and a wide plinth holding the icon and
 the exhibit (Lark's covered sentence, Michi's album of stamps). Michi has one, "Coming
-soon", with no privacy section yet.
+soon".
 
 Michi's album is drawn in `_includes/album.html`: five trips' stamps, each an inline SVG in the
 trip's ink, with Michi's own proportions. Their coasts come from Natural Earth's public-domain map

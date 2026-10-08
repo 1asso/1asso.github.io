@@ -36,6 +36,7 @@ michi:
   icon: michi
   icon_alt: "The Michi app icon: a white postage stamp printed with an ultramarine sea and its coast, cancelled by a postmark whose waves run off the stamp."
   url: /#michi
+  privacy: /privacy/#michi
   label:
     title: Michi
     medium: SwiftUI, for iPhone and iPad
