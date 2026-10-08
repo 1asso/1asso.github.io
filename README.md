@@ -50,8 +50,8 @@ file explains each field. The ones you're most likely to touch:
 
 `&nbsp;` in a value keeps the last two words together on one line. Leave it in.
 
-Lark is in App Review, so its room says "Coming soon" and shows the badge without a link. Michi's
-room shows the badge without a link too, still saying "In development". When either is out:
+Lark is in App Review, so its room says "Coming soon" and shows the badge without a link. So does
+Michi's, which is coming soon too. When either is out:
 
 1. Paste its App Store link after `url:` in its `store:` block (Kozeni's shows the form).
 2. Set `status: available` and `status_label: On the App Store`.
@@ -131,8 +131,8 @@ one) and pitch, and nothing else. It needs only steps 1 and 3, with just `name`,
 icons, label and points when it has an icon, and its privacy section when it's close to release.
 An app with an exhibit, something to try on the page, gets a stage room instead, as Lark and Michi
 have: `room--stage`, with the name and pitch across the top and a wide plinth holding the icon and
-the exhibit (Lark's covered sentence, Michi's album of stamps). Michi has one, still "In
-development", with no privacy section yet.
+the exhibit (Lark's covered sentence, Michi's album of stamps). Michi has one, "Coming
+soon", with no privacy section yet.
 
 Michi's album is drawn in `_includes/album.html`: five trips' stamps, each an inline SVG in the
 trip's ink, with Michi's own proportions. Their coasts come from Natural Earth's public-domain map

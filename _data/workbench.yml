@@ -1,28 +1,17 @@
 # "From the workbench" on the home page: commit subjects from the apps' own histories, as written
-# (only the quotes and apostrophes are typeset). app is a key in apps.yml.
-# The first eight show on phones; all twelve on wider screens. No hashes, no dates, no order implied.
+# (only the quotes and apostrophes are typeset). Michi's subjects run several changes together, so its
+# two are single changes from them, put in a line each the same way. app is a key in apps.yml.
+# Two from each app, in the home page's order; all six show on phones too. No hashes, no dates.
 
-- app: kozeni
-  text: Take an amount the way a person gives one
+- app: michi
+  text: Postmark a trip where and when it ended
 - app: lark
   text: Play a sentence out to its last consonant
 - app: kozeni
-  text: Stop two devices logging the same recurring occurrence twice
+  text: Take an amount the way a person gives one
+- app: michi
+  text: Make a day busier with what’s nearby, not across town
 - app: lark
   text: Transcribe what’s spoken, not what’s subtitled
 - app: kozeni
   text: Hold every page’s content to three text sizes
-- app: lark
-  text: Offer ten languages, not thirty accents
-- app: kozeni
-  text: Drop the settings hero’s fun messages for a plain thank-you
-- app: lark
-  text: Say “days” once, not four times
-- app: kozeni
-  text: Give the highlights something period-specific to say
-- app: lark
-  text: Keep the card at full strength under a finger
-- app: kozeni
-  text: Let a hero reach the edges of its page and no further
-- app: lark
-  text: Lead with the figure, not the question

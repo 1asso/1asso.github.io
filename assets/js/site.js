@@ -69,16 +69,15 @@
     var describe = function (stamp) {
       stamp.setAttribute('aria-label', stamp.getAttribute('data-label') + (stamp.classList.contains('is-postmarked') ? ', postmarked' : ''));
     };
-    // Each shelf is as wide as its stamps; an empty one keeps a place, and a stamp's height, to be dropped on.
+    // Each shelf is as wide as its stamps, on a row of one place more than there are stamps; an empty shelf
+    // takes the spare place, and a stamp's height, to be dropped on, so no stamp changes size.
     var tidy = function () {
-      var slots = 0;
       shelves.forEach(function (shelf) {
         var count = stampsIn(listOf(shelf)).length;
         shelf.classList.toggle('is-empty', !count);
         shelf.style.setProperty('--count', Math.max(1, count));
-        slots += Math.max(1, count);
       });
-      album.style.setProperty('--slots', slots);
+      album.style.setProperty('--slots', everyStamp().length + 1);
       var first = album.querySelector('.album__stamp');
       if (first) album.style.setProperty('--stamp-height', first.offsetHeight + 'px');
     };

@@ -6,9 +6,9 @@ layout: default
   apps is https://tinybit.studio/#contact, and an app's Marketing URL, if set, is its room
   (/#kozeni, /#lark). Keep the ids contact, kozeni and lark, or those links land at the top.
 {%- endcomment -%}
+{%- assign michi = site.data.apps.michi -%}
 {%- assign lark = site.data.apps.lark -%}
 {%- assign kozeni = site.data.apps.kozeni -%}
-{%- assign michi = site.data.apps.michi -%}
 <section class="hero wrap" aria-labelledby="hero-title">
   <h1 class="display hero__title" id="hero-title">Get the tiny bits&nbsp;right{% include stop.html %}</h1>
   <p class="hero__lede">Tiny Bit Studio makes apps for iPhone and iPad. Every sheet, figure and haptic in them is a decision, not a&nbsp;default.</p>
@@ -16,6 +16,29 @@ layout: default
 
 <section class="rooms" id="apps" aria-labelledby="apps-title">
   <h2 class="visually-hidden" id="apps-title">Apps</h2>
+
+  <article class="room room--stage is-michi" id="michi" aria-labelledby="michi-title">
+    <div class="room__main wrap grid">
+      <div class="room__head">
+        {% include status.html app="michi" %}
+        <h3 class="display room__name" id="michi-title">{{ michi.name }}</h3>
+      </div>
+      <div class="room__intro">
+        <p class="room__pitch">{{ michi.pitch }}</p>
+        {% include store-badge.html app="michi" class="room__store" %}
+      </div>
+      {%- if michi.gloss %}
+      <p class="room__gloss meta">{{ michi.gloss }}</p>
+      {%- endif %}
+      <div class="plinth stage is-michi" data-light>
+        <div class="stage__object">{% include app-icon.html app="michi" sizes="(min-width: 1080px) 23vw, (min-width: 720px) 21vw, 50vw" alt=true class="plinth__icon" eager=true %}</div>
+        {% include album.html class="stage__piece" %}
+      </div>
+      {% include label.html app="michi" class="room__label" %}
+    </div>
+
+    {% include points.html app="michi" class="wrap" %}
+  </article>
 
   <article class="room room--stage is-lark" id="lark" aria-labelledby="lark-title">
     <div class="room__main wrap grid">
@@ -28,7 +51,7 @@ layout: default
         {% include store-badge.html app="lark" class="room__store" %}
       </div>
       <div class="plinth stage is-lark" data-light>
-        <div class="stage__object">{% include app-icon.html app="lark" sizes="(min-width: 1080px) 23vw, (min-width: 720px) 21vw, 50vw" alt=true class="plinth__icon" eager=true %}</div>
+        <div class="stage__object">{% include app-icon.html app="lark" sizes="(min-width: 1080px) 23vw, (min-width: 720px) 21vw, 50vw" alt=true class="plinth__icon" %}</div>
         {% include covered.html class="stage__piece" %}
       </div>
       {% include label.html app="lark" class="room__label" %}
@@ -54,29 +77,6 @@ layout: default
     </div>
 
     {% include points.html app="kozeni" class="wrap" %}
-  </article>
-
-  <article class="room room--stage is-michi" id="michi" aria-labelledby="michi-title">
-    <div class="room__main wrap grid">
-      <div class="room__head">
-        {% include status.html app="michi" %}
-        <h3 class="display room__name" id="michi-title">{{ michi.name }}</h3>
-      </div>
-      <div class="room__intro">
-        <p class="room__pitch">{{ michi.pitch }}</p>
-        {% include store-badge.html app="michi" class="room__store" %}
-      </div>
-      {%- if michi.gloss %}
-      <p class="room__gloss meta">{{ michi.gloss }}</p>
-      {%- endif %}
-      <div class="plinth stage is-michi" data-light>
-        <div class="stage__object">{% include app-icon.html app="michi" sizes="(min-width: 1080px) 23vw, (min-width: 720px) 21vw, 50vw" alt=true class="plinth__icon" %}</div>
-        {% include album.html class="stage__piece" %}
-      </div>
-      {% include label.html app="michi" class="room__label" %}
-    </div>
-
-    {% include points.html app="michi" class="wrap" %}
   </article>
 </section>
 

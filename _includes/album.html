@@ -2,8 +2,10 @@
   Album: Michi's exhibit. Two shelves of Michi's album side by side: Upcoming, the trips to come, and
   Postmarked, the trips that are over, each stamp cancelled with its last stop's town and its last day.
   Five trips around the world, each printed in its own ink: Lisbon, Cape Town and Kyoto to come, Big Sur
-  and Iceland's ring road over. The shelves share one row, each as wide as its stamps (an empty one keeps a stamp's
-  room, to be dropped on), so the row stays full whichever shelf the stamps are on.
+  and Iceland's ring road over. The shelves share one row of six places, one more than there are stamps, each
+  shelf as wide as its stamps: Upcoming from the left, Postmarked to the right, so the place between them is the
+  one an empty shelf takes, a stamp's room to be dropped on. The stamps keep their size, and the album its
+  height, whichever shelf they're on. Under the shelves, a line says what a stamp does when tapped or dragged.
   A press on a stamp postmarks it and files it on Postmarked, or takes its postmark off and files it back
   on Upcoming. A stamp dragged along its shelf is picked up and held over the page, the stamps it passes
   making way, then pressed into its new place, as in Michi; dragged onto the other shelf, it's postmarked
@@ -21,7 +23,7 @@
   Params
     class   optional  extra classes
 {%- endcomment -%}
-<div class="album is-michi{% if include.class %} {{ include.class }}{% endif %}" style="--slots: 5" data-album>
+<div class="album is-michi{% if include.class %} {{ include.class }}{% endif %}" style="--slots: 6" data-album>
   <svg class="album__defs" width="0" height="0" focusable="false" aria-hidden="true">
     <pattern id="stamp-holes-x" x="0" y="-3" width="10" height="6" patternUnits="userSpaceOnUse"><circle cx="5" cy="3" r="3"/></pattern>
     <pattern id="stamp-holes-y" x="-3" y="0" width="6" height="10" patternUnits="userSpaceOnUse"><circle cx="3" cy="5" r="3"/></pattern>
@@ -215,9 +217,8 @@
             <rect class="stamp__tablet" x="40.9" y="40.9" width="64.8" height="76.3" stroke-width="1.1"/>
             <text class="stamp__ink stamp__serif" x="72.8" y="82.4" font-size="46.8" font-weight="600" text-anchor="middle">9</text>
             <text class="stamp__ink stamp__caps" x="73.7" y="104.5" font-size="14.4" font-weight="700" letter-spacing="1.8" text-anchor="middle">DAYS</text>
-            <text class="stamp__ink stamp__serif" x="180" y="339.1" font-size="31" font-weight="600" text-anchor="middle">Iceland</text>
-            <text class="stamp__ink stamp__serif" x="180" y="371.6" font-size="31" font-weight="600" text-anchor="middle">Ring Road</text>
-            <text class="stamp__ink stamp__caps" x="181.3" y="412" font-size="15.5" font-weight="600" letter-spacing="2.5" text-anchor="middle" opacity="0.8">ICELAND</text>
+            <text class="stamp__ink stamp__serif" x="180" y="355.4" font-size="30" font-weight="600" text-anchor="middle">Iceland Ring Road</text>
+            <text class="stamp__ink stamp__caps" x="181.3" y="395.7" font-size="15.5" font-weight="600" letter-spacing="2.5" text-anchor="middle" opacity="0.8">ICELAND</text>
             <g class="stamp__postmark" transform="translate(117 -5.4) rotate(-10 129.6 81)">
               <g class="stamp__cancel" mask="url(#stamp-wear)">
                 <path stroke-width="3.1" stroke-linecap="round" d="M3.2 38.7 8.2 41 13.2 42.3 18.2 42 23.2 40.4 28.2 37.8 33.2 35 38.2 32.6 43.2 31.4 48.2 31.7 53.2 33.3 58.2 35.9 63.2 38.7 68.2 41 73.2 42.3 78.2 42 83.2 40.4 88.2 37.8 93.2 35 98.2 32.6 103.2 31.4 108.2 31.7 108.9 31.8M3.2 60.8 8.2 63.1 13.2 64.3 18.2 64.1 23.2 62.5 28.2 59.9 33.2 57.1 38.2 54.7 43.2 53.5 48.2 53.7 53.2 55.4 58.2 57.9 63.2 60.8 68.2 63.1 73.2 64.3 78.2 64.1 83.2 62.5 88.2 59.9 93.2 57 98 54.8M3.2 82.8 8.2 85.2 13.2 86.4 18.2 86.2 23.2 84.6 28.2 82 33.2 79.1 38.2 76.8 43.2 75.6 48.2 75.8 53.2 77.4 58.2 80 63.2 82.9 68.2 85.2 73.2 86.4 78.2 86.2 83.2 84.5 88.2 82 93.2 79.1 94.8 78.3M3.2 104.9 8.2 107.3 13.2 108.5 18.2 108.3 23.2 106.7 28.2 104.1 33.2 101.2 38.2 98.9 43.2 97.7 48.2 97.9 53.2 99.5 58.2 102.1 63.2 104.9 68.2 107.3 73.2 108.5 78.2 108.3 83.2 106.6 88.2 104 93.2 101.2 98 98.9M3.2 127 8.2 129.3 13.2 130.6 18.2 130.4 23.2 128.7 28.2 126.2 33.2 123.3 38.2 121 43.2 119.7 48.2 120 53.2 121.6 58.2 124.2 63.2 127 68.2 129.4 73.2 130.6 78.2 130.3 83.2 128.7 88.2 126.1 93.2 123.3 98.2 120.9 103.2 119.7 108.2 120 108.9 120.1"/>
@@ -235,6 +236,7 @@
       </li>
     </ol>
   </section>
+  <p class="album__hint meta">Tap a stamp to postmark it, or drag it from shelf to shelf.</p>
   <p class="visually-hidden" id="album-keys">Enter postmarks a stamp, or takes its postmark off. Alt with the left and right arrow keys moves it along its shelf; with the up and down arrow keys, onto the other shelf.</p>
   <p class="visually-hidden" role="status" data-album-status></p>
 </div>

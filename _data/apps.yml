@@ -23,6 +23,35 @@
 #                       as it looks in each color scheme
 #   points              four run-in feature points in the app's room (title ends with a full stop)
 
+michi:
+  name: Michi
+  gloss: '<span lang="ja">道</span>, Japanese for road'
+  status: coming
+  status_label: Coming soon
+  pitch: Plan a trip with the people you’re going&nbsp;with.
+  store:
+    url:   # not out yet; paste the App Store link here once Michi is out
+  color: "#2F4FA2"
+  color_dark: "#5A78C8"
+  icon: michi
+  icon_alt: "The Michi app icon: a cream postage stamp printed with an ultramarine sea and its coast, cancelled by a postmark whose waves run off the stamp."
+  url: /#michi
+  label:
+    title: Michi
+    medium: SwiftUI, for iPhone and iPad
+    icon_light: A cream stamp printed with a blue sea, black postmark, white ground
+    icon_dark: A cream stamp printed with a blue sea, umber postmark, black ground
+    credit: Free, with an optional Michi Pro
+  points:
+    - title: A stamp for every trip.
+      text: Each trip is a stamp in your album, printed in its own ink and postmarked when the trip is&nbsp;over.
+    - title: Ask Michi.
+      text: Tell Michi where you’re going and what you enjoy, and it drafts the stops day by day with Apple Intelligence. You look over every change before it’s&nbsp;saved.
+    - title: Plan it together.
+      text: Invite the people you’re going with and edit the same plan. It’s shared through iCloud, with no server of ours in&nbsp;between.
+    - title: The plan, as a brochure.
+      text: Open a stamp to see the trip day by day on a map. Once you’ve been to a stop, add your photos, and everyone on the trip sees them&nbsp;there.
+
 lark:
   name: Lark
   subtitle: Language practice
@@ -83,32 +112,3 @@ kozeni:
       text: Weekly, monthly or yearly, for one category or for everything, with what’s used and what’s&nbsp;left.
     - title: Private by default.
       text: Your data stays on your devices and syncs through your own iCloud. There’s no server of ours to send it&nbsp;to.
-
-michi:
-  name: Michi
-  gloss: '<span lang="ja">道</span>, Japanese for road'
-  status: development
-  status_label: In development
-  pitch: Plan a trip with the people you’re going&nbsp;with.
-  store:
-    url:   # not out yet; paste the App Store link here once Michi is out
-  color: "#2F4FA2"
-  color_dark: "#5A78C8"
-  icon: michi
-  icon_alt: "The Michi app icon: a cream postage stamp printed with an ultramarine sea and its coast, cancelled by a postmark whose waves run off the stamp."
-  url: /#michi
-  label:
-    title: Michi
-    medium: SwiftUI, for iPhone and iPad
-    icon_light: A cream stamp printed with a blue sea, black postmark, white ground
-    icon_dark: A cream stamp printed with a blue sea, umber postmark, black ground
-    credit: A work in progress
-  points:
-    - title: A stamp for every trip.
-      text: Each trip is a stamp in your album, printed in its own ink and postmarked when the trip is&nbsp;over.
-    - title: Ask Michi.
-      text: Tell Michi where you’re going and what you enjoy, and it drafts the stops day by day with Apple Intelligence. You look over every change before it’s&nbsp;saved.
-    - title: Plan it together.
-      text: Invite the people you’re going with and edit the same plan. It’s shared through iCloud, with no server of ours in&nbsp;between.
-    - title: The plan, as a brochure.
-      text: Open a stamp to see the trip day by day on a map. Once you’ve been to a stop, add your photos, and everyone on the trip sees them&nbsp;there.

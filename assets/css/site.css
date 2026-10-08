@@ -569,15 +569,17 @@ a { color: inherit; text-decoration: none; }
 /* ---------------------------------------------------------------- Album (Michi's exhibit) */
 
 /* Two shelves of Michi's album side by side, Upcoming then Postmarked, each shelf's name over its stamps.
-   They share one row of equal places, each shelf as wide as its stamps (--count, from site.js; an empty
-   one keeps a place, to be dropped on, and says it's empty), so the row stays full whichever shelf the
-   stamps are on. Under 1080px the shelves stack. A stamp leans by its --lean, left in the first place on
-   its shelf and right in the second, as the album's do, and swings to its new lean when it moves. Picked
-   up (site.js), it's lifted off the page and straightened, and the others make way. */
+   They share one row of equal places, one more than there are stamps (--slots), each shelf as wide as its
+   stamps (--count, from site.js), Postmarked kept to the row's end: the place between them is the one an
+   empty shelf takes, to be dropped on, saying it's empty. So the stamps keep their size, and the album its
+   height, whichever shelf they're on. Under 1080px the shelves stack, and an empty one is just its line.
+   A stamp leans by its --lean, left in the first place on its shelf and right in the second, as the
+   album's do, and swings to its new lean when it moves. Picked up (site.js), it's lifted off the page and
+   straightened, and the others make way. */
 .album {
   --album-gap: clamp(18px, 2.4vw, 36px);
   display: grid;
-  grid-template-columns: repeat(var(--slots, 5), minmax(0, 1fr));
+  grid-template-columns: repeat(var(--slots, 6), minmax(0, 1fr));
   column-gap: var(--album-gap);
 }
 .album__defs { position: absolute; width: 0; height: 0; overflow: hidden; }
@@ -587,6 +589,7 @@ a { color: inherit; text-decoration: none; }
   grid-template-columns: subgrid;
   align-content: start;
 }
+.album__shelf + .album__shelf { grid-column-end: -1; }
 .album__name { grid-column: 1 / -1; color: var(--ink-2); text-box: trim-both cap alphabetic; }
 .album__name .bit { margin-right: 10px; }
 .album__stamps {
@@ -600,12 +603,16 @@ a { color: inherit; text-decoration: none; }
 .album__shelf.is-empty .album__stamps { min-height: var(--stamp-height, 0); }
 .album__shelf.is-empty .album__stamps::before {
   content: attr(data-empty);
+  grid-column: 1 / -1;
   align-self: center;
   font-family: var(--mono);
   font-size: var(--meta);
   line-height: 1.55;
   color: var(--ink-3);
 }
+/* What a stamp does, under the shelves; without JavaScript it does nothing, so it isn't said. */
+.album__hint { display: none; grid-column: 1 / -1; margin-top: calc(var(--beat) * 1.25); color: var(--ink-3); }
+.js .album__hint { display: block; }
 .album__stamp {
   position: relative;
   -webkit-user-select: none;
@@ -817,6 +824,16 @@ a { color: inherit; text-decoration: none; }
   .album { display: block; }
   .album__shelf + .album__shelf { margin-top: calc(var(--beat) * 1.75); }
   .album__shelf, .album__stamps { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--album-gap); }
+  /* An empty shelf is just its name, its note at the end of the name's line, in a gap less room than a
+     stamp row takes: the shelf holding every stamp has a gap more between its rows, so the album keeps
+     its height. */
+  .album__shelf.is-empty .album__stamps { min-height: 0; height: 0; margin-top: calc(var(--beat) * 1.25 - var(--album-gap)); }
+  .album__shelf.is-empty .album__stamps::before {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + var(--beat) * 1.25 - var(--album-gap));
+    text-box: trim-both cap alphabetic;
+  }
 
   .studio__text, .bench { grid-column: 1 / -1; max-width: 40em; }
   .contact__note { grid-column: 1 / -1; }
