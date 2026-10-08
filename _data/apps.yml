@@ -34,13 +34,13 @@ michi:
   color: "#2F4FA2"
   color_dark: "#5A78C8"
   icon: michi
-  icon_alt: "The Michi app icon: a cream postage stamp printed with an ultramarine sea and its coast, cancelled by a postmark whose waves run off the stamp."
+  icon_alt: "The Michi app icon: a white postage stamp printed with an ultramarine sea and its coast, cancelled by a postmark whose waves run off the stamp."
   url: /#michi
   label:
     title: Michi
     medium: SwiftUI, for iPhone and iPad
-    icon_light: A cream stamp printed with a blue sea, black postmark, white ground
-    icon_dark: A cream stamp printed with a blue sea, umber postmark, black ground
+    icon_light: A white stamp printed with a blue sea, black postmark, cream ground
+    icon_dark: A white stamp printed with a blue sea, umber postmark, black ground
     credit: Free, with an optional Michi Pro
   points:
     - title: A stamp for every trip.
