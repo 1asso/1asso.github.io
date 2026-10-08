@@ -828,10 +828,15 @@ a { color: inherit; text-decoration: none; }
      stamp row takes: the shelf holding every stamp has a gap more between its rows, so the album keeps
      its height. */
   .album__shelf.is-empty .album__stamps { min-height: 0; height: 0; margin-top: calc(var(--beat) * 1.25 - var(--album-gap)); }
-  .album__shelf.is-empty .album__stamps::before {
+  .album__shelf.is-empty .album__stamps::before { content: none; }
+  /* on the name, not in the grid: Safari sets a grid's absolutely placed note past its last column */
+  .album__shelf.is-empty .album__name { position: relative; }
+  .album__shelf.is-empty .album__name::after {
+    content: attr(data-empty);
     position: absolute;
     right: 0;
-    bottom: calc(100% + var(--beat) * 1.25 - var(--album-gap));
+    bottom: 0;
+    color: var(--ink-3);
     text-box: trim-both cap alphabetic;
   }
 
