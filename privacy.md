@@ -281,7 +281,7 @@ Michi has no sync switch of its own: it follows iCloud, which you can turn off f
 ### Sharing
 {: .margin}
 
-Invite, in the brochure of a trip you made, shares it through iCloud with the people you choose, by whichever app you send the invitation with, such as Messages or Mail. Only the people you invite can join: Michi never offers a link that anyone can open. You choose whether they can make changes or only view the trip. The share iCloud keeps, and the invitation, can’t be encrypted, so Michi never puts the trip’s title there: both say “A trip on Michi”, with Michi’s icon printed in the trip’s ink.
+Invite, in the brochure of a trip you made, shares it through iCloud with the people you choose, by whichever app you send the invitation with, such as Messages or Mail. Only the people you invite can join: Michi never offers a link that anyone can open. You choose whether they can make changes or only view the trip. The share iCloud keeps, and the invitation, can’t be encrypted, so Michi never puts the trip’s title there: both say “A trip on Michi”, with Michi’s icon.
 
 Everyone on a trip sees all of it: its title, dates, stops, notes and photos, whoever added them, and who’s on it, by the names iCloud gives or, where it gives none, by email address or phone number. Anyone who can make changes can add stops and photos, and change or delete any of them. A shared trip is kept in the iCloud of its owner, the person who made it, and counts toward their iCloud storage. Travelers, in the brochure, opens Apple’s sharing sheet, where the owner can invite or remove people and stop sharing, and the others can leave. If you leave a trip, or are removed from it, what you added stays on it.
 
