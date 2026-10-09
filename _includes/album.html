@@ -18,7 +18,8 @@
   perforation, frame and value tablet; the sea and big lakes hatched in horizontal lines inside a crisp
   coast; straight legs on a paper casing, a dot at each stop and a ring at the first; the postmark's
   rings, waves, lettering and worn ink. Coasts and lakes are Natural Earth's (public domain), Kyoto's
-  rivers traced by hand, each framed as Michi frames a trip's stops. Titles are in the system serif,
+  rivers traced by hand, each framed as Michi frames a trip's stops. In dark mode a postmark runs off its stamp
+  in the page's light ink, as Michi's do, and stays dark on the stamp. Titles are in the system serif,
   which is New York on Apple's devices, as in Michi. The defs the stamps share come first. One per page.
   Params
     class   optional  extra classes
@@ -31,6 +32,22 @@
       <rect width="360" height="450" fill="#fff"/>
       <rect y="-3" width="360" height="6" fill="url(#stamp-holes-x)"/><rect y="447" width="360" height="6" fill="url(#stamp-holes-x)"/>
       <rect x="-3" width="6" height="450" fill="url(#stamp-holes-y)"/><rect x="357" width="6" height="450" fill="url(#stamp-holes-y)"/>
+    </mask>
+    <!-- Where a postmark is struck in its dark ink: everywhere it reaches, or in dark mode the stamp alone, the
+         page's part struck again through stamp-off in the page's light ink (.stamp__struck in site.css). -->
+    <mask id="stamp-on" maskUnits="userSpaceOnUse" x="-60" y="-60" width="480" height="570">
+      <rect width="360" height="450" fill="#fff"/>
+      <rect y="-3" width="360" height="6" fill="url(#stamp-holes-x)"/><rect y="447" width="360" height="6" fill="url(#stamp-holes-x)"/>
+      <rect x="-3" width="6" height="450" fill="url(#stamp-holes-y)"/><rect x="357" width="6" height="450" fill="url(#stamp-holes-y)"/>
+      <rect class="stamp__light-page" x="-60" y="-60" width="480" height="570" fill="#fff"/>
+    </mask>
+    <pattern id="stamp-holes-x-page" x="0" y="-3" width="10" height="6" patternUnits="userSpaceOnUse"><circle cx="5" cy="3" r="3" fill="#fff"/></pattern>
+    <pattern id="stamp-holes-y-page" x="-3" y="0" width="6" height="10" patternUnits="userSpaceOnUse"><circle cx="3" cy="5" r="3" fill="#fff"/></pattern>
+    <mask id="stamp-off" maskUnits="userSpaceOnUse" x="-60" y="-60" width="480" height="570">
+      <rect x="-60" y="-60" width="480" height="570" fill="#fff"/>
+      <rect width="360" height="450" fill="#000"/>
+      <rect y="-3" width="360" height="6" fill="url(#stamp-holes-x-page)"/><rect y="447" width="360" height="6" fill="url(#stamp-holes-x-page)"/>
+      <rect x="-3" width="6" height="450" fill="url(#stamp-holes-y-page)"/><rect x="357" width="6" height="450" fill="url(#stamp-holes-y-page)"/>
     </mask>
     <filter id="stamp-shadow" x="-15%" y="-15%" width="130%" height="135%" color-interpolation-filters="sRGB">
       <feGaussianBlur in="SourceAlpha" stdDeviation="0.9"/><feOffset dy="1" result="near"/>
@@ -75,6 +92,7 @@
             <text class="stamp__ink stamp__caps" x="73.7" y="104.5" font-size="14.4" font-weight="700" letter-spacing="1.8" text-anchor="middle">DAYS</text>
             <text class="stamp__ink stamp__serif" x="180" y="355.4" font-size="31" font-weight="600" text-anchor="middle">Lisbon Weekend</text>
             <text class="stamp__ink stamp__caps" x="181.3" y="395.7" font-size="15.5" font-weight="600" letter-spacing="2.5" text-anchor="middle" opacity="0.8">PORTUGAL</text>
+            {%- capture postmark %}
             <g class="stamp__postmark" transform="translate(117 -5.4) rotate(-9 129.6 81)">
               <g class="stamp__cancel" mask="url(#stamp-wear)">
                 <path stroke-width="3.1" stroke-linecap="round" d="M3.2 38.7 8.2 41 13.2 42.3 18.2 42 23.2 40.4 28.2 37.8 33.2 35 38.2 32.6 43.2 31.4 48.2 31.7 53.2 33.3 58.2 35.9 63.2 38.7 68.2 41 73.2 42.3 78.2 42 83.2 40.4 88.2 37.8 93.2 35 98.2 32.6 103.2 31.4 108.2 31.7 108.9 31.8M3.2 60.8 8.2 63.1 13.2 64.3 18.2 64.1 23.2 62.5 28.2 59.9 33.2 57.1 38.2 54.7 43.2 53.5 48.2 53.7 53.2 55.4 58.2 57.9 63.2 60.8 68.2 63.1 73.2 64.3 78.2 64.1 83.2 62.5 88.2 59.9 93.2 57 98 54.8M3.2 82.8 8.2 85.2 13.2 86.4 18.2 86.2 23.2 84.6 28.2 82 33.2 79.1 38.2 76.8 43.2 75.6 48.2 75.8 53.2 77.4 58.2 80 63.2 82.9 68.2 85.2 73.2 86.4 78.2 86.2 83.2 84.5 88.2 82 93.2 79.1 94.8 78.3M3.2 104.9 8.2 107.3 13.2 108.5 18.2 108.3 23.2 106.7 28.2 104.1 33.2 101.2 38.2 98.9 43.2 97.7 48.2 97.9 53.2 99.5 58.2 102.1 63.2 104.9 68.2 107.3 73.2 108.5 78.2 108.3 83.2 106.6 88.2 104 93.2 101.2 98 98.9M3.2 127 8.2 129.3 13.2 130.6 18.2 130.4 23.2 128.7 28.2 126.2 33.2 123.3 38.2 121 43.2 119.7 48.2 120 53.2 121.6 58.2 124.2 63.2 127 68.2 129.4 73.2 130.6 78.2 130.3 83.2 128.7 88.2 126.1 93.2 123.3 98.2 120.9 103.2 119.7 108.2 120 108.9 120.1"/>
@@ -87,6 +105,9 @@
                 </g>
               </g>
             </g>
+            {%- endcapture %}
+            <g class="stamp__struck" mask="url(#stamp-on)">{{ postmark }}</g>
+            <g class="stamp__struck stamp__struck--page" mask="url(#stamp-off)">{{ postmark }}</g>
           </svg>
         </div>
       </li>
@@ -109,6 +130,7 @@
             <text class="stamp__ink stamp__caps" x="73.7" y="104.5" font-size="14.4" font-weight="700" letter-spacing="1.8" text-anchor="middle">DAYS</text>
             <text class="stamp__ink stamp__serif" x="180" y="355.4" font-size="31" font-weight="600" text-anchor="middle">Cape Town</text>
             <text class="stamp__ink stamp__caps" x="181.3" y="395.7" font-size="15.5" font-weight="600" letter-spacing="2.5" text-anchor="middle" opacity="0.8">SOUTH AFRICA</text>
+            {%- capture postmark %}
             <g class="stamp__postmark" transform="translate(117 -5.4) rotate(-12 129.6 81)">
               <g class="stamp__cancel" mask="url(#stamp-wear)">
                 <path stroke-width="3.1" stroke-linecap="round" d="M3.2 38.7 8.2 41 13.2 42.3 18.2 42 23.2 40.4 28.2 37.8 33.2 35 38.2 32.6 43.2 31.4 48.2 31.7 53.2 33.3 58.2 35.9 63.2 38.7 68.2 41 73.2 42.3 78.2 42 83.2 40.4 88.2 37.8 93.2 35 98.2 32.6 103.2 31.4 108.2 31.7 108.9 31.8M3.2 60.8 8.2 63.1 13.2 64.3 18.2 64.1 23.2 62.5 28.2 59.9 33.2 57.1 38.2 54.7 43.2 53.5 48.2 53.7 53.2 55.4 58.2 57.9 63.2 60.8 68.2 63.1 73.2 64.3 78.2 64.1 83.2 62.5 88.2 59.9 93.2 57 98 54.8M3.2 82.8 8.2 85.2 13.2 86.4 18.2 86.2 23.2 84.6 28.2 82 33.2 79.1 38.2 76.8 43.2 75.6 48.2 75.8 53.2 77.4 58.2 80 63.2 82.9 68.2 85.2 73.2 86.4 78.2 86.2 83.2 84.5 88.2 82 93.2 79.1 94.8 78.3M3.2 104.9 8.2 107.3 13.2 108.5 18.2 108.3 23.2 106.7 28.2 104.1 33.2 101.2 38.2 98.9 43.2 97.7 48.2 97.9 53.2 99.5 58.2 102.1 63.2 104.9 68.2 107.3 73.2 108.5 78.2 108.3 83.2 106.6 88.2 104 93.2 101.2 98 98.9M3.2 127 8.2 129.3 13.2 130.6 18.2 130.4 23.2 128.7 28.2 126.2 33.2 123.3 38.2 121 43.2 119.7 48.2 120 53.2 121.6 58.2 124.2 63.2 127 68.2 129.4 73.2 130.6 78.2 130.3 83.2 128.7 88.2 126.1 93.2 123.3 98.2 120.9 103.2 119.7 108.2 120 108.9 120.1"/>
@@ -121,6 +143,9 @@
                 </g>
               </g>
             </g>
+            {%- endcapture %}
+            <g class="stamp__struck" mask="url(#stamp-on)">{{ postmark }}</g>
+            <g class="stamp__struck stamp__struck--page" mask="url(#stamp-off)">{{ postmark }}</g>
           </svg>
         </div>
       </li>
@@ -146,6 +171,7 @@
             <text class="stamp__ink stamp__caps" x="73.7" y="104.5" font-size="14.4" font-weight="700" letter-spacing="1.8" text-anchor="middle">DAYS</text>
             <text class="stamp__ink stamp__serif" x="180" y="355.4" font-size="31" font-weight="600" text-anchor="middle">Kyoto in Spring</text>
             <text class="stamp__ink stamp__caps" x="181.3" y="395.7" font-size="15.5" font-weight="600" letter-spacing="2.5" text-anchor="middle" opacity="0.8">JAPAN</text>
+            {%- capture postmark %}
             <g class="stamp__postmark" transform="translate(117 -5.4) rotate(-8 129.6 81)">
               <g class="stamp__cancel" mask="url(#stamp-wear)">
                 <path stroke-width="3.1" stroke-linecap="round" d="M3.2 38.7 8.2 41 13.2 42.3 18.2 42 23.2 40.4 28.2 37.8 33.2 35 38.2 32.6 43.2 31.4 48.2 31.7 53.2 33.3 58.2 35.9 63.2 38.7 68.2 41 73.2 42.3 78.2 42 83.2 40.4 88.2 37.8 93.2 35 98.2 32.6 103.2 31.4 108.2 31.7 108.9 31.8M3.2 60.8 8.2 63.1 13.2 64.3 18.2 64.1 23.2 62.5 28.2 59.9 33.2 57.1 38.2 54.7 43.2 53.5 48.2 53.7 53.2 55.4 58.2 57.9 63.2 60.8 68.2 63.1 73.2 64.3 78.2 64.1 83.2 62.5 88.2 59.9 93.2 57 98 54.8M3.2 82.8 8.2 85.2 13.2 86.4 18.2 86.2 23.2 84.6 28.2 82 33.2 79.1 38.2 76.8 43.2 75.6 48.2 75.8 53.2 77.4 58.2 80 63.2 82.9 68.2 85.2 73.2 86.4 78.2 86.2 83.2 84.5 88.2 82 93.2 79.1 94.8 78.3M3.2 104.9 8.2 107.3 13.2 108.5 18.2 108.3 23.2 106.7 28.2 104.1 33.2 101.2 38.2 98.9 43.2 97.7 48.2 97.9 53.2 99.5 58.2 102.1 63.2 104.9 68.2 107.3 73.2 108.5 78.2 108.3 83.2 106.6 88.2 104 93.2 101.2 98 98.9M3.2 127 8.2 129.3 13.2 130.6 18.2 130.4 23.2 128.7 28.2 126.2 33.2 123.3 38.2 121 43.2 119.7 48.2 120 53.2 121.6 58.2 124.2 63.2 127 68.2 129.4 73.2 130.6 78.2 130.3 83.2 128.7 88.2 126.1 93.2 123.3 98.2 120.9 103.2 119.7 108.2 120 108.9 120.1"/>
@@ -158,6 +184,9 @@
                 </g>
               </g>
             </g>
+            {%- endcapture %}
+            <g class="stamp__struck" mask="url(#stamp-on)">{{ postmark }}</g>
+            <g class="stamp__struck stamp__struck--page" mask="url(#stamp-off)">{{ postmark }}</g>
           </svg>
         </div>
       </li>
@@ -185,6 +214,7 @@
             <text class="stamp__ink stamp__caps" x="73.7" y="104.5" font-size="14.4" font-weight="700" letter-spacing="1.8" text-anchor="middle">DAYS</text>
             <text class="stamp__ink stamp__serif" x="180" y="355.4" font-size="31" font-weight="600" text-anchor="middle">Big Sur</text>
             <text class="stamp__ink stamp__caps" x="181.3" y="395.7" font-size="15.5" font-weight="600" letter-spacing="2.5" text-anchor="middle" opacity="0.8">CA</text>
+            {%- capture postmark %}
             <g class="stamp__postmark" transform="translate(117 -5.4) rotate(-11 129.6 81)">
               <g class="stamp__cancel" mask="url(#stamp-wear)">
                 <path stroke-width="3.1" stroke-linecap="round" d="M3.2 38.7 8.2 41 13.2 42.3 18.2 42 23.2 40.4 28.2 37.8 33.2 35 38.2 32.6 43.2 31.4 48.2 31.7 53.2 33.3 58.2 35.9 63.2 38.7 68.2 41 73.2 42.3 78.2 42 83.2 40.4 88.2 37.8 93.2 35 98.2 32.6 103.2 31.4 108.2 31.7 108.9 31.8M3.2 60.8 8.2 63.1 13.2 64.3 18.2 64.1 23.2 62.5 28.2 59.9 33.2 57.1 38.2 54.7 43.2 53.5 48.2 53.7 53.2 55.4 58.2 57.9 63.2 60.8 68.2 63.1 73.2 64.3 78.2 64.1 83.2 62.5 88.2 59.9 93.2 57 98 54.8M3.2 82.8 8.2 85.2 13.2 86.4 18.2 86.2 23.2 84.6 28.2 82 33.2 79.1 38.2 76.8 43.2 75.6 48.2 75.8 53.2 77.4 58.2 80 63.2 82.9 68.2 85.2 73.2 86.4 78.2 86.2 83.2 84.5 88.2 82 93.2 79.1 94.8 78.3M3.2 104.9 8.2 107.3 13.2 108.5 18.2 108.3 23.2 106.7 28.2 104.1 33.2 101.2 38.2 98.9 43.2 97.7 48.2 97.9 53.2 99.5 58.2 102.1 63.2 104.9 68.2 107.3 73.2 108.5 78.2 108.3 83.2 106.6 88.2 104 93.2 101.2 98 98.9M3.2 127 8.2 129.3 13.2 130.6 18.2 130.4 23.2 128.7 28.2 126.2 33.2 123.3 38.2 121 43.2 119.7 48.2 120 53.2 121.6 58.2 124.2 63.2 127 68.2 129.4 73.2 130.6 78.2 130.3 83.2 128.7 88.2 126.1 93.2 123.3 98.2 120.9 103.2 119.7 108.2 120 108.9 120.1"/>
@@ -197,6 +227,9 @@
                 </g>
               </g>
             </g>
+            {%- endcapture %}
+            <g class="stamp__struck" mask="url(#stamp-on)">{{ postmark }}</g>
+            <g class="stamp__struck stamp__struck--page" mask="url(#stamp-off)">{{ postmark }}</g>
           </svg>
         </div>
       </li>
@@ -219,6 +252,7 @@
             <text class="stamp__ink stamp__caps" x="73.7" y="104.5" font-size="14.4" font-weight="700" letter-spacing="1.8" text-anchor="middle">DAYS</text>
             <text class="stamp__ink stamp__serif" x="180" y="355.4" font-size="30" font-weight="600" text-anchor="middle">Iceland Ring Road</text>
             <text class="stamp__ink stamp__caps" x="181.3" y="395.7" font-size="15.5" font-weight="600" letter-spacing="2.5" text-anchor="middle" opacity="0.8">ICELAND</text>
+            {%- capture postmark %}
             <g class="stamp__postmark" transform="translate(117 -5.4) rotate(-10 129.6 81)">
               <g class="stamp__cancel" mask="url(#stamp-wear)">
                 <path stroke-width="3.1" stroke-linecap="round" d="M3.2 38.7 8.2 41 13.2 42.3 18.2 42 23.2 40.4 28.2 37.8 33.2 35 38.2 32.6 43.2 31.4 48.2 31.7 53.2 33.3 58.2 35.9 63.2 38.7 68.2 41 73.2 42.3 78.2 42 83.2 40.4 88.2 37.8 93.2 35 98.2 32.6 103.2 31.4 108.2 31.7 108.9 31.8M3.2 60.8 8.2 63.1 13.2 64.3 18.2 64.1 23.2 62.5 28.2 59.9 33.2 57.1 38.2 54.7 43.2 53.5 48.2 53.7 53.2 55.4 58.2 57.9 63.2 60.8 68.2 63.1 73.2 64.3 78.2 64.1 83.2 62.5 88.2 59.9 93.2 57 98 54.8M3.2 82.8 8.2 85.2 13.2 86.4 18.2 86.2 23.2 84.6 28.2 82 33.2 79.1 38.2 76.8 43.2 75.6 48.2 75.8 53.2 77.4 58.2 80 63.2 82.9 68.2 85.2 73.2 86.4 78.2 86.2 83.2 84.5 88.2 82 93.2 79.1 94.8 78.3M3.2 104.9 8.2 107.3 13.2 108.5 18.2 108.3 23.2 106.7 28.2 104.1 33.2 101.2 38.2 98.9 43.2 97.7 48.2 97.9 53.2 99.5 58.2 102.1 63.2 104.9 68.2 107.3 73.2 108.5 78.2 108.3 83.2 106.6 88.2 104 93.2 101.2 98 98.9M3.2 127 8.2 129.3 13.2 130.6 18.2 130.4 23.2 128.7 28.2 126.2 33.2 123.3 38.2 121 43.2 119.7 48.2 120 53.2 121.6 58.2 124.2 63.2 127 68.2 129.4 73.2 130.6 78.2 130.3 83.2 128.7 88.2 126.1 93.2 123.3 98.2 120.9 103.2 119.7 108.2 120 108.9 120.1"/>
@@ -231,6 +265,9 @@
                 </g>
               </g>
             </g>
+            {%- endcapture %}
+            <g class="stamp__struck" mask="url(#stamp-on)">{{ postmark }}</g>
+            <g class="stamp__struck stamp__struck--page" mask="url(#stamp-off)">{{ postmark }}</g>
           </svg>
         </div>
       </li>

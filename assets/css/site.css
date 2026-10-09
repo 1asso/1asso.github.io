@@ -638,8 +638,18 @@ a { color: inherit; text-decoration: none; }
 .stamp__casing { stroke: #FFFDF8; }
 .stamp__tablet, .stamp__land { fill: #FFFDF8; stroke: var(--ink); }
 .stamp__cancel { fill: none; stroke: #2B2620; opacity: 0.72; }   /* one translucent coat of Michi's cancellation ink, however its strokes cross */
-.stamp__postmark { mix-blend-mode: multiply; }
+.stamp__struck { mix-blend-mode: multiply; }
 .stamp__mark { fill: #2B2620; stroke: none; font-family: var(--sans); font-weight: 700; }
+/* In dark mode a postmark is struck twice, as Michi strikes it: masked to the stamp, in its dark ink, and where it
+   runs off onto the page, in the page's light ink, as translucent and laid on rather than multiplied, where the dark
+   one would vanish. In light mode the first is the whole postmark and the second isn't drawn. */
+.stamp__struck--page { display: none; }
+@media (prefers-color-scheme: dark) {
+  .stamp__light-page { display: none; }
+  .stamp__struck--page { display: inline; mix-blend-mode: normal; }
+  .stamp__struck--page .stamp__cancel { stroke: #EDE6DA; }
+  .stamp__struck--page .stamp__mark { fill: #EDE6DA; }
+}
 /* New York where the browser offers it (Safari's ui-serif), else a serif whose numerals stand on the line:
    Georgia's 3, 4, 5 and 9 hang below it, into the DAYS under them. */
 .stamp__serif { font-family: ui-serif, Charter, "Bitstream Charter", "Sitka Text", Cambria, "Noto Serif", serif; font-variant-numeric: lining-nums; }
