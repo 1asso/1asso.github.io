@@ -48,7 +48,7 @@
   --ink-2: #53575E;          /* 6.9:1 on canvas, 6.1:1 on plinth */
   --ink-3: #62666D;          /* 5.5:1 on canvas, 4.8:1 on plinth */
   --glow: rgb(255 255 255 / 0.5);   /* a very faint daylight spot on each plinth */
-  --icon-shadow: 0 1px 1.5px rgb(13 14 16 / 0.07), 0 14px 22px rgb(13 14 16 / 0.13);
+  --icon-shadow: 0 1px 1.5px rgb(13 14 16 / 0.07), 0 10px 16px rgb(13 14 16 / 0.13);
 
   /* Color belongs to the apps: marks and bits only, never text. */
   --kozeni: #EF5F31;         /* coral, the coin: 3.1:1 on canvas */
@@ -90,7 +90,7 @@
     --ink-2: #A7ABB2;
     --ink-3: #979BA2;
     --glow: rgb(255 255 255 / 0.075);
-    --icon-shadow: 0 18px 30px rgb(0 0 0 / 0.5);
+    --icon-shadow: 0 13px 22px rgb(0 0 0 / 0.5);
 
     --kozeni: #FF7A47;
     --lark: #36A9B5;
@@ -359,13 +359,13 @@ a { color: inherit; text-decoration: none; }
 /* With the picture unwrapped, its <source> would become an empty grid item and take a row of its
    own, pushing the icon below the middle. Sources never render, so take them out of the layout. */
 .plinth source { display: none; }
-/* An app's icon is one size in every room, whatever its plinth's width: a quarter of the room's
-   grid (about 44% of a seven-column plinth), never wider than 22.5rem. Its shadow is a box-shadow
+/* An app's icon is one size in every room, whatever its plinth's width: under a fifth of the room's
+   grid (about a third of a seven-column plinth), never wider than 16rem. Its shadow is a box-shadow
    on a 26% corner, which follows the icons' own within about a pixel, not a drop-shadow on its
    pixels: Safari repaints only the icon's square when its image arrives after the first paint,
    and that cuts a drop-shadow off square (WebKit bug 236758). */
 .plinth__icon {
-  width: min(25cqi, 22.5rem);
+  width: min(18cqi, 16rem);
   height: auto;
   border-radius: 26%;
   box-shadow: var(--icon-shadow);
@@ -816,7 +816,7 @@ a { color: inherit; text-decoration: none; }
   .room--kozeni.room--mirror .room__head { grid-column: 1 / span 6; }
 
   .room--stage .room__intro, .room--brief .room__intro { grid-column: 5 / -1; }
-  .plinth__icon { width: 18cqi; }   /* about 44% of the five-column plinth */
+  .plinth__icon { width: 13cqi; }   /* about a third of the five-column plinth */
 
   .points > li { grid-column: span 6; }
 
@@ -866,7 +866,7 @@ a { color: inherit; text-decoration: none; }
   .room--kozeni .room__head, .room--kozeni .plinth, .room--kozeni .room__label { grid-column: 1 / -1; grid-row: auto; }
   .room--kozeni .plinth { margin-top: 44px; aspect-ratio: 1; }
   .room--kozeni .room__label { margin-top: 20px; }
-  .plinth__icon { width: 52cqi; }
+  .plinth__icon { width: 38cqi; }
 
   .room--stage .room__head, .room--stage .room__intro, .room--stage .room__gloss, .room--stage .room__label, .room--stage .room__row { grid-column: 1 / -1; align-self: auto; }
   .room--stage .room__head { order: -2; }

@@ -10,5 +10,5 @@
 {%- endcomment -%}
 {%- if include.alt == nil -%}{%- assign alt = true -%}{%- else -%}{%- assign alt = include.alt -%}{%- endif -%}
 <div class="plinth plinth--room is-{{ include.app }}{% if include.class %} {{ include.class }}{% endif %}" data-light>
-  {% include app-icon.html app=include.app sizes="(min-width: 1080px) 23vw, (min-width: 720px) 21vw, 50vw" alt=alt class="plinth__icon" eager=include.eager %}
+  {% include app-icon.html app=include.app sizes="(min-width: 1080px) 17vw, (min-width: 720px) 13vw, 36vw" alt=alt class="plinth__icon" eager=include.eager %}
 </div>
