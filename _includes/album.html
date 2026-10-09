@@ -15,7 +15,7 @@
   leans a little, one way or the other by its place, as the album's do. Without JavaScript the stamps
   simply stand on their shelves.
   The drawings keep Michi's own proportions (StampView, StampArt and PostmarkView in the app): the
-  perforation, frame and value tablet; the sea and big lakes hatched in horizontal lines inside a crisp
+  perforation, 16 holes across as on an album stamp on iPhone, frame and value tablet; the sea and big lakes hatched in horizontal lines inside a crisp
   coast; straight legs on a paper casing, a dot at each stop and a ring at the first; the postmark's
   rings, waves, lettering and worn ink. Coasts and lakes are Natural Earth's (public domain), Kyoto's
   rivers traced by hand, each framed as Michi frames a trip's stops. In dark mode a postmark runs off its stamp
@@ -26,28 +26,28 @@
 {%- endcomment -%}
 <div class="album is-michi{% if include.class %} {{ include.class }}{% endif %}" style="--slots: 6" data-album>
   <svg class="album__defs" width="0" height="0" focusable="false" aria-hidden="true">
-    <pattern id="stamp-holes-x" x="0" y="-3" width="10" height="6" patternUnits="userSpaceOnUse"><circle cx="5" cy="3" r="3"/></pattern>
-    <pattern id="stamp-holes-y" x="-3" y="0" width="6" height="10" patternUnits="userSpaceOnUse"><circle cx="3" cy="5" r="3"/></pattern>
+    <pattern id="stamp-holes-x" x="0" y="-7.5" width="22.5" height="15" patternUnits="userSpaceOnUse"><circle cx="11.25" cy="7.5" r="6.75"/></pattern>
+    <pattern id="stamp-holes-y" x="-7.5" y="0" width="15" height="22.5" patternUnits="userSpaceOnUse"><circle cx="7.5" cy="11.25" r="6.75"/></pattern>
     <mask id="stamp-perforation" maskUnits="userSpaceOnUse" x="0" y="0" width="360" height="450">
       <rect width="360" height="450" fill="#fff"/>
-      <rect y="-3" width="360" height="6" fill="url(#stamp-holes-x)"/><rect y="447" width="360" height="6" fill="url(#stamp-holes-x)"/>
-      <rect x="-3" width="6" height="450" fill="url(#stamp-holes-y)"/><rect x="357" width="6" height="450" fill="url(#stamp-holes-y)"/>
+      <rect y="-6.75" width="360" height="13.5" fill="url(#stamp-holes-x)"/><rect y="443.25" width="360" height="13.5" fill="url(#stamp-holes-x)"/>
+      <rect x="-6.75" width="13.5" height="450" fill="url(#stamp-holes-y)"/><rect x="353.25" width="13.5" height="450" fill="url(#stamp-holes-y)"/>
     </mask>
     <!-- Where a postmark is struck in its dark ink: everywhere it reaches, or in dark mode the stamp alone, the
          page's part struck again through stamp-off in the page's light ink (.stamp__struck in site.css). -->
     <mask id="stamp-on" maskUnits="userSpaceOnUse" x="-60" y="-60" width="480" height="570">
       <rect width="360" height="450" fill="#fff"/>
-      <rect y="-3" width="360" height="6" fill="url(#stamp-holes-x)"/><rect y="447" width="360" height="6" fill="url(#stamp-holes-x)"/>
-      <rect x="-3" width="6" height="450" fill="url(#stamp-holes-y)"/><rect x="357" width="6" height="450" fill="url(#stamp-holes-y)"/>
+      <rect y="-6.75" width="360" height="13.5" fill="url(#stamp-holes-x)"/><rect y="443.25" width="360" height="13.5" fill="url(#stamp-holes-x)"/>
+      <rect x="-6.75" width="13.5" height="450" fill="url(#stamp-holes-y)"/><rect x="353.25" width="13.5" height="450" fill="url(#stamp-holes-y)"/>
       <rect class="stamp__light-page" x="-60" y="-60" width="480" height="570" fill="#fff"/>
     </mask>
-    <pattern id="stamp-holes-x-page" x="0" y="-3" width="10" height="6" patternUnits="userSpaceOnUse"><circle cx="5" cy="3" r="3" fill="#fff"/></pattern>
-    <pattern id="stamp-holes-y-page" x="-3" y="0" width="6" height="10" patternUnits="userSpaceOnUse"><circle cx="3" cy="5" r="3" fill="#fff"/></pattern>
+    <pattern id="stamp-holes-x-page" x="0" y="-7.5" width="22.5" height="15" patternUnits="userSpaceOnUse"><circle cx="11.25" cy="7.5" r="6.75" fill="#fff"/></pattern>
+    <pattern id="stamp-holes-y-page" x="-7.5" y="0" width="15" height="22.5" patternUnits="userSpaceOnUse"><circle cx="7.5" cy="11.25" r="6.75" fill="#fff"/></pattern>
     <mask id="stamp-off" maskUnits="userSpaceOnUse" x="-60" y="-60" width="480" height="570">
       <rect x="-60" y="-60" width="480" height="570" fill="#fff"/>
       <rect width="360" height="450" fill="#000"/>
-      <rect y="-3" width="360" height="6" fill="url(#stamp-holes-x-page)"/><rect y="447" width="360" height="6" fill="url(#stamp-holes-x-page)"/>
-      <rect x="-3" width="6" height="450" fill="url(#stamp-holes-y-page)"/><rect x="357" width="6" height="450" fill="url(#stamp-holes-y-page)"/>
+      <rect y="-6.75" width="360" height="13.5" fill="url(#stamp-holes-x-page)"/><rect y="443.25" width="360" height="13.5" fill="url(#stamp-holes-x-page)"/>
+      <rect x="-6.75" width="13.5" height="450" fill="url(#stamp-holes-y-page)"/><rect x="353.25" width="13.5" height="450" fill="url(#stamp-holes-y-page)"/>
     </mask>
     <filter id="stamp-shadow" x="-15%" y="-15%" width="130%" height="135%" color-interpolation-filters="sRGB">
       <feGaussianBlur in="SourceAlpha" stdDeviation="0.9"/><feOffset dy="1" result="near"/>
