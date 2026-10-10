@@ -630,20 +630,25 @@ a { color: inherit; text-decoration: none; }
 .album__stamp:not(.is-postmarked) .stamp__postmark { opacity: 0; }
 
 /* A stamp: paper that stays light in dark mode, as in Michi, printed in its trip's ink (--ink, set on
-   each stamp's svg), the deep shade Michi prints stamps in. */
+   each stamp's svg), the deep shade Michi prints stamps in: the sea solid, the land the paper, no coast drawn. */
 .stamp__svg { display: block; width: 100%; height: auto; overflow: visible; forced-color-adjust: none; }
 .stamp__paper { fill: #FFFDF8; }
 .stamp__ink { fill: var(--ink); }
 .stamp__line, .stamp__casing { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
 .stamp__casing { stroke: #FFFDF8; }
-.stamp__tablet, .stamp__land { fill: #FFFDF8; stroke: var(--ink); }
+.stamp__tablet { fill: #FFFDF8; stroke: var(--ink); }
+.stamp__land { fill: #FFFDF8; }
 .stamp__cancel { fill: none; stroke: #2B2620; opacity: 0.72; }   /* one translucent coat of Michi's cancellation ink, however its strokes cross */
 .stamp__struck { mix-blend-mode: multiply; }
 .stamp__mark { fill: #2B2620; stroke: none; font-family: var(--sans); font-weight: 700; }
 /* In dark mode a postmark is struck twice, as Michi strikes it: masked to the stamp, in its dark ink, and where it
    runs off onto the page, in the page's light ink, as translucent and laid on rather than multiplied, where the dark
-   one would vanish. In light mode the first is the whole postmark and the second isn't drawn. */
+   one would vanish. In light mode the first is the whole postmark and the second isn't drawn. Where it crosses the
+   sea it's struck in the light ink too, in either mode, where the dark one would vanish into the ink. */
 .stamp__struck--page { display: none; }
+.stamp__struck--sea { mix-blend-mode: normal; }
+.stamp__struck--sea .stamp__cancel { stroke: #EDE6DA; }
+.stamp__struck--sea .stamp__mark { fill: #EDE6DA; }
 @media (prefers-color-scheme: dark) {
   .stamp__light-page { display: none; }
   .stamp__struck--page { display: inline; mix-blend-mode: normal; }
