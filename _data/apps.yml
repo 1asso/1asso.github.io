@@ -55,12 +55,12 @@ michi:
 
 lark:
   name: Lark
-  subtitle: Language practice
-  status: coming
-  status_label: Coming soon
+  subtitle: Language Shadowing
+  status: available
+  status_label: On the App Store
   pitch: Practice speaking a language by shadowing real&nbsp;material.
   store:
-    url:   # in App Review; paste the App Store link here once Lark is out
+    url: https://apps.apple.com/us/app/lark-language-shadowing/id6817513150
   color: "#3E8995"
   color_dark: "#36A9B5"
   icon: lark
@@ -68,7 +68,7 @@ lark:
   url: /#lark
   privacy: /privacy/#lark
   label:
-    title: Lark
+    title: "Lark: Language Shadowing"
     medium: SwiftUI, for iPhone and iPad
     icon_light: A black lark singing, gold beak, white ground
     icon_dark: A white lark singing, gold beak, black ground

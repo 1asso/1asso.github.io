@@ -50,10 +50,10 @@ file explains each field. The ones you're most likely to touch:
 
 `&nbsp;` in a value keeps the last two words together on one line. Leave it in.
 
-Lark is in App Review, so its room says "Coming soon" and shows the badge without a link. So does
-Michi's, which is coming soon too. When either is out:
+Michi is coming soon, so its room says "Coming soon" and shows the badge without a link. When it's
+out:
 
-1. Paste its App Store link after `url:` in its `store:` block (Kozeni's shows the form).
+1. Paste its App Store link after `url:` in its `store:` block (Kozeni's and Lark's show the form).
 2. Set `status: available` and `status_label: On the App Store`.
 
 Its room then shows a working badge and the filled square.
