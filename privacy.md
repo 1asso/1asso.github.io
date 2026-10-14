@@ -3,7 +3,7 @@ layout: doc
 title: Privacy
 description: "How the Tiny Bit Studio website and its apps, Kozeni, Lark and Michi, handle your data: no accounts, no analytics, ads or tracking, and nothing collected by us."
 permalink: /privacy/
-updated: 2026-10-08
+updated: 2026-10-14
 ---
 {% comment %}
   One privacy policy for the website and all three apps. App Store Connect links to
@@ -162,7 +162,7 @@ When you search, Lark sends what you’ve typed to Apple’s podcast directory (
 ### Podcasts
 {: .margin}
 
-Episodes stream from their publishers’ servers, often by way of services that count downloads for the publisher. When you make an AI transcript of an episode, Lark downloads the whole episode from the same address and keeps it on your device, so the transcript matches what you hear. When it makes a transcript of an episode whose language is set to Automatic, it also reads the start of the podcast’s feed to find out the language. Publishers, and the services they use, see these requests as they would from any podcast app.
+Episodes stream from their publishers’ servers, often by way of services that count downloads for the publisher. When you make an AI transcript of an episode, Lark downloads the whole episode from the same address and keeps it on your device, so the transcript matches what you hear. When it makes a transcript of an episode whose language is set to Automatic, or takes subtitles you import for one, it also reads the start of the podcast’s feed to find out the language. Publishers, and the services they use, see these requests as they would from any podcast app.
 
 ### YouTube
 {: .margin}
@@ -199,12 +199,12 @@ Media files, transcripts, card stills, recordings, explanations, settings, recen
 
 Lark Pro, in You&nbsp;→ Support, is one purchase through Apple’s App Store, not a subscription. It takes the limit off AI transcripts and unlocks every accent color. Apple handles the payment, and we never see your payment details. Lark asks the App Store whether your Apple Account has Lark Pro, bought on any of your devices or shared with you through Family Sharing, and keeps only the answer, on your device. It keeps no receipt, amount or date.
 
-Without Lark Pro, Lark makes three AI transcripts a week. To count them, it keeps a note of each AI transcript you ask for (the material’s ID and the time) and the earliest and latest times your device’s clock has shown, on your device only.
+Without Lark Pro, Lark makes three AI transcripts a week. To count them, it keeps a note of each one it makes (the material’s ID and when you asked for it), up to the last 500, and when it started counting and the latest time your device’s clock has shown, on your device only, even once a material is deleted.
 
 ### Feedback
 {: .margin}
 
-You&nbsp;→ Support&nbsp;→ Send Feedback opens a draft email to {{ site.support_email }} in your mail app, with the subject “Lark feedback”. Below the space for your message, under “Info”, it fills in Lark’s version and build, your system’s name and version, and your device’s model identifier, such as iPhone17,1. It adds nothing else. You can change any of it, and nothing is sent unless you send it. We use your message only to reply and to fix what you report, and we don’t share it.
+You&nbsp;→ Support&nbsp;→ Send Feedback opens a draft email to {{ site.support_email }} in your mail app, with the subject “Lark feedback”. Below the space for your message, under “Info”, it fills in Lark’s version, your system’s name and version, and your device’s model identifier, such as iPhone17,1. It adds nothing else. You can change any of it, and nothing is sent unless you send it. We use your message only to reply and to fix what you report, and we don’t share it.
 
 ### Other apps
 {: .margin}
@@ -224,14 +224,14 @@ Apple’s Speech framework makes the AI transcripts. Apple’s Translation frame
 ### Storage
 {: .margin}
 
-Lark keeps your library on your device: each material’s details and transcripts, your progress, the files you import from Photos or Files (copied in), the podcast episodes it downloads for transcripts, and card stills, including an audio file’s own cover art. Your settings, practice days and recent searches are kept there too, and so is whatever YouTube’s player stores. Temporary audio made while transcribing is deleted when Lark is done with it. Lark doesn’t keep its files out of your device’s backups, so a backup to iCloud or a computer includes them.
+Lark keeps your library on your device: each material’s details and transcripts, your progress, the video and audio files you import from Photos or Files (copied in), the podcast episodes it downloads for transcripts, and card stills, including an audio file’s own cover art. A subtitle file you import from Files isn’t copied in: Lark keeps the lines it reads from it, and their times, as that material’s transcript. Your settings, practice days and recent searches are kept there too, and so is whatever YouTube’s player stores. Temporary audio made while transcribing is deleted when Lark is done with it. Lark doesn’t keep its files out of your device’s backups, so a backup to iCloud or a computer includes them.
 
 Lark can’t see your photo library or your files. It gets only the item you pick, through the system’s picker, which may first download it from iCloud Photos.
 
 ### Deleting
 {: .margin}
 
-- **A material.** Deleting one removes its card, its transcript, your progress in it, and the file it played from, unless another material uses the same file. The deletion syncs, so it goes from your other devices too. Marking a material Done deletes nothing.
+- **A material.** Deleting one removes its card, its transcripts, your progress in it, and the file it played from, unless another material uses the same file. The deletion syncs, so it goes from your other devices too. Marking a material Done deletes nothing.
 - **Your practice record.** You&nbsp;→ Reset Practice Record forgets every day you’ve practiced, on this device and your other devices. Your library and progress stay.
 - **Leftover files.** You&nbsp;→ Storage&nbsp;→ Clear Out Unused Files deletes files no material uses, such as a canceled transcript’s audio.
 - **Recent searches.** Clear, on the search page, removes them.
@@ -259,41 +259,46 @@ Privacy
 ### In short
 {: .margin}
 
-There’s no account, no server of ours, and no analytics, ads or tracking. Your trips are kept on your device and in your own iCloud, and go to no one but the people you invite to them. Everything else Michi sends goes to Apple: to Apple Maps, for places, maps and routes, and, when you plan with Michi, to Apple Intelligence, which may run on Apple’s Private Cloud Compute.
+There’s no account, no server of ours, and no analytics, ads or tracking. Your trips are kept on your device and in your own iCloud, and go to no one but the people you invite to them. Everything else Michi sends goes to Apple: to Apple Maps, for places, maps and routes, and, when you plan with Michi, to Apple Intelligence, which may run on Apple’s Private Cloud Compute. The one exception is a stop you open in Google Maps, which goes to Google.
 
 ### You
 {: .margin}
 
-The paths below start on Michi’s You page: tap the person button at the top of the album, beside New Trip. A trip’s own options are in its brochure, under Trip Options, the … button.
+The paths below start on Michi’s You page: tap the person button at the end of the album’s bar, after New Trip and the filter. A trip’s own options are in its brochure, under Trip Options, the … button.
 
 ### On your device
 {: .margin}
 
-Michi keeps your trips in its own storage on your device: each trip’s title, dates and ink (its stamp’s color); its stops, with each one’s name, town, place on the map, day, how long you’ll spend there, how you get there, notes and when you visited it; and its photos. For a shared trip, it also keeps who’s on it (see Sharing) and whether you can make changes. Where you’ve moved your stamps in the album, and whether the full map shows satellite imagery, are kept on the device too. Michi has no networking code of its own; it goes online only through Apple’s iCloud, Apple Maps, Apple Intelligence and App Store, as described below. Backups of your device include all of this, apart from photos iCloud already has, which Michi downloads again if they’re missing.
+Michi keeps your trips in its own storage on your device: each trip’s title, dates and ink (its stamp’s color); its stops, with each one’s name, town, place on the map, day, how long you’ll spend there, how you get there, notes and when you visited it; and its photos. For a shared trip, it also keeps who’s on it (see Sharing) and whether you can make changes. Where you’ve moved your stamps in the album, whether the full map shows satellite imagery, and your Daily Plan setting are kept on the device too, and so is each trip’s history (see Trip History). Michi has no networking code of its own; it goes online only through Apple’s iCloud, Apple Maps, Apple Intelligence and App Store, as described below. Backups of your device include all of this, apart from photos iCloud already has, which Michi downloads again if they’re missing.
 
 ### iCloud
 {: .margin}
 
-When your device is signed in to iCloud, Michi syncs your trips, their stops and their photos between your devices through Apple’s CloudKit, in your iCloud account’s private database. It keeps what they hold in CloudKit’s encrypted fields, and photos as files CloudKit encrypts. Where your stamps sit in the album, the satellite setting and conversations with Michi stay on each device, and Michi Pro doesn’t sync through iCloud at all: each device asks the App Store (see Michi Pro). Michi shows no notifications; iCloud wakes it silently when a trip changes on another device, so it can fetch the change.
+When your device is signed in to iCloud, Michi syncs your trips, their stops and their photos between your devices through Apple’s CloudKit, in your iCloud account’s private database. It keeps what they hold in CloudKit’s encrypted fields, and photos as files CloudKit encrypts. Where your stamps sit in the album, the satellite setting, Daily Plan, each trip’s history and conversations with Michi stay on each device, and Michi Pro doesn’t sync through iCloud at all: each device asks the App Store (see Michi Pro). iCloud wakes Michi silently when a trip changes on another device, so it can fetch the change; the only notifications Michi shows are the daily plans you ask for (see Notifications).
 
-Michi has no sync switch of its own: it follows iCloud, which you can turn off for Michi in the Settings app, under your name&nbsp;→ iCloud. Without iCloud, Michi works on the device alone, and syncs what you made there once you sign in. Signing out of iCloud, or switching to another account, removes every trip and photo from the device, with the maps, routes and places kept for them; what iCloud has comes back when you sign in again, and anything it hadn’t received yet is lost. [Apple’s privacy policy](https://www.apple.com/legal/privacy/en-ww/) covers iCloud.
+Michi has no sync switch of its own: it follows iCloud, which you can turn off for Michi in the Settings app, under your name&nbsp;→ iCloud. Without iCloud, Michi works on the device alone, and syncs what you made there once you sign in. Signing out of iCloud, or switching to another account, removes every trip and photo from the device, with their histories and the maps, routes and places kept for them; what iCloud has comes back when you sign in again, and anything it hadn’t received yet is lost. [Apple’s privacy policy](https://www.apple.com/legal/privacy/en-ww/) covers iCloud.
 
 ### Sharing
 {: .margin}
 
 Invite, in the brochure of a trip you made, shares it through iCloud with the people you choose, by whichever app you send the invitation with, such as Messages or Mail. Only the people you invite can join: Michi never offers a link that anyone can open. You choose whether they can make changes or only view the trip. The share iCloud keeps, and the invitation, can’t be encrypted, so Michi never puts the trip’s title there: both say “A trip on Michi”, with Michi’s icon.
 
-Everyone on a trip sees all of it: its title, dates, stops, notes and photos, whoever added them, and who’s on it, by the names iCloud gives or, where it gives none, by email address or phone number. Anyone who can make changes can add stops and photos, and change or delete any of them. A shared trip is kept in the iCloud of its owner, the person who made it, and counts toward their iCloud storage. Travelers, in the brochure, opens Apple’s sharing sheet, where the owner can invite or remove people and stop sharing, and the others can leave. If you leave a trip, or are removed from it, what you added stays on it.
+Everyone on a trip sees all of it: its title, dates, stops, notes and photos, whoever added them, and who’s on it, by the names iCloud gives or, where it gives none, by email address or phone number. Anyone who can make changes can add stops and photos, change or delete any of them, and bring back an earlier version of the trip (see Trip History). A shared trip is kept in the iCloud of its owner, the person who made it, and counts toward their iCloud storage. Travelers, in the brochure, opens Apple’s sharing sheet, where the owner can invite or remove people and stop sharing, and the others can leave. If you leave a trip, or are removed from it, what you added stays on it, and so do the versions on others’ devices that name you.
+
+### Trip History
+{: .margin}
+
+Trip History, in Trip Options, lists earlier versions of a trip, so you can bring one back. Michi keeps a version each time the trip’s plan changes, whether you change it, apply changes from Michi, or someone’s change arrives through iCloud; changes a few minutes apart make one version. Each holds the trip’s title, dates and ink; its stops, with everything set for each, notes included, and when each was visited; and who made the change, by the name they have on the trip (see Sharing). It holds no photos. Versions are kept on the device that saw the changes, up to a trip’s last 40, and never sync: each of your devices keeps its own, and on a shared trip, so does each device of everyone on it. Only people who can make changes see Trip History. Restoring a version changes the trip for everyone on it (see Deleting).
 
 ### Apple Maps
 {: .margin}
 
 Michi finds places, draws maps and works out routes with Apple Maps, through Apple’s MapKit. It never uses your location, and never asks for it. [Apple’s privacy policy](https://www.apple.com/legal/privacy/en-ww/) applies to what Apple Maps receives.
 
-- **Add Stop.** What you type is sent to Apple Maps as you type it, with the area your trip’s stops are in, so places near them come first. Picking a result looks it up, and Michi keeps the place’s name, town and place on the map.
+- **Add Stop.** What you type is sent to Apple Maps as you type it, with the area your trip’s stops are in, so places near them come first. Picking a result looks it up. Choose on Map, in Add Stop, opens Apple’s map around your trip’s stops: tapping a place the map marks, such as a café, looks that place up, and tapping anywhere else drops a pin and sends where it is to Apple Maps, for the spot’s name. Either way, Michi keeps the place’s name, town and place on the map.
 - **Planning.** When you plan with Michi, it searches Apple Maps for the places, towns and destinations the model names, and for what the model looks for, such as “ramen”, mostly in the area of the trip’s stops or its destination.
-- **Maps.** A brochure’s map, the full map and each stamp’s print show Apple’s map of where the trip’s stops are, loaded from Apple Maps. Stamps’ prints are kept on your device.
-- **Routes.** When you open a brochure, its full map or a stop, Michi asks Apple Maps for the route, or the travel time, from each stop to the next: where the two stops are and how you get there, without their names. Michi keeps routes on your device and asks for them again after 60&nbsp;days, or 14 for travel times. A leg’s route goes once no trip has that leg.
+- **Maps.** A brochure’s map, the full map, Add Stop’s map and each stamp’s print show Apple’s map of where the trip’s stops are, loaded from Apple Maps. Stamps’ prints are kept on your device.
+- **Routes.** When you open a brochure, its full map or a stop, or look over a plan from Michi, Michi asks Apple Maps for the route, or the travel time, from each stop to the next: where the two stops are and how you get there, without their names. Michi keeps routes on your device and asks for them again after 60&nbsp;days, or 14 for travel times. A leg’s route goes once no trip has that leg.
 - **Passport.** When you open You or the passport, Michi asks Apple Maps which country and city each stop is in, from where the stop is and nothing else. The answers are kept on your device until no stop is there.
 
 ### Apple Intelligence
@@ -320,6 +325,11 @@ Save All Photos, in Trip Options, adds every photo of the trip that’s on your 
 
 The passport, at the top of You, is worked out on your device from your trips each time you open it, and isn’t stored or synced. Its countries and cities are Apple Maps’ (see Apple Maps), and the name on it is yours as iCloud gives it on a shared trip. While it’s open, Michi reads the device’s tilt for the hologram, unless Reduce Motion is on, and keeps nothing of it.
 
+### Notifications
+{: .margin}
+
+Daily Plan, in You&nbsp;→ Notifications, is off until you turn it on, and Michi asks to send notifications only when you do. Then, on each day of a trip with dates that has stops planned, trips shared with you included, it sends you that day’s plan at the time you choose, wherever you are: the trip’s title, which day of the trip it is and how long its stops come to, and the stops’ names. Michi schedules them on your device and the system shows them, so nothing comes from a server; they appear wherever your notification settings allow, such as the Lock Screen. Whether Daily Plan is on, and its time, are kept on each device. Turning it off takes back the plans still to come, and a trip that leaves the device takes its plans with it, those already sent too.
+
 ### Michi Pro
 {: .margin}
 
@@ -335,18 +345,19 @@ You&nbsp;→ Support&nbsp;→ Send Feedback opens a draft email to {{ site.suppo
 ### Other apps
 {: .margin}
 
-Open in Maps, on a stop, hands the stop’s name and place to the Maps app, and the links to this website, at the foot of You, open in your browser. What happens there is up to that app and its policy.
+Apple Maps, on a stop, hands the stop’s name and place to the Maps app. Google Maps, beside it, hands the stop’s name, town and place to the Google Maps app or, where it isn’t installed, opens Google Maps’ website in your browser with the stop’s name and town; [Google’s privacy policy](https://policies.google.com/privacy) applies there. The links to this website, at the foot of You, open in your browser. What happens in those apps and sites is up to them and their policies.
 
 ### Deleting
 {: .margin}
 
 - **A photo.** Delete Photo, when you touch and hold a photo or in the viewer, deletes it from your devices and from iCloud, and, on a shared trip, for everyone on it.
-- **A stop.** Deleting a stop deletes its photos with it, for everyone on a shared trip.
-- **A trip.** Delete Trip, in Trip Options or the stamp’s menu, deletes the trip, its stops and its photos from your devices and from iCloud, and for everyone you’ve shared it with. It can’t be undone. On a trip someone else shared with you, Leave Trip takes it off your devices instead, and what you added stays on it.
+- **A stop.** Deleting a stop deletes its photos with it, for everyone on a shared trip. The trip’s earlier versions keep the stop, without its photos, until later versions take their place (see Trip History).
+- **A version.** Restore This Version, in Trip History, deletes the stops added since, with their photos, for everyone on the trip.
+- **A trip.** Delete Trip, in Trip Options or the stamp’s menu, deletes the trip, its stops and its photos from your devices and from iCloud, and for everyone you’ve shared it with, and each device it was on deletes its history. It can’t be undone. On a trip someone else shared with you, Leave Trip takes it, and its history, off your devices instead, and what you added stays on it.
 - **The app.** Deleting Michi deletes what it keeps on that device. Backups of your device keep a copy until they’re replaced or deleted.
 - **iCloud.** Your trips stay in iCloud, and on your other devices, until you delete them in Michi. You can also delete Michi’s data from iCloud storage in the Settings app, which deletes the trips you made for everyone you’ve shared them with too.
 
-Photos you’ve saved to your library, and pictures you’ve shared, stay where they went. There’s no Recently deleted, and nothing expires on its own: Michi keeps your trips until you delete them.
+Photos you’ve saved to your library, and pictures you’ve shared, stay where they went. There’s no Recently deleted, though Trip History can bring back a deleted stop, without its photos, while a version that has it is kept. Apart from a trip’s oldest versions, which give way past 40, nothing expires on its own: Michi keeps your trips until you delete them.
 
 ### Analytics
 {: .margin}
