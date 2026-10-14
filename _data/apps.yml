@@ -25,12 +25,13 @@
 
 michi:
   name: Michi
+  subtitle: Trips & Itineraries
   gloss: '<span lang="ja">道</span>, Japanese for road'
-  status: coming
-  status_label: Coming soon
+  status: available
+  status_label: On the App Store
   pitch: Plan a trip with the people you’re going&nbsp;with.
   store:
-    url:   # not out yet; paste the App Store link here once Michi is out
+    url: https://apps.apple.com/us/app/michi-trips-itineraries/id6819084940
   color: "#2F4FA2"
   color_dark: "#5A78C8"
   icon: michi
@@ -38,7 +39,7 @@ michi:
   url: /#michi
   privacy: /privacy/#michi
   label:
-    title: Michi
+    title: "Michi: Trips & Itineraries"
     medium: SwiftUI, for iPhone and iPad
     icon_light: A white stamp printed with a layered blue sea, black gull, white ground
     icon_dark: A white stamp printed with a layered blue sea, gold gull, black ground

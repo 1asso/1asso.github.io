@@ -2,9 +2,10 @@
 layout: default
 ---
 {%- comment -%}
-  Addresses outside this site point at ids on this page: App Store Connect's Support URL for both
-  apps is https://tinybit.studio/#contact, and an app's Marketing URL, if set, is its room
-  (/#kozeni, /#lark). Keep the ids contact, kozeni and lark, or those links land at the top.
+  Addresses outside this site point at ids on this page: App Store Connect's Support URL for every
+  app is https://tinybit.studio/#contact, and an app's Marketing URL, if set, is its room
+  (/#kozeni, /#lark, /#michi). Keep the ids contact, kozeni, lark and michi, or those links land at
+  the top.
 {%- endcomment -%}
 {%- assign michi = site.data.apps.michi -%}
 {%- assign lark = site.data.apps.lark -%}
@@ -100,6 +101,6 @@ layout: default
   <h2 class="contact__title meta" id="contact-title">Contact</h2>
   <p class="contact__mail display"><a class="contact__link" href="mailto:{{ site.email }}">{{ site.email | replace: '@', '<wbr>@' }}</a></p>
   <div class="contact__note">
-    <p>Questions about Kozeni or Lark, bug reports, or a tiny bit we got&nbsp;wrong. We read every&nbsp;message.</p>
+    <p>Questions about Kozeni, Lark or Michi, bug reports, or a tiny bit we got&nbsp;wrong. We read every&nbsp;message.</p>
   </div>
 </section>
