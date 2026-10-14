@@ -7,7 +7,8 @@
 # Fields
 #   name, subtitle      the App Store name is "name: subtitle" (subtitle is a note only; the site doesn't read it)
 #   gloss               optional line under the name in the home page room (raw HTML allowed)
-#   status              available (filled bit), or coming or development (hollow bit); status_label is the words
+#   status              available (no status shown: the room's App Store badge says it), or coming or
+#                       development (a hollow bit, then status_label's words, "Coming soon" or "In development")
 #   pitch               one or two sentences, shown under the name in the app's room
 #   store               the App Store url. With a url, the room shows the App Store badge; with an
 #                       empty url (an app not out yet), the badge without a link; without the block, none.
@@ -28,7 +29,6 @@ michi:
   subtitle: Trips & Itineraries
   gloss: '<span lang="ja">道</span>, Japanese for road'
   status: available
-  status_label: On the App Store
   pitch: Plan a trip with the people you’re going&nbsp;with.
   store:
     url: https://apps.apple.com/us/app/michi-trips-itineraries/id6819084940
@@ -58,7 +58,6 @@ lark:
   name: Lark
   subtitle: Language Shadowing
   status: available
-  status_label: On the App Store
   pitch: Practice speaking a language by shadowing real&nbsp;material.
   store:
     url: https://apps.apple.com/us/app/lark-language-shadowing/id6817513150
@@ -89,7 +88,6 @@ kozeni:
   subtitle: Spending & Budgets
   gloss: '<span lang="ja">小銭</span>, Japanese for small change'
   status: available
-  status_label: On the App Store
   pitch: A private expense and income tracker. Log what you spend, see where it goes, and keep a budget. No subscription, no account, no&nbsp;ads.
   store:
     url: https://apps.apple.com/us/app/kozeni-spending-budgets/id6760676910

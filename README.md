@@ -40,8 +40,9 @@ Everything about an app is in `_data/apps.yml`, one entry per app. The comment a
 file explains each field. The ones you're most likely to touch:
 
 - `pitch`: the sentences under the app's name on the home page
-- `status` and `status_label`: `available` / "On the App Store" (a filled square), or
-  `coming` / "Coming soon" or `development` / "In development" (a hollow square)
+- `status`: `available` for an app on the App Store, whose room shows no status (its App Store
+  badge says it), or `coming` or `development` for one not out yet, with `status_label` set to
+  "Coming soon" or "In development" (shown after a hollow square)
 - `store`: the App Store link. With a link, the App Store badge appears in the app's room. With
   the block there but the link left empty, the badge appears without a link.
 - `points`: the four short points in the app's room
@@ -50,9 +51,9 @@ file explains each field. The ones you're most likely to touch:
 
 `&nbsp;` in a value keeps the last two words together on one line. Leave it in.
 
-When an app comes out, paste its App Store link after `url:` in its `store:` block and set
-`status: available` and `status_label: On the App Store`. Its room then shows a working badge and
-the filled square.
+When an app comes out, paste its App Store link after `url:` in its `store:` block, set
+`status: available` and delete its `status_label` line. Its room then shows a working badge and no
+status.
 
 ## Addresses for App Store Connect
 
