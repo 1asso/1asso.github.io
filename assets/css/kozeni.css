@@ -1,0 +1,85 @@
+/* Kozeni's exhibit: its keypad (_includes/exhibits/kozeni.html), on its room's coral. Loaded on the home
+   page (index.html's styles:), with kozeni.js. */
+
+/* Kozeni's entry sheet without the sheet: the title, the amount, the keys (ExpenseEditorKeypadSection),
+   54px tall, 8px apart, at its 16px corner. On the coral a key is white at 90%, 62% while pressed. */
+.keypad {
+  --key: rgb(255 255 255 / 0.9);
+  --key-pressed: rgb(255 255 255 / 0.62);
+}
+.keypad__title { color: var(--ink-2); text-box: trim-both cap alphabetic; }
+
+/* The amount at display size in a box of the display's line: a long one is scaled to fit (--fit, from
+   kozeni.js), never under half, as Kozeni's minimumScaleFactor(0.5), then cut short, and padded down by
+   0.365 of each em it gave up (Inter Tight's ascent less descent, halved) to keep its baseline. The "$"
+   hangs by its side bearing, its ink on the keys' edge. */
+.keypad__amount {
+  height: calc(var(--display) * 0.96);
+  padding-top: calc(var(--display) * (1 - var(--fit, 1)) * 0.365);
+  margin-top: var(--beat);
+  font-size: calc(var(--display) * var(--fit, 1));
+  font-weight: 500;
+  line-height: calc(var(--display) * 0.96);
+  letter-spacing: -0.034em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow-x: clip;
+  text-overflow: ellipsis;
+}
+.keypad__figure { margin-left: -0.03em; }
+
+.keypad__keys {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  max-width: 344px;
+  margin-top: 24px;
+}
+/* A key is pressed, never selected or zoomed, so quick taps are all keys; let go, it stays pressed for
+   --t-press, so a tap shows. */
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 54px;
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: var(--key);
+  color: var(--ink);
+  font-weight: 500;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: background-color 0s var(--t-press);
+}
+button.key { cursor: pointer; }
+.key svg { flex: none; pointer-events: none; }   /* the key is the target, never its glyph */
+.key.is-pressed { background: var(--key-pressed); transition-delay: 0s; }
+.key:focus-visible { border-radius: 16px; }   /* the ring follows the key's corner */
+
+/* On a phone the keys take the column's width, up to the widest phone's held upright (a 392px column). */
+@media (max-width: 719px) {
+  .keypad__keys { max-width: 392px; }
+}
+
+/* A key gives a little under the finger, as Kozeni's do (ChipButtonStyle: 90%, easing out over 0.1s). */
+@media (prefers-reduced-motion: no-preference) {
+  .key { transition: background-color 0s var(--t-press), scale 100ms ease-out; }
+  .key.is-pressed { scale: 0.9; }
+}
+
+/* Forced colors take the keys' white: they're outlined, a press highlighted. */
+@media (forced-colors: active) {
+  .key { border: 1px solid ButtonBorder; color: ButtonText; }
+  .key.is-pressed { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+}
+
+/* On paper, without the coral, a hairline draws each key. */
+@media print {
+  .key { background: none; box-shadow: inset 0 0 0 1px var(--ink-3); }
+}

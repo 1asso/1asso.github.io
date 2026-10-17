@@ -1,0 +1,25 @@
+{%- comment -%}
+  Kozeni's exhibit: its keypad, taking an amount the way Kozeni's does (kozeni.js), on its room's coral
+  (kozeni.css). "New Expense" is the title Kozeni gives the sheet for a new expense; the keys are its keypad's,
+  three across in its order. Kozeni's Add, Category and date keys are left out: nothing here saves.
+  Without JavaScript the keys are a picture (aria-hidden), and the hidden description says so. kozeni.js
+  makes each key a button, named by its data-label or else its text (Delete is also described by "Hold to
+  clear."), puts them in a group named by the keys' own data-label, and takes the description out. The
+  amount is silent to screen readers: the status under it says each new amount a moment after the last key.
+{%- endcomment -%}
+<figure class="keypad is-kozeni" data-keypad aria-labelledby="keypad-title">
+  <figcaption class="keypad__title meta" id="keypad-title">New Expense</figcaption>
+  <p class="keypad__amount" data-amount aria-hidden="true"><span class="keypad__figure">$0</span></p>
+  <p class="visually-hidden" role="status" data-amount-status></p>
+  <div class="keypad__keys" aria-hidden="true" data-keys data-label="Keypad">
+    {%- assign keys = "1 2 3 4 5 6 7 8 9" | split: " " -%}
+    {%- for key in keys %}
+    <span class="key" data-key="{{ key }}">{{ key }}</span>
+    {%- endfor %}
+    <span class="key" data-key="." data-label="Decimal point">.</span>
+    <span class="key" data-key="0">0</span>
+    <span class="key key--delete" data-key="delete" data-label="Delete" data-describedby="keypad-hold"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8.1 4.25h11.4a3 3 0 0 1 3 3v9.5a3 3 0 0 1-3 3H8.1L1.5 12z"/><path d="m10.85 8.85 6.3 6.3m0-6.3-6.3 6.3"/></svg></span>
+  </div>
+  <p class="visually-hidden" data-nojs-description>A picture of Kozeni’s keypad: the keys 1 to 9, a decimal point, 0 and delete, under an amount of&nbsp;$0.</p>
+  <p id="keypad-hold" hidden>Hold to clear.</p>
+</figure>

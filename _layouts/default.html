@@ -5,6 +5,8 @@
 </head>
 <body{% if page.body_class %} class="{{ page.body_class }}"{% endif %}>
 <a class="skip" href="#main">Skip to content</a>
+{%- comment -%} TB.say's live region (site.js): what a press just changed, announced politely. {%- endcomment %}
+<p class="visually-hidden" role="status" id="tb-status"></p>
 {% include header.html %}
 <main id="main">
 {{ content }}

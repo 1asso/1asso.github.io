@@ -1,106 +1,219 @@
 ---
 layout: default
+permalink: /
+body_class: proto-grid
+styles: [michi, lark, kozeni, grid]
+scripts: [album, lark, kozeni, grid]
 ---
 {%- comment -%}
-  Addresses outside this site point at ids on this page: App Store Connect's Support URL for every
-  app is https://tinybit.studio/#contact, and an app's Marketing URL, if set, is its room
-  (/#kozeni, /#lark, /#michi). Keep the ids contact, kozeni, lark and michi, or those links land at
-  the top.
-{%- endcomment -%}
-{%- assign michi = site.data.apps.michi -%}
-{%- assign lark = site.data.apps.lark -%}
-{%- assign kozeni = site.data.apps.kozeni -%}
-<section class="hero wrap" aria-labelledby="hero-title">
-  <h1 class="display hero__title" id="hero-title">Get the tiny bits&nbsp;right{% include stop.html %}</h1>
-  <p class="hero__lede">Tiny Bit Studio makes apps for iPhone and iPad. Every sheet, figure and haptic in them is a decision, not a&nbsp;default.</p>
-</section>
+  The home page: Swiss editorial, the site's 12-column grid made visible and kinetic.
 
-<section class="rooms" id="apps" aria-labelledby="apps-title">
-  <h2 class="visually-hidden" id="apps-title">Apps</h2>
+  The first screen is a poster, the tagline and the lede at its foot and nothing else (the rooms after it introduce
+  the apps, a screen each, and the running index over them leads to each), and it arrives the way every screen after
+  it does. For a beat the screen is the ink
+  (true black in dark mode, so nothing flashes white at night), its grid ruled down it in hairlines, and only the
+  square mark lit, its bit coming out of its notch. Then twelve columns of the canvas (six on a phone) strike up the
+  full height of the screen, left to right, quicker as they go, as Michi's will, each carrying its strip of the
+  tagline, and push the ink out of the top; the header and the lede are uncovered column by column as the columns
+  pass. Then the i's dots, square bits the width of the stem, pop
+  out of their stems one after another, the square full stop slides in along the baseline and clicks onto the right
+  margin, which lights for a moment, and the poster gives a pixel and settles. Last, the redline lens sweeps once
+  across the tagline, and goes. Readable by about two thirds of a second, still by
+  about two seconds; once it's left alone, Michi's ground lifts once in the first column at the foot. With a
+  mouse the lens follows the pointer, and on a touch screen a sideways drag on the tagline scrubs it: through it the
+  poster is in outlines, with the decisions in that strip of it written on (grid.js).
+  Under Reduce Motion, without the script, in forced colors and on paper, the poster is simply there, composed.
 
-  <article class="room room--stage is-michi" id="michi" aria-labelledby="michi-title">
-    <div class="room__main wrap grid">
-      <div class="room__head">
-        {% include status.html app="michi" %}
-        <h3 class="display room__name" id="michi-title">{{ michi.name }}</h3>
+  Then a room for each app, and the Studio with Contact: one screen each. Scrolling snaps a screen at a time (CSS
+  scroll snap; the keys that step a screen and the wheel are taken by grid.js, so they go the same way in every browser,
+  one press or gesture a screen). Each screen arrives as twelve columns of its ground (six on a phone), each carrying
+  its strip of the room's name and number, so the name is built a column at a time and clicks into register as the
+  columns settle; each column pushes the strip of the screen before's big type out ahead of it, like the flaps of a
+  departures board (all but a poster of three or four lines, a phone's or a tablet's, which is covered where it
+  stands: too tall to push, its strips would carry its lines past each other); then the rest of the room is
+  uncovered column by column. Each app's columns keep its own time:
+  Michi's struck home left to right like a postmark, Lark's in a call and its echo, Kozeni's counted in like coins
+  with its spine dropped last into its slot; the Studio's come down as a curtain. The header runs over every screen
+  in that screen's ink, and over the rooms the index, 01 to 03. Opened on a room (a link to it, /#lark or the apps'
+  /#contact, or to a passage in it, a reload on it, a step back to it), the page opens on the void as the poster does,
+  and the room's columns rise over it in its rhythm, carrying its name; the rooms before it are at rest under it. (A
+  step back that the browser answers from its cache shows the page as it was left, on the reader's screen.)
+
+  How it's built (grid.css says more): every screen after the first is an article, a screen's height of track, then the
+  screen, then a screen's height of tail (none for the last). Each overlaps the two before it, so its screen is held to
+  the viewport from the moment the screen before it comes to rest until the one after it does. grid.js turns that on
+  (g-fx) and draws the columns, on springs that follow the scroll. Without it, under Reduce Motion, in forced colors or
+  on paper, the screens simply stack, edge to edge, and still snap. The header and footer drawn in the screens (.g-head,
+  .g-foot-copy) are copies, aria-hidden and inert; the real ones, from the layout, lie over them, clear, and take the
+  pointer and the keyboard.
+
+  Addresses outside this site point at ids on this page: App Store Connect's Support URL for every app is
+  https://tinybit.studio/#contact, and an app's Marketing URL, if set, is its room (/#kozeni, /#lark, /#michi), whose id
+  is its key in _data/apps.yml. Keep the id contact and the apps' keys, or those links land at the top.
+{%- endcomment %}
+{%- comment -%}
+  Before the first screen is laid out. Whatever screen the page opens on arrives from the void, which grid.css draws
+  from the first frame wherever the deck can play an arrival (motion allowed, a screen tall enough): the poster, or the
+  room the page lands on (the address names it, /#lark or the apps' /#contact, or a passage in it, or a reload or a step
+  back puts the reader back on it), whose columns then rise over the void in its own rhythm (grid.js). So nothing of the
+  page under the void, the finished room or the screen the browser happens to paint first, is ever seen before its
+  arrival. The browser's bar takes the void's colour here, before the first frame, so it never goes from the canvas to
+  the void and back; and should the deck never take over (its script not loading), it's put back, as the void goes,
+  after three seconds. And the first frame the page draws is noted (window.gSeen): the void is held its beat from then,
+  however late the deck's script comes (grid.js), as the privacy and not-found pages hold theirs.
+{%- endcomment %}
+<script>(function () { var d = document.documentElement, q = '(prefers-reduced-motion: no-preference) and (forced-colors: none)'; if (window.requestAnimationFrame) requestAnimationFrame(function (t) { window.gSeen = t; }); if (!window.matchMedia || !matchMedia('screen and ' + q + ' and (min-height: 620px), screen and ' + q + ' and (orientation: portrait) and (min-height: 460px)').matches) return; var c = getComputedStyle(document.body).getPropertyValue('--void').trim(), metas = document.querySelectorAll('meta[name="theme-color"]'); if (!c) return; Array.prototype.forEach.call(metas, function (m) { m.setAttribute('data-g-was', m.getAttribute('content')); m.setAttribute('content', c); }); d.style.backgroundColor = c; setTimeout(function () { if (/\bg-(arriving|arrived|unvoid)\b/.test(d.className)) return; Array.prototype.forEach.call(metas, function (m) { m.setAttribute('content', m.getAttribute('data-g-was')); }); d.style.removeProperty('background-color'); }, 3000); })();</script>
+{%- comment -%} What Safari tints its toolbar from: a fixed strip along the top that paints nothing (grid.css). {%- endcomment %}
+<i class="g-chrome" aria-hidden="true"></i>
+{% include grid-runner.html real=true %}
+<div class="g-deck" data-g-deck>
+  <div class="g-stage" data-g-stage>
+    <span class="g-snap" aria-hidden="true"></span>
+    <section class="g-hero" aria-labelledby="g-hero-title" data-g-screen="0">
+      {%- comment -%}
+        The void the page opens on, for a beat (grid.css): the ink, its grid ruled down it, and the mark lit alone where
+        the header's is. The canvas strikes up over it in the poster's columns (.g-ground, below), and then it's gone;
+        or, where the page opens on a room, the script lays it in that room's screen, under its columns, until they're
+        up. Decorative, and never there without the script, under Reduce Motion or in forced colors.
+      {%- endcomment %}
+      <div class="g-void" aria-hidden="true" data-g-void>
+        <div class="g-lines g-lines--void">{% for n in (1..12) %}<i style="--c: {{ forloop.index0 }}"></i>{% endfor %}</div>
+        <div class="g-void__head" inert>{% include header.html %}</div>
       </div>
-      <div class="room__intro">
-        <p class="room__pitch">{{ michi.pitch }}</p>
-        {% include store-badge.html app="michi" class="room__store" %}
+      {%- comment -%}
+        The poster's ground in the deck, a column of the canvas to each column of the grid (two on a phone), each with the
+        column's two edges: they strike up over the void on arrival (grid.js), and then stay, at rest.
+      {%- endcomment %}
+      <div class="g-ground" aria-hidden="true">{% for n in (1..12) %}<i style="--col: {{ forloop.index0 }}"></i>{% endfor %}</div>
+      <div class="g-head" aria-hidden="true" inert>{% include header.html %}</div>
+      <div class="g-lines" aria-hidden="true">{% for n in (1..12) %}<i style="--c: {{ forloop.index0 }}"></i>{% endfor %}</div>
+      <div class="g-lens" aria-hidden="true" data-g-lens></div>
+      {%- comment -%}
+        The tagline's words, set once here: in the heading, and in each of the twelve columns that carry the poster in on
+        arrival (.g-cast, below), each of them a copy laid out exactly as the heading is, clipped to its column.
+      {%- endcomment -%}
+      {%- capture tagset -%}<span class="g-w g-w--get"><span class="g-slot">{% include grid-letters.html text="Get" %}</span></span><span class="g-w g-w--the"><span class="g-slot">{% include grid-letters.html text="the" from=3 %}</span></span><span class="g-break g-break--a"></span><span class="g-w g-w--tiny"><span class="g-slot">{% include grid-letters.html text="tıny" from=6 dot=0 %}</span></span><span class="g-break g-break--b"></span><span class="g-w g-w--bits"><span class="g-slot">{% include grid-letters.html text="bıts" from=10 dot=1 %}</span></span><span class="g-break g-break--c"></span><span class="g-w g-w--right"><span class="g-slot">{% include grid-letters.html text="rıght" from=14 dot=2 %}<span class="stop g-stop"></span></span></span>{%- endcapture %}
+      <div class="g-hero__main wrap grid" data-g-hero-main>
+        <h1 class="g-tagline" id="g-hero-title"><span class="visually-hidden">Get the tiny bits right.</span><span class="g-tagline__set" aria-hidden="true" data-g-tagline>{{ tagset }}</span></h1>
+        <div class="g-foot">
+          <p class="g-lede">Tiny Bit Studio makes apps for Apple platforms. Every sheet, figure and haptic in them is a decision, not&nbsp;a&nbsp;default.</p>
+        </div>
       </div>
-      {%- if michi.gloss %}
-      <p class="room__gloss meta">{{ michi.gloss }}</p>
-      {%- endif %}
-      <div class="plinth stage is-michi" data-light>
-        <div class="stage__object">{% include app-icon.html app="michi" sizes="(min-width: 1080px) 17vw, (min-width: 720px) 13vw, 36vw" alt=true class="plinth__icon" eager=true %}</div>
-        {% include album.html class="stage__piece" %}
+      {%- comment -%}
+        What the foot (the lede) takes, measured before the first frame is drawn, so the tagline is set from the first
+        frame to exactly what the foot leaves of the screen (grid.css, --g-foot; grid.js measures it again when the
+        fonts are in, and on every resize).
+      {%- endcomment %}
+      <script>(function () { var f = document.querySelector('[data-g-hero-main] > .g-foot'); if (f && f.getBoundingClientRect) document.documentElement.style.setProperty('--g-foot', Math.ceil(f.getBoundingClientRect().height) + 'px'); })();</script>
+      {%- comment -%}
+        The tagline in the poster's columns (grid.css): twelve (six on a phone), each a copy of the poster's grid with
+        only the tagline in it, clipped to its column. They carry the tagline in, a strip each, as the canvas strikes up
+        (grid.js); later, where the tagline is two lines, Michi's columns push these strips out of the top of the
+        screen. Decorative copies: the heading is what's read.
+      {%- endcomment %}
+      <div class="g-cast" aria-hidden="true">
+        {%- for c in (0..11) %}
+        <div class="g-cast__col" style="--col: {{ c }}"><div class="g-cast__plate g-hero__main wrap grid"><div class="g-tagline g-cast__slot"><div class="g-cast__card"><span class="g-tagline__set">{{ tagset }}</span></div></div></div></div>
+        {%- endfor %}
       </div>
-      {% include label.html app="michi" class="room__label" %}
-    </div>
-
-    {% include points.html app="michi" class="wrap" %}
-  </article>
-
-  <article class="room room--stage is-lark" id="lark" aria-labelledby="lark-title">
-    <div class="room__main wrap grid">
-      <div class="room__head">
-        {% include status.html app="lark" %}
-        <h3 class="display room__name" id="lark-title">{{ lark.name }}</h3>
-      </div>
-      <div class="room__intro">
-        <p class="room__pitch">{{ lark.pitch }}</p>
-        {% include store-badge.html app="lark" class="room__store" %}
-      </div>
-      <div class="plinth stage is-lark" data-light>
-        <div class="stage__object">{% include app-icon.html app="lark" sizes="(min-width: 1080px) 17vw, (min-width: 720px) 13vw, 36vw" alt=true class="plinth__icon" %}</div>
-        {% include covered.html class="stage__piece" %}
-      </div>
-      {% include label.html app="lark" class="room__label" %}
-      {% include rhythm.html class="room__row" %}
-    </div>
-
-    {% include points.html app="lark" class="wrap" %}
-  </article>
-
-  <article class="room room--kozeni is-kozeni" id="kozeni" aria-labelledby="kozeni-title">
-    <div class="room__main wrap grid">
-      <div class="room__head">
-        {% include status.html app="kozeni" %}
-        <h3 class="display room__name" id="kozeni-title">{{ kozeni.name }}</h3>
-        {%- if kozeni.gloss %}
-        <p class="room__gloss meta">{{ kozeni.gloss }}</p>
-        {%- endif %}
-        <p class="room__pitch">{{ kozeni.pitch }}</p>
-        {% include store-badge.html app="kozeni" class="room__store" %}
-      </div>
-      {% include plinth.html app="kozeni" %}
-      {% include label.html app="kozeni" class="room__label" %}
-    </div>
-
-    {% include points.html app="kozeni" class="wrap" %}
-  </article>
-</section>
-
-<section class="studio wrap grid" id="studio" aria-labelledby="studio-title">
-  <h2 class="studio__title meta" id="studio-title">Studio</h2>
-  <figure class="motto">
-    <blockquote class="motto__quote display"><p>Let the space do the&nbsp;dividing.</p></blockquote>
-    <figcaption class="motto__cite meta">Commit message, Lark</figcaption>
-  </figure>
-  <div class="studio__text">
-    <p>This page is laid out the same way: no rules between sections, only room. Lark’s design notes put it more bluntly: a divider is “an ornament doing the job of the room it takes&nbsp;up.”</p>
-    <p>Most of the work is like that. Small, exact changes, each described in one plain sentence. On their own they are hard to see. Together they are the app. Hence the&nbsp;name.</p>
+      {%- comment -%} The right margin, lit for a moment as the stop clicks onto it; and the band a finger scrubs the lens in. {%- endcomment %}
+      <div class="g-flash" aria-hidden="true"></div>
+      <div class="g-scrub" aria-hidden="true" data-g-scrub></div>
+      {%- comment -%} The next room, teased: once the poster is left alone, a few pixels of Michi's ground lift once in the first column, at the foot. {%- endcomment %}
+      {%- assign opening = site.data.apps | first %}
+      <div class="g-tease" aria-hidden="true" style="--ground: var(--{{ opening.first }}-room)"></div>
+    </section>
   </div>
-  <div class="bench">
-    <h3 class="bench__title meta">From the workbench</h3>
-    {% include workbench.html %}
-  </div>
-</section>
-
-<section class="contact wrap grid" id="contact" aria-labelledby="contact-title">
-  <h2 class="contact__title meta" id="contact-title">Contact</h2>
-  <p class="contact__mail display"><a class="contact__link" href="mailto:{{ site.email }}">{{ site.email | replace: '@', '<wbr>@' }}</a></p>
-  <div class="contact__note">
-    <p>Questions about Kozeni, Lark or Michi, bug reports, or a tiny bit we got&nbsp;wrong. We read every&nbsp;message.</p>
-  </div>
-</section>
+  <h2 class="visually-hidden" id="g-apps-title">Apps</h2>
+  {%- for pair in site.data.apps %}
+  {%- assign key = pair.first %}
+  {%- assign app = pair.last %}
+  {%- assign turn = forloop.index0 | modulo: 3 %}
+  {%- comment -%} Each app's columns keep its own time (grid.js): the three here have theirs; an app added later takes one by its place. {%- endcomment %}
+  {%- if key == 'michi' %}{% assign cascade = 'strike' %}{% elsif key == 'lark' %}{% assign cascade = 'echo' %}{% elsif key == 'kozeni' %}{% assign cascade = 'coins' %}{% elsif turn == 0 %}{% assign cascade = 'strike' %}{% elsif turn == 1 %}{% assign cascade = 'echo' %}{% else %}{% assign cascade = 'coins' %}{% endif %}
+  {%- if key == 'michi' or key == 'lark' or key == 'kozeni' %}{% assign set = key %}{% elsif turn == 0 %}{% assign set = 'michi' %}{% elsif turn == 1 %}{% assign set = 'lark' %}{% else %}{% assign set = 'kozeni' %}{% endif %}
+  <article class="g-room g-set--{{ set }} room room--text-{% if app.room_text == 'dark' %}dark{% else %}light{% endif %} is-{{ key }}" id="{{ key }}" aria-labelledby="{{ key }}-title" style="--ground: var(--{{ key }}-room); --z: {{ forloop.index | plus: 2 }}" data-g-room data-g-cascade="{{ cascade }}" data-g-screen="{{ forloop.index }}">
+    <div class="g-track" aria-hidden="true"></div>
+    <span class="g-snap" aria-hidden="true"></span>
+    <div class="g-screen">
+      <div class="g-slabs" aria-hidden="true"></div>
+      <div class="g-head" aria-hidden="true" inert>{% include header.html %}{% include grid-runner.html current=key %}</div>
+      <div class="g-content">
+        <div class="g-grid wrap grid">
+          <p class="g-no g-art g-art--no" aria-hidden="true" data-g-ride><span class="g-no__digits">0{{ forloop.index }}</span></p>
+          {%- if set == 'lark' %}
+          {%- comment -%} Lark's call and its echo: the name again, in outline, a column on and a little lower, as you say a sentence back a beat behind. {%- endcomment %}
+          <p class="g-echo g-art g-art--name" aria-hidden="true" data-g-ride>{{ app.name | replace: 'i', '<span class="g-i">ı<b class="g-dot"></b></span>' }}</p>
+          {%- endif %}
+          <h3 class="g-name" id="{{ key }}-title"><span class="visually-hidden">{{ app.name }}</span><span class="g-art g-art--name" aria-hidden="true" data-g-ride>{{ app.name | replace: 'i', '<span class="g-i">ı<b class="g-dot"></b></span>' }}</span></h3>
+          <div class="g-intro">
+            {%- if app.gloss %}
+            <p class="g-gloss meta">{{ app.gloss }}</p>
+            {%- endif %}
+            <p class="g-pitch">{{ app.pitch }}</p>
+            {% include store-badge.html app=key class="g-store" %}
+          </div>
+          <div class="g-icon">{% include app-icon.html app=key sizes="(orientation: landscape) and (min-width: 900px) 12vw, (min-width: 720px) 20vw, 28vw" alt=true class="g-icon__img" %}</div>
+          {%- if app.exhibit %}
+          <div class="g-piece">{% include exhibits/{{ app.exhibit }}.html %}</div>
+          {%- endif %}
+        </div>
+      </div>
+    </div>
+    <div class="g-tail" aria-hidden="true"></div>
+  </article>
+  {%- endfor %}
+  {%- comment -%}
+    The Studio, the last screen, on the page's own canvas as the first is, with Contact on it, and the poster's answer:
+    the motto at its head, the address at its foot at the tagline's scale, the paragraph beside it (grid.css).
+    The motto rides in on the columns as the rooms' names do; the paragraph, Contact and the footer line are uncovered
+    with it. Contact is a layer over the whole screen (its words at the foot), so /#contact, the apps' Support URL,
+    lands on the screen exactly. Neither heading is shown.
+  {%- endcomment %}
+  <section class="g-room g-room--last g-room--studio g-set--studio" id="studio" aria-labelledby="studio-title" style="--ground: var(--canvas); --z: {{ site.data.apps | size | plus: 3 }}" data-g-room data-g-cascade="curtain" data-g-screen="{{ site.data.apps | size | plus: 1 }}">
+    <div class="g-track" aria-hidden="true"></div>
+    <span class="g-snap" aria-hidden="true"></span>
+    <div class="g-screen">
+      <div class="g-slabs" aria-hidden="true"></div>
+      <div class="g-head" aria-hidden="true" inert>{% include header.html %}</div>
+      <div class="g-content">
+        <div class="g-grid g-studio wrap grid">
+          <h2 class="visually-hidden" id="studio-title">Studio</h2>
+          <blockquote class="g-motto"><p><span class="visually-hidden">Let the space do the dividing.</span><span class="g-art g-art--motto" aria-hidden="true" data-g-ride><span class="g-motto__a">Let the space</span> <span class="g-motto__b">do the&nbsp;d<span class="g-i">ı<b class="g-dot"></b></span>v<span class="g-i">ı<b class="g-dot"></b></span>d<span class="g-i">ı<b class="g-dot"></b></span>ng<span class="stop g-stop"></span></span></span></p></blockquote>
+          <p class="g-studio__text">Most of the work is like that. Small, exact changes, each described in one plain sentence. On their own they are hard to see. Together they are the app. Hence the&nbsp;name.</p>
+        </div>
+        <section class="g-grid g-contact wrap grid" id="contact" aria-labelledby="contact-title">
+          <h2 class="visually-hidden" id="contact-title">Contact</h2>
+          {%- comment -%}
+            The address as address.html sets it, made the poster's last line (grid.css): its text kept exactly the
+            address, nothing in it but its letters (for reading, copying and finding), each i and the full stop in a
+            span of its own that draws it as a square bit, as the tagline's are. It may break after the "@", or after
+            the full stop, where its lines end ("hello@", "tınybıt.", "studıo"), and nowhere else; its name, for a
+            screen reader, is the address whole (a browser may count a line's end as a space). Only the text between
+            the include's tags is touched.
+          {%- endcomment %}
+          {%- capture mailtext -%}{% include address.html %}{%- endcapture -%}
+          {%- assign mailtext = mailtext | strip | replace: '<wbr>@', '@<wbr>' | replace: '<span class="stop" aria-hidden="true"></span><span class="visually-hidden">.</span>', '<span class="g-ms">.</span></span><wbr><span class="nowrap">' -%}
+          {%- assign mailbit = '<span class="g-mi">i</span>' -%}
+          {%- assign mailcuts = mailtext | split: '<' -%}
+          <p class="g-mail"><a class="g-mail__link" href="mailto:{{ site.email }}" aria-label="{{ site.email }}">{%- for cut in mailcuts -%}{%- if forloop.first -%}{{ cut | replace: 'i', mailbit }}{%- else -%}{%- assign mailtag = cut | split: '>' -%}<{{ mailtag[0] }}>{{ mailtag[1] | replace: 'i', mailbit }}{%- endif -%}{%- endfor -%}</a></p>
+        </section>
+        <div class="g-foot-copy" aria-hidden="true" inert>{% include footer.html %}</div>
+      </div>
+    </div>
+  </section>
+  {%- comment -%}
+    What the rooms' feet take, measured before the first frame is drawn, in one look: each room's foot (its exhibit,
+    or its icon, the taller), whose height its name takes what's left of (Lark's), how far down Michi's room its words
+    and icon reach, whose stamps take what's left under them on a phone, and the Studio's paragraph, under which,
+    upright, the address takes what's left (grid.css, --g-piece, --g-words and --g-para; grid.js measures them again
+    when the fonts are in, and on every resize).
+  {%- endcomment %}
+  {%- comment -%}
+    And where the address names a screen (/#lark, the apps' /#contact): the page put on it at once, before it's first
+    drawn, rather than only once the scripts have run (Chrome draws the page's head first). Under the void that's
+    unseen; under Reduce Motion it's the first screen not shown for a moment first.
+  {%- endcomment %}
+  <script>(function () { var id = ''; try { id = decodeURIComponent((location.hash || '').slice(1)); } catch (e) { return; } var el = id && document.getElementById(id); if (el && window.scrollTo) window.scrollTo({ top: Math.round(el.getBoundingClientRect().top + window.scrollY), left: 0, behavior: 'instant' }); })();</script>
+  <script>(function () { if (!document.querySelectorAll) return; var each = function (list, fn) { Array.prototype.forEach.call(list, fn); }; var h = [], w = [], rooms = document.querySelectorAll('[data-g-room]'); each(rooms, function (r, i) { h[i] = 0; each(r.querySelectorAll('.g-piece, .g-icon'), function (el) { h[i] = Math.max(h[i], el.getBoundingClientRect().height); }); var g = r.querySelector('.g-piece .album') && r.querySelector('.g-grid'); if (g) { var y0 = g.getBoundingClientRect().top; w[i] = 0; each(r.querySelectorAll('.g-intro, .g-icon'), function (el) { w[i] = Math.max(w[i], el.getBoundingClientRect().bottom - y0); }); } }); var p = document.querySelector('.g-studio__text'), ph = p ? p.getBoundingClientRect().height : 0; each(rooms, function (r, i) { if (h[i]) r.style.setProperty('--g-piece', Math.ceil(h[i]) + 'px'); if (w[i]) r.style.setProperty('--g-words', Math.ceil(w[i]) + 'px'); }); if (p) p.closest('.g-room--studio').style.setProperty('--g-para', Math.ceil(ph) + 'px'); })();</script>
+</div>

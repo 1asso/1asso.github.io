@@ -1,0 +1,34 @@
+{%- comment -%}
+  For the privacy page (_layouts/doc.html): a copy of the header for one region of the page, drawn in the region's own
+  ink on its own ground, with the grid ruled through it, so the header always takes the colors of what's under it, and
+  changes exactly where a region's edge passes under it, as the home page's does from screen to screen.
+  Every region's copy is in the one layer the layout lays under the real header (.gd-heads), none of them in its
+  region: it's the box it's in that stands where its region does, and the copy is fixed to the screen within it, so
+  as the page scrolls each is seen over just the part of the header's band its region is under, its edge where the
+  region's is (doc.css). So the header itself never moves.
+  It looks like header.html, element for element (the same classes, so the same layout), but nothing in it is a
+  link: the real header lies over it, clear, and takes the pointer and the keyboard. Its words are drawn by CSS
+  (data-t), so a find in the page never finds them. Decorative: the layer is aria-hidden and inert.
+  Params
+    of        the kind of region it's for: start (the first screen), band, text (a part's), end
+    current   optional  the key of the part its region belongs to (its entry in the index is marked)
+    index     optional  false for no index (the first screen, the end)
+    ink       optional  a band's ink: light, dark (an app's room_text) or void (the studio's); none on the canvas
+    ground    optional  a band's ground (a CSS color); none on the canvas
+    on        optional  true for the copy shown before the copies are placed: the first screen's
+{%- endcomment -%}
+<div class="gd-head{% if include.ink %} gd-head--{{ include.ink }}{% endif %}{% if include.on %} is-on{% endif %}" data-gd-head="{{ include.of }}"{% if include.current %} data-gd-key="{{ include.current }}"{% endif %}{% if include.ground %} style="--ground: {{ include.ground }}"{% endif %}>
+  <div class="gd-head__bar">
+    <div class="gd-head__lines">{% for n in (1..12) %}<i></i>{% endfor %}</div>
+    <div class="site-head wrap">
+      <a class="brand">
+        {%- include mark.html class="brand__mark" -%}
+        <span class="brand__name gd-t" data-t="{{ site.title }}"></span>
+      </a>
+      <div class="site-nav"><ul class="meta" role="list"><li><a class="gd-t" data-t="Contact"></a></li></ul></div>
+    </div>
+    {%- unless include.index == false %}
+    {% include doc-runner.html current=include.current %}
+    {%- endunless %}
+  </div>
+</div>

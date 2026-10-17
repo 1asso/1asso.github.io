@@ -1,7 +1,10 @@
-/* Tiny Bit Studio: "Gallery"
-   A small exhibition. One 12-column grid, three text sizes (display, text, meta), no rules or
-   dividers: space does the dividing. Color comes from the apps.
-   README.md says where things live and how to change them. */
+/* Tiny Bit Studio: “Color rooms”
+   Every room begins as a bit. The home page is a run of rooms painted edge to edge, each in its app's
+   color, and you enter each through its bit, which grows until its color is everything (doors.css).
+   One 12-column grid, three text sizes (display, text, meta) and the rooms' names at poster size, no
+   rules or dividers: space and color do the dividing. Color comes from the apps (head.html writes it
+   from apps.yml): their bits on the page and the grounds of their rooms, never text. README.md says
+   where things live and how to change them. */
 
 /* ---------------------------------------------------------------- Fonts */
 
@@ -41,27 +44,24 @@
 /* ---------------------------------------------------------------- Tokens */
 
 :root {
-  /* Light: a bright, faintly cool white wall; plinths a shade deeper, so they read as objects' fields. */
+  /* Light: a bright, faintly cool white page; a field (the 404's) is a shade deeper. */
   --canvas: #F8F9FA;
-  --plinth: #E9EBEE;
-  --ink: #0D0E10;
-  --ink-2: #53575E;          /* 6.9:1 on canvas, 6.1:1 on plinth */
-  --ink-3: #62666D;          /* 5.5:1 on canvas, 4.8:1 on plinth */
-  --glow: rgb(255 255 255 / 0.5);   /* a very faint daylight spot on each plinth */
+  --field: #E9EBEE;
+  --ink: #0D0E10;            /* 18.3:1 on canvas, 16.2:1 on the field */
+  --ink-2: #53575E;          /* 6.9:1 on canvas, 6.1:1 on the field */
+  --ink-3: #62666D;          /* 5.5:1 on canvas, 4.8:1 on the field */
   --icon-shadow: 0 1px 1.5px rgb(13 14 16 / 0.07), 0 10px 16px rgb(13 14 16 / 0.13);
+  /* The Studio's ground: a room inverted, the ink in light mode and the light page in dark. */
+  --studio-room: #0D0E10;
 
-  /* Color belongs to the apps: marks and bits only, never text. */
-  --kozeni: #EF5F31;         /* coral, the coin: 3.1:1 on canvas */
-  --lark: #3E8995;           /* teal: 3.8:1 on canvas, 3.4:1 on plinth */
-  --michi: #2F4FA2;          /* ultramarine, the stamp's sea: 7.2:1 on canvas, 6.4:1 on plinth */
-  --kozeni-gel: transparent;
-  --lark-gel: transparent;
-  --michi-gel: transparent;
+  /* Color belongs to the apps: their bits and marks on the page, and the grounds of their rooms; never
+     text. Their colors (--michi, --lark, --kozeni, and --app inside an .is-<key> block) and their rooms'
+     grounds (--michi-room, …) aren't set here: head.html writes them into every page from apps.yml. */
 
   --sans: "Inter Tight", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
-  /* The three sizes. A page's content uses these and nothing else. */
+  /* The three sizes. A page's content uses these and nothing else (but for a room's name, its poster). */
   --display: clamp(2.75rem, 8.6vw, 8.5rem);
   --text: clamp(1.125rem, 0.9375rem + 0.390625vw, 1.25rem);   /* 18px, rising to 20px at 1280px */
   --meta: clamp(0.8125rem, 0.75rem + 0.125vw, 0.875rem);        /* 13px, rising to 14px */
@@ -72,38 +72,59 @@
   --g: clamp(16px, 1.667vw, 24px);   /* gutter */
   --max: 1680px;
 
+  /* The header's height, exactly, so the home page's first screen can be composed under it: its padding,
+     then the 44px brand and the 44px nav links standing on the wordmark's baseline, which lies 8 to 9.5px
+     lower in the brand (under its mark) than in a link. 54px holds both, in every engine, with the web
+     fonts or without. */
+  --head-pad: clamp(12px, 1.8vw, 28px);
+  --head-h: calc(var(--head-pad) + 54px);
+
   /* Space: it does the dividing. */
-  --room: clamp(7rem, 12vw, 13rem);  /* between rooms and sections */
-  --step: clamp(3.5rem, 6vw, 6rem);  /* between the parts of a room */
+  --room: clamp(7rem, 12vw, 13rem);         /* between sections on a page */
+  --room-pad: clamp(5rem, 9vw, 9rem);       /* a room's ground above its content, after its door */
+  --room-end: clamp(7rem, 12vw, 13rem);     /* and below it, before the next door */
+  --step: clamp(3.5rem, 6vw, 6rem);         /* between the parts of a room */
   --beat: clamp(1.5rem, 2.4vw, 2.5rem);
 
   --bit: 7px;
-  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);        /* arrivals, and everything that settles */
+  --ease-strike: cubic-bezier(0.55, 0, 0.3, 1);  /* a postmark coming down */
+  --t-press: 120ms;   /* a key's press, a bit filling */
+  --t-hover: 200ms;   /* colors and underlines */
+  --t-line: 240ms;    /* an arrow's nudge */
+  --t-slide: 320ms;   /* a stamp sliding into its place */
+  --t-stop: 360ms;    /* a sentence's bars */
+  --t-tick: 400ms;    /* the email's underline */
+  --t-sign: 900ms;    /* the logo's bit going home and back */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark: the gallery after hours. A deep neutral wall, slightly raised plinths, a spotlight on each. */
+    /* Dark: a deep neutral page, a field slightly raised. */
     --canvas: #121315;
-    --plinth: #1A1B1E;
-    --ink: #EDEEF0;
-    --ink-2: #A7ABB2;
-    --ink-3: #979BA2;
-    --glow: rgb(255 255 255 / 0.075);
+    --field: #1A1B1E;
+    --ink: #EDEEF0;          /* 16.0:1 on canvas, 14.8:1 on the field */
+    --ink-2: #A7ABB2;        /* 8.1:1 on canvas, 7.5:1 on the field */
+    --ink-3: #979BA2;        /* 6.7:1 on canvas, 6.2:1 on the field */
     --icon-shadow: 0 13px 22px rgb(0 0 0 / 0.5);
-
-    --kozeni: #FF7A47;
-    --lark: #36A9B5;
-    --michi: #5A78C8;
-    --kozeni-gel: rgb(255 122 71 / 0.06);   /* the spotlight's gel */
-    --lark-gel: rgb(54 169 181 / 0.065);
-    --michi-gel: rgb(90 120 200 / 0.06);
+    --studio-room: #F8F9FA;
   }
 }
 
-.is-kozeni { --app: var(--kozeni); --gel: var(--kozeni-gel); }
-.is-lark { --app: var(--lark); --gel: var(--lark-gel); }
-.is-michi { --app: var(--michi); --gel: var(--michi-gel); }
+/* The doors (doors.css) are drawn on screen, with motion allowed and without forced colors: by CSS where
+   scroll-driven animations run, or else by doors.js (.doors-js, which hero.html sets before the page
+   paints). There, each is --door-h tall, and a jump to a room skips its door (Rooms, below). Elsewhere
+   there are no doors, and the rooms meet edge to edge. */
+@supports (animation-timeline: view()) {
+  @media screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+    :root { --door-h: 90svh; }
+  }
+}
+@media screen and (forced-colors: none) {
+  :root.doors-js { --door-h: 90svh; }
+}
 
 /* ---------------------------------------------------------------- Base */
 
@@ -132,6 +153,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* A door's bit grows to hundreds of times its size, past every edge of the page; clipped here, it adds
+   nothing to the page's width or height. Clip, not hidden, so nothing inside becomes a scroller and
+   sticky things still stick to the screen. */
+main { overflow: clip; }
+
 img, svg, video { display: block; max-width: 100%; }
 img { height: auto; }
 p, h1, h2, h3, h4, h5, h6, ul, ol, dl, dd, figure, blockquote { margin: 0; padding: 0; }
@@ -148,10 +174,10 @@ a { color: inherit; text-decoration: none; }
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
   text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
-  transition: text-decoration-color 200ms var(--ease);
+  transition: text-decoration-color var(--t-hover) var(--ease);
 }
 :where(p, dd, li, td, th, figcaption) a:where(:not([class])):hover { text-decoration-color: var(--app, currentColor); }
-:where(.site-nav, .site-foot) a { text-decoration: none; }
+:where(.site-nav, .site-foot__nav) a { text-decoration: none; }
 
 :focus-visible {
   outline: 2px solid var(--ink);
@@ -171,6 +197,8 @@ a { color: inherit; text-decoration: none; }
   white-space: nowrap;
   border: 0;
 }
+/* Words that keep together. */
+.nowrap { white-space: nowrap; }
 
 .skip {
   position: absolute;
@@ -211,7 +239,10 @@ a { color: inherit; text-decoration: none; }
   .only-dark { display: inline; }
 }
 
-/* The square full stop: the logo's bit at display size, on the baseline. */
+/* ---------------------------------------------------------------- Stops, bits and toggles */
+
+/* The square full stop: the logo's bit at display size, on the baseline. Hollow, it's the mark for
+   "not here" (the 404 page's title), drawn at the status bits' stroke: a seventh of its side. */
 .stop {
   display: inline-block;
   width: 0.15em;
@@ -220,8 +251,13 @@ a { color: inherit; text-decoration: none; }
   background: currentColor;
   vertical-align: baseline;
 }
+.stop--hollow {
+  background: transparent;
+  box-shadow: inset 0 0 0 0.0214em currentColor;
+}
 
-/* A bit: a small square in the app's color. Hollow, in a status: not out yet. */
+/* A bit: a small square in the app's color (in a room, the room's ink). Filled: done, used or on.
+   Hollow: not yet, or your turn. */
 .bit {
   display: inline-block;
   flex: none;
@@ -233,11 +269,6 @@ a { color: inherit; text-decoration: none; }
 .bit--hollow {
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--app, currentColor);
-}
-/* Forced colors drop backgrounds and shadows, which would take the stop and the bits with them. */
-@media (forced-colors: active) {
-  .stop, .bit { forced-color-adjust: none; background: CanvasText; }
-  .bit--hollow { background: transparent; box-shadow: inset 0 0 0 1px CanvasText; }
 }
 
 .status { color: var(--ink-3); }
@@ -261,13 +292,54 @@ a { color: inherit; text-decoration: none; }
   text-decoration-thickness: 1px;
   text-underline-offset: 0.22em;
   text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
-  transition: text-decoration-color 200ms var(--ease);
+  transition: text-decoration-color var(--t-hover) var(--ease);
 }
 .more:hover { text-decoration-color: var(--app, currentColor); }
 .more__arrow { display: inline-block; margin-left: 0.35em; }
 /* When an arrow link stands on its own line, it is a block as wide as its text; its top margin
    is the visible gap minus the 10px of hit area. */
 .more--block { display: block; width: fit-content; }
+
+/* A toggle: the site's one button. Its text at the size around it (text or meta), underlined like a
+   link, after a bit that fills while it's on (.is-on). Its label always says what a press will do, so
+   there is no aria-pressed to contradict it. 44px tall to the finger (--hit above and below), no
+   taller to the eye. A plain toggle (.toggle--plain) has no bit. */
+.toggle {
+  --hit: 12px;
+  display: inline-block;
+  padding: var(--hit) 0;
+  margin: calc(-1 * var(--hit)) 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
+  transition: text-decoration-color var(--t-hover) var(--ease);
+}
+.toggle.meta { font-weight: 400; }
+.toggle:hover { text-decoration-color: var(--app, currentColor); }
+.toggle.is-on { text-decoration-color: currentColor; }
+.toggle::before {
+  content: "";
+  display: inline-block;
+  width: var(--bit);
+  height: var(--bit);
+  margin-right: 10px;
+  vertical-align: 0.02em;
+  box-shadow: inset 0 0 0 1px var(--app, currentColor);
+}
+.toggle.is-on::before { background: var(--app, currentColor); }
+.toggle--plain::before { content: none; }
+
+/* A control only a script can work: gone without JavaScript; with it, its place is kept from the first
+   paint, so nothing shifts, and it shows once the script that works it is ready (.is-ready). One whose
+   script failed stays out of sight rather than dead. */
+html:not(.js) [data-js-only] { display: none !important; }
+.js [data-js-only]:not(.is-ready) { visibility: hidden; }
 
 /* ---------------------------------------------------------------- Grid */
 
@@ -292,7 +364,8 @@ a { color: inherit; text-decoration: none; }
   align-items: baseline;   /* the nav sits on the wordmark's baseline */
   justify-content: space-between;
   gap: 0 16px;
-  padding-top: clamp(12px, 1.8vw, 28px);
+  min-height: var(--head-h);   /* exact on one line; were it ever to wrap (a much larger text size), it grows */
+  padding-top: var(--head-pad);
 }
 .brand {
   display: inline-flex;
@@ -307,6 +380,8 @@ a { color: inherit; text-decoration: none; }
 }
 .mark { fill: currentColor; shape-rendering: crispEdges; overflow: visible; }
 .brand__mark { position: relative; top: 4px; }
+/* The links are 44px tall and padded at the sides; the list is pulled out by the same padding at every
+   width, so Contact's last letter ends exactly on the right margin. */
 .site-nav ul { display: flex; gap: clamp(4px, 1.6vw, 24px); margin-right: -8px; }
 .site-nav a {
   display: inline-flex;
@@ -314,356 +389,149 @@ a { color: inherit; text-decoration: none; }
   min-height: 44px;
   padding-inline: 8px;
   color: var(--ink-2);
-  transition: color 200ms var(--ease);
+  transition: color var(--t-hover) var(--ease);
 }
 .site-nav a:hover { color: var(--ink); }
 
+@media (prefers-reduced-motion: no-preference) {
+  /* The logo's bit goes back into its notch, then comes out again, on hover or focus. */
+  .brand:hover .mark__bit, .brand:focus-visible .mark__bit { animation: bit-home var(--t-sign) var(--ease); }
+  @keyframes bit-home { 40%, 62% { transform: translate(-6px, 6px); } }
+}
+
 /* ---------------------------------------------------------------- Footer */
 
+/* Nothing under its last line but what frames the page (below). */
 .site-foot {
+  padding-top: 24px;
+  color: var(--ink-3);
+}
+.site-foot__row {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
   gap: 8px 32px;
-  padding-top: 24px;
-  padding-bottom: 36px;
-  color: var(--ink-3);
 }
+.site-foot__row + .site-foot__row { margin-top: 24px; }
 .site-foot__sign { display: flex; align-items: baseline; gap: 14px; }
 .site-foot__mark { position: relative; top: 5px; fill: var(--ink); }
-.site-foot a { display: inline-block; padding-block: 6px; transition: color 200ms var(--ease); }
-.site-foot a:hover { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.25em; }
-
-/* ---------------------------------------------------------------- Plinth */
-
-.plinth {
-  position: relative;
-  display: grid;
-  place-items: center;
-  background: var(--plinth);
-  overflow: hidden;
-  isolation: isolate;
+/* The footer's links are 44px tall to the finger. */
+.site-foot__nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  transition: color var(--t-hover) var(--ease);
 }
-.plinth::before {
-  /* the light over the work, with the app's gel in it */
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background:
-    radial-gradient(40% 46% at 50% 44%, var(--gel, transparent), transparent 70%),
-    radial-gradient(56% 60% at 50% 44%, var(--glow), transparent 74%);
+.site-foot__nav a:hover { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.25em; }
+/* The footer's last line, its links, as far over the page's foot as the caps of the header's links are under its top,
+   the same words in the same face at the same size, so a page is framed alike at its head and its foot: the header's
+   baseline is its padding and 35px down (the brand's 9px and the mark's 26px, the mark on the baseline), and IBM Plex
+   Mono's caps are 0.698em. The links' words are in the middle of their 44px, so their baseline is 22px less 0.375em
+   over the links' foot (the face's ascent is 1.025em, its descent 0.275em). */
+.site-foot__nav .dots { margin-bottom: calc(var(--head-pad) + 35px - 0.698em - 22px + 0.375em); }
+/* Over the last 80px of the page the footer mark's bit slides home into its notch, following the scroll
+   both ways, so at the very bottom the mark is one square. Where scroll timelines aren't supported, the
+   mark simply stays as it is. A bitless page (the 404) has no bit to bring home. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .site-foot__mark .mark__bit { animation: foot-bit-home linear both; animation-timeline: scroll(root block); animation-range: calc(100% - 80px) 100%; }
+    @keyframes foot-bit-home { to { transform: translate(-6px, 6px); } }
+  }
 }
-.plinth picture { display: contents; }
+
+/* ---------------------------------------------------------------- Rooms */
+
+/* A room (room.html), one for each app, painted edge to edge in its ground (--ground: room and room_dark
+   in apps.yml), its text in the room's ink: white or ink (room_text), the second ink at 86% and the third
+   at 84%, which hold 4.85:1 or more on every room's ground by day and on the white rooms' at night; the ink
+   room's ground at night (Kozeni's deeper coral) takes 94% and 92%, which hold 4.5:1. Inside, the inks are the
+   room's, so everything there (toggles, bits, focus rings, an exhibit's
+   labels) takes them with no rule of its own, and head.html makes the apps' colors the room's ink there
+   too. The Studio (index.html) is a room inverted: the ink's ground in light mode, the light page's in
+   dark, its text the other way about. Contact is back on the page's canvas.
+   Rooms, the Studio and Contact are positioned, with no z-index, and so are their contents, so that they
+   paint in the order they come: a door's bit (doors.css) paints over the end of the room before it as it
+   grows, and its own room's content paints over the bit. Give nothing in them a z-index that changes
+   that order. */
+.room, .room--studio, .contact { position: relative; background: var(--ground); }
+.room, .room--studio {
+  color: var(--room-ink);
+  --ink: var(--room-ink);
+  --ink-2: var(--room-ink-2);
+  --ink-3: var(--room-ink-3);
+}
+.room { --app: var(--room-ink); padding-bottom: var(--room-end); }
+.room--text-light, .room--studio { --room-ink: #FFFFFF; --room-ink-2: rgb(255 255 255 / 0.86); --room-ink-3: rgb(255 255 255 / 0.84); }
+.room--text-dark { --room-ink: #0D0E10; --room-ink-2: rgb(13 14 16 / 0.86); --room-ink-3: rgb(13 14 16 / 0.84); }
+@media (prefers-color-scheme: dark) {
+  .room--text-dark { --room-ink-2: rgb(13 14 16 / 0.94); --room-ink-3: rgb(13 14 16 / 0.92); }
+  .room--studio { --room-ink: #0D0E10; --room-ink-2: rgb(13 14 16 / 0.86); --room-ink-3: rgb(13 14 16 / 0.84); }
+}
+/* A selection in a room is its ink, the selected words its ground. */
+:is(.room, .room--studio) ::selection { background: var(--room-ink); color: var(--ground); }
+
+/* In-page jumps (/#lark, /#contact) land on the content, past the door and the ground above it (html's
+   scroll-padding adds 24px); where there are no doors, --door-h isn't set and there's nothing to skip. */
+.rooms, .room, .room--studio, .contact { scroll-margin-top: calc(-1 * var(--room-pad)); }
+:is(.room, .room--studio, .contact):has(> .door) { scroll-margin-top: calc(-1 * (var(--door-h, 0px) + var(--room-pad))); }
+
+/* The room's name is its poster, on one line in the first eight columns, its caps trimmed to the line so
+   it stands exactly on its baseline. Beside it, on that baseline, the gloss, the pitch and the badge,
+   the badge's foot on the name's baseline. */
+.room__main { position: relative; align-items: start; container-type: inline-size; padding-top: var(--room-pad); }   /* the grid its icon is measured against */
+.room__head { grid-column: 1 / span 8; align-self: end; align-self: last baseline; }
+.room__intro { grid-column: 9 / -1; align-self: end; align-self: last baseline; }
+.room__name {
+  font-size: clamp(5.5rem, 20vw, 21rem);
+  letter-spacing: -0.045em;
+  line-height: 0.8;
+  margin-left: -0.06em;
+  white-space: nowrap;
+}
+.status + .room__name { margin-top: 28px; }   /* an app not out yet: its status over its name */
+.room__gloss { color: var(--ink-3); }
+.room__gloss + .room__pitch { margin-top: 12px; }
+.room__pitch { max-width: 22em; text-wrap: pretty; }
+.room__store { margin-top: 24px; }
+
+/* A field: flat ground a shade off the page, for something to stand on (the 404's mark). */
+.field { background: var(--field); }
+.field picture { display: contents; }
 /* With the picture unwrapped, its <source> would become an empty grid item and take a row of its
-   own, pushing the icon below the middle. Sources never render, so take them out of the layout. */
-.plinth source { display: none; }
-/* An app's icon is one size in every room, whatever its plinth's width: under a fifth of the room's
-   grid (about a third of a seven-column plinth), never wider than 16rem. Its shadow is a box-shadow
-   on a 26% corner, which follows the icons' own within about a pixel, not a drop-shadow on its
-   pixels: Safari repaints only the icon's square when its image arrives after the first paint,
-   and that cuts a drop-shadow off square (WebKit bug 236758). */
-.plinth__icon {
+   own, pushing the icon out of place. Sources never render, so take them out of the layout. */
+.field source { display: none; }
+/* In a room the room's own color is the field: the exhibit row has no panel. The icon stands in the
+   first four columns, the app's piece in the other eight, the page grid running through both. */
+.room__field {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: start;
+  margin-top: var(--step);
+  background: none;
+}
+.field__object { grid-column: 1 / span 4; }
+.field__piece { grid-column: 5 / -1; }
+/* An app's icon is one size in every room: under a fifth of the room's grid, never wider than 16rem.
+   Its shadow is a box-shadow on a 26% corner, which follows the icons' own within about a pixel, not a
+   drop-shadow on its pixels: Safari repaints only the icon's square when its image arrives after the
+   first paint, and that cuts a drop-shadow off square (WebKit bug 236758). */
+.field__icon {
   width: min(18cqi, 16rem);
   height: auto;
   border-radius: 26%;
   box-shadow: var(--icon-shadow);
 }
-.plinth--room { aspect-ratio: 5 / 4; max-height: 42rem; }
 
-/* ---------------------------------------------------------------- Label */
-
-.label { color: var(--ink-2); }
-.label dd { text-wrap: balance; }   /* a line that wraps splits evenly, never leaving one word behind */
-.label__lead { color: var(--ink); }
-
-/* ---------------------------------------------------------------- Store badge */
-
+/* Apple's badge, scaled but unaltered. */
 .store { display: grid; justify-items: start; gap: 14px; }
 .store__badge { display: block; border-radius: 8px; }
 .store__badge img { width: auto; height: 44px; }
 
-/* ---------------------------------------------------------------- Hero */
-
-.hero { padding-top: clamp(2.5rem, 7.5vh, 6.5rem); }
-.hero__title { margin-left: -0.06em; }
-.hero__lede {
-  margin-top: clamp(2.25rem, 4.6vw, 4.25rem);
-  max-width: 27em;
-  color: var(--ink-2);
-  text-wrap: pretty;
-}
-
-/* ---------------------------------------------------------------- Rooms */
-
-.room { padding-top: var(--room); }
-.rooms > .room:first-of-type { padding-top: clamp(4rem, 7vw, 7.5rem); }
-/* In-page jumps land on the content, not on the space above it (html's scroll-padding adds 24px). */
-.room, .studio, .contact { scroll-margin-top: calc(-1 * var(--room)); }
-.rooms, .rooms > .room:first-of-type { scroll-margin-top: calc(-1 * clamp(4rem, 7vw, 7.5rem)); }
-.room__main { align-items: start; container-type: inline-size; }   /* the grid its icon is measured against */
-.room__name { margin-left: -0.055em; }
-.status + .room__name { margin-top: 28px; }   /* an app not out yet: its status over its name */
-.room__gloss { margin-top: 18px; color: var(--ink-3); }
-.room__pitch { margin-top: 30px; max-width: 26em; text-wrap: pretty; }
-.room__store { margin-top: 32px; }
-
-/* Kozeni: the object on the left, its head and label on the right. Mirrored, the other way round. */
-.room--kozeni .plinth { grid-column: 1 / span 7; grid-row: 1 / span 2; }
-.room--kozeni .room__head { grid-column: 9 / -1; grid-row: 1; }
-.room--kozeni .room__label { grid-column: 9 / -1; grid-row: 2; align-self: end; margin-top: 48px; }
-.room--kozeni.room--mirror .plinth { grid-column: 6 / -1; }
-.room--kozeni.room--mirror .room__head, .room--kozeni.room--mirror .room__label { grid-column: 1 / span 4; }
-
-/* A stage room (Lark's, Michi's): the name and its line across the top, ending on one baseline (the
-   badge's foot, or without a badge the line's last baseline, sits on the name's), a gloss under the
-   name, then a wide plinth with the icon and the app's exhibit (Lark's covered sentence, Michi's
-   album), with the label under the icon and, for Lark, the rhythm under the sentence.
-   A brief room, for an app in development, is that top line alone. */
-.room--stage .room__head, .room--brief .room__head { grid-column: 1 / span 4; align-self: end; align-self: last baseline; }
-.room--stage .room__intro, .room--brief .room__intro { grid-column: 5 / span 6; align-self: end; align-self: last baseline; }
-.room--stage .room__pitch, .room--brief .room__pitch { margin-top: 0; }
-/* A gloss goes under the name on a row of its own, so the line beside the name still ends on its baseline. */
-.room--stage .room__gloss { grid-column: 1 / span 4; }
-.room--stage .stage { margin-top: var(--step); }
-.room--stage .room__label { grid-column: 1 / span 4; margin-top: var(--beat); }
-.room--stage .room__row { grid-column: 5 / -1; margin-top: var(--beat); }
-
-/* The stage: a wide plinth for an object and a piece beside it. It shares the page grid. */
-.stage {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: subgrid;
-  place-items: initial;   /* undo the plinth's centering first, so the line below survives it */
-  align-items: center;
-  padding-block: clamp(3rem, 6vw, 6.5rem);
-}
-.stage::before {
-  background:
-    radial-gradient(18% 44% at 17% 50%, var(--gel, transparent), transparent 70%),
-    radial-gradient(24% 58% at 17% 50%, var(--glow), transparent 74%),
-    radial-gradient(40% 70% at 64% 50%, var(--glow), transparent 76%);
-}
-.stage__object { grid-column: 1 / span 4; justify-self: center; }
-.stage__piece { grid-column: 5 / -1; padding-right: clamp(24px, 4vw, 72px); }
-
-/* Points: run-in feature points. */
-.points { margin-top: var(--step); row-gap: 32px; }
-.points > li {
-  grid-column: span 3;
-  max-width: 24em;
-  color: var(--ink-2);
-  text-wrap: pretty;
-}
-.points strong { color: var(--ink); }
-
-/* ---------------------------------------------------------------- Covered (Lark's exhibit) */
-
-/* The bars are a tint of the ink, not a block of it: a quiet exhibit of Lark's redacted lines. */
-.covered { --cover: rgb(13 14 16 / 0.17); }
-@media (prefers-color-scheme: dark) {
-  .covered { --cover: rgb(237 238 240 / 0.16); }
-}
-.covered__turn { color: var(--ink-2); text-box: trim-both cap alphabetic; }
-.covered__turn .bit { margin-right: 10px; }
-.covered__line { margin-top: var(--beat); hyphens: none; text-wrap: wrap; }
-.covered__unit { white-space: nowrap; }
-.covered__word { display: inline-block; position: relative; }
-.covered__word::after {
-  /* the redaction bar: the word's own width, punctuation included, from the baseline to about the
-     x-height, with the soft corners of Lark's own placeholders, which leave no glyph showing */
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0.03em;
-  top: 0.32em;
-  bottom: 0.12em;
-  border-radius: 0.07em;
-  background: var(--cover);
-  opacity: 0;
-  pointer-events: none;
-}
-@media (forced-colors: active) {
-  .covered__word::after { forced-color-adjust: none; background: CanvasText; }
-}
-.is-covered .covered__line { color: var(--ink-3); cursor: pointer; }
-.is-covered .covered__word { visibility: hidden; }
-.is-covered .covered__word::after { visibility: visible; opacity: 1; }
-.covered__foot {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 14px 36px;
-  margin-top: var(--beat);
-}
-.covered__meaning { flex: 1 1 16em; color: var(--ink-2); text-wrap: pretty; }
-.is-covered .covered__meaning { visibility: hidden; }
-.covered__toggle {
-  display: inline-block;
-  padding: 10px 0;
-  margin: -10px 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  font-weight: 500;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.22em;
-  text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
-}
-.covered__toggle:hover { text-decoration-color: var(--app, currentColor); }
-.covered:not(.is-covered) .covered__toggle { text-decoration-color: currentColor; }
-/* Its state, to the eye: a bit that fills while the sentence is shown. */
-.covered__toggle::before {
-  content: "";
-  display: inline-block;
-  width: var(--bit);
-  height: var(--bit);
-  margin-right: 10px;
-  vertical-align: 0.02em;
-  box-shadow: inset 0 0 0 1px var(--app, currentColor);
-}
-.covered:not(.is-covered) .covered__toggle::before { background: var(--app, currentColor); }
-@media (forced-colors: active) {
-  .covered__toggle::before { forced-color-adjust: none; box-shadow: inset 0 0 0 1px ButtonText; }
-  .covered:not(.is-covered) .covered__toggle::before { background: ButtonText; }
-}
-.covered__toggle[hidden] { display: none; }
-
-/* ---------------------------------------------------------------- Rhythm (Lark's drill) */
-
-.rhythm {
-  --rb: 10px;      /* a square */
-  --rgap: 5px;
-  display: flex;
-  gap: var(--g);
-}
-.rhythm__run { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.rhythm__run--play, .rhythm__run--again { flex: 10 1 0; }
-.rhythm__run--turn { flex: 17 1 0; }    /* your turn lasts 1.7 times the sentence, by default */
-.rhythm__bits {
-  display: block;
-  height: var(--rb);
-  margin-right: calc(-1 * var(--rgap));
-  background-color: var(--app, currentColor);
-  -webkit-mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10'><rect width='10' height='10'/></svg>") left center / calc(var(--rb) + var(--rgap)) var(--rb) space no-repeat;
-  mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10'><rect width='10' height='10'/></svg>") left center / calc(var(--rb) + var(--rgap)) var(--rb) space no-repeat;
-}
-/* Whole squares only. Safari ignores "space" in mask-repeat and ends a run on a sliver of a square,
-   so where round() exists the run is cut to a whole number of squares and the mask simply repeats. */
-@supports (width: round(down, 1px, 1px)) {
-  .rhythm__bits {
-    width: round(down, calc(100% + var(--rgap)), calc(var(--rb) + var(--rgap)));
-    margin-right: 0;
-  }
-}
-.rhythm__run--turn .rhythm__bits {
-  -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10'><rect x='0.75' y='0.75' width='8.5' height='8.5' fill='none' stroke='black' stroke-width='1.5'/></svg>");
-  mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10'><rect x='0.75' y='0.75' width='8.5' height='8.5' fill='none' stroke='black' stroke-width='1.5'/></svg>");
-}
-.rhythm__label { color: var(--ink-2); text-wrap: balance; }
-@media (forced-colors: active) {
-  .rhythm__bits { background-color: CanvasText; }
-}
-
-/* ---------------------------------------------------------------- Album (Michi's exhibit) */
-
-/* Two shelves of Michi's album side by side, Upcoming then Postmarked, each shelf's name over its stamps.
-   They share one row of equal places, one more than there are stamps (--slots), each shelf as wide as its
-   stamps (--count, from site.js), Postmarked kept to the row's end: the place between them is the one an
-   empty shelf takes, to be dropped on, saying it's empty. So the stamps keep their size, and the album its
-   height, whichever shelf they're on. Under 1080px the shelves stack, and an empty one is just its line.
-   A stamp leans by its --lean, left in the first place on its shelf and right in the second, as the
-   album's do, and swings to its new lean when it moves. Picked up (site.js), it's lifted off the page and
-   straightened, and the others make way. */
-.album {
-  --album-gap: clamp(18px, 2.4vw, 36px);
-  display: grid;
-  grid-template-columns: repeat(var(--slots, 6), minmax(0, 1fr));
-  column-gap: var(--album-gap);
-}
-.album__defs { position: absolute; width: 0; height: 0; overflow: hidden; }
-.album__shelf {
-  grid-column: span var(--count, 1);
-  display: grid;
-  grid-template-columns: subgrid;
-  align-content: start;
-}
-.album__shelf + .album__shelf { grid-column-end: -1; }
-.album__name { grid-column: 1 / -1; color: var(--ink-2); text-box: trim-both cap alphabetic; }
-.album__name .bit { margin-right: 10px; }
-.album__stamps {
-  position: relative;
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: subgrid;
-  row-gap: var(--album-gap);
-  margin-top: calc(var(--beat) * 1.25);
-}
-.album__shelf.is-empty .album__stamps { min-height: var(--stamp-height, 0); }
-.album__shelf.is-empty .album__stamps::before {
-  content: attr(data-empty);
-  grid-column: 1 / -1;
-  align-self: center;
-  font-family: var(--mono);
-  font-size: var(--meta);
-  line-height: 1.55;
-  color: var(--ink-3);
-}
-/* What a stamp does, under the shelves; without JavaScript it does nothing, so it isn't said. */
-.album__hint { display: none; grid-column: 1 / -1; margin-top: calc(var(--beat) * 1.25); color: var(--ink-3); }
-.js .album__hint { display: block; }
-.album__stamp {
-  position: relative;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
-}
-.album__print { rotate: calc(-1 * var(--lean, 2deg)); }
-.album__stamp:nth-child(even) .album__print { rotate: var(--lean, 2deg); }
-.js .album__stamp { cursor: grab; touch-action: pan-y; }   /* a drag up or down still scrolls the page */
-.album__stamp:focus-visible { outline: none; }
-.album__stamp:focus-visible .album__print { outline: 2px solid var(--ink); outline-offset: 8px; border-radius: 2px; }
-.album__stamp.is-lifted { z-index: 2; cursor: grabbing; }
-.album .album__stamp.is-lifted .album__print { rotate: 0deg; scale: 1.08; filter: drop-shadow(0 18px 16px rgb(0 0 0 / 0.14)); }
-.album__stamp:not(.is-postmarked) .stamp__postmark { opacity: 0; }
-
-/* A stamp: paper that stays light in dark mode, as in Michi, printed in its trip's ink (--ink, set on
-   each stamp's svg), the deep shade Michi prints stamps in: the sea solid, the land the paper, no coast drawn. */
-.stamp__svg { display: block; width: 100%; height: auto; overflow: visible; forced-color-adjust: none; }
-.stamp__paper { fill: #FFFDF8; }
-.stamp__ink { fill: var(--ink); }
-.stamp__line, .stamp__casing { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
-.stamp__casing { stroke: #FFFDF8; }
-.stamp__tablet { fill: #FFFDF8; stroke: var(--ink); }
-.stamp__land { fill: #FFFDF8; }
-.stamp__cancel { fill: none; stroke: #2B2620; opacity: 0.72; }   /* one translucent coat of Michi's cancellation ink, however its strokes cross */
-.stamp__struck { mix-blend-mode: multiply; }
-.stamp__mark { fill: #2B2620; stroke: none; font-family: var(--sans); font-weight: 700; }
-/* In dark mode a postmark is struck twice, as Michi strikes it: masked to the stamp, in its dark ink, and where it
-   runs off onto the page, in the page's light ink, as translucent and laid on rather than multiplied, where the dark
-   one would vanish. In light mode the first is the whole postmark and the second isn't drawn. Where it crosses the
-   sea it's struck in the light ink too, in either mode, where the dark one would vanish into the ink. */
-.stamp__struck--page { display: none; }
-.stamp__struck--sea { mix-blend-mode: normal; }
-.stamp__struck--sea .stamp__cancel { stroke: #EDE6DA; }
-.stamp__struck--sea .stamp__mark { fill: #EDE6DA; }
-@media (prefers-color-scheme: dark) {
-  .stamp__light-page { display: none; }
-  .stamp__struck--page { display: inline; mix-blend-mode: normal; }
-  .stamp__struck--page .stamp__cancel { stroke: #EDE6DA; }
-  .stamp__struck--page .stamp__mark { fill: #EDE6DA; }
-}
-/* New York where the browser offers it (Safari's ui-serif), else a serif whose numerals stand on the line:
-   Georgia's 3, 4, 5 and 9 hang below it, into the DAYS under them. */
-.stamp__serif { font-family: ui-serif, Charter, "Bitstream Charter", "Sitka Text", Cambria, "Noto Serif", serif; font-variant-numeric: lining-nums; }
-.stamp__caps { font-family: var(--sans); }
-
 /* ---------------------------------------------------------------- Studio */
 
-.studio { padding-top: var(--room); align-items: start; }
+.studio__main { position: relative; align-items: start; padding-block: var(--room-pad) var(--room-end); }
 .studio__title { color: var(--ink-3); text-box: trim-both cap alphabetic; }
 .motto { margin-top: 40px; }
 .motto__quote { margin-left: -0.06em; }
@@ -677,24 +545,10 @@ a { color: inherit; text-decoration: none; }
   color: var(--ink-2);
   text-wrap: pretty;
 }
-.bench { grid-column: 7 / -1; margin-top: var(--step); }
-.bench__title { color: var(--ink-3); text-box: trim-both cap alphabetic; }
-
-.workbench { display: grid; gap: 12px; margin-top: 22px; }
-.workbench__item {
-  display: grid;
-  grid-template-columns: 6.5rem minmax(0, 1fr);
-  column-gap: var(--g);
-  align-items: baseline;
-}
-.workbench__app { color: var(--ink-3); white-space: nowrap; }
-.workbench__text { text-wrap: balance; }   /* a subject that wraps never leaves one word behind */
-.workbench__app .bit { margin-right: 10px; }
-.workbench__more { margin-top: 20px; padding-left: calc(6.5rem + var(--g)); color: var(--ink-2); }
 
 /* ---------------------------------------------------------------- Contact */
 
-.contact { padding-block: var(--room); align-items: start; }
+.contact__main { position: relative; align-items: start; padding-block: var(--room-pad) var(--room-end); }
 .contact__title { color: var(--ink-3); text-box: trim-both cap alphabetic; }
 .contact__mail { margin-top: 40px; margin-left: -0.06em; }
 .contact__link {
@@ -705,243 +559,97 @@ a { color: inherit; text-decoration: none; }
 .contact__note { grid-column: 7 / span 5; margin-top: 48px; color: var(--ink-2); }
 .contact__note p { max-width: 29em; text-wrap: pretty; }
 
-/* ---------------------------------------------------------------- Doc pages (layout: doc) */
-
-.doc__head { padding-top: clamp(3rem, 8vw, 8rem); align-items: baseline; }
-.doc__label { grid-column: 1 / span 3; color: var(--ink-3); }
-.doc__title { grid-column: 4 / -1; margin-left: -0.055em; }
-.doc__updated { grid-column: 4 / -1; margin-top: 30px; color: var(--ink-3); }
-.doc__body { padding-block: var(--step) var(--room); }
-
-/* Prose: kramdown output flows into the text column with no classes. 31em of text is about 68
-   characters a line (68ch would be more: ch is a zero's width, wider than the average letter). */
-.prose { align-items: baseline; }
-.prose > * { grid-column: 4 / span 7; max-width: 31em; }
-.prose > * + * { margin-top: 1em; }
-.prose > h2 { margin-top: 2.75em; font-weight: 600; }
-.prose > h3 { margin-top: 2em; font-weight: 600; }
-.prose > h4, .prose > h5, .prose > h6 { margin-top: 1.5em; font-weight: 600; }
-.prose > :is(h2, h3, h4):where(:not(.margin)) + * { margin-top: 0.5em; }
-.prose > :first-child { margin-top: 0; }
-.prose :is(p, li, dd) { text-wrap: pretty; }
-/* A margin label: a short mono note beside the next block (or the heading it follows). Written as
-   a heading (### Label, then {: .margin}), it also names that part of the page for screen readers. */
-.prose > .margin {
-  grid-column: 1 / span 3;
-  font-family: var(--mono);
-  font-size: var(--meta);
-  font-weight: 400;
-  line-height: 1.55;
-  color: var(--ink-3);
-  text-wrap: balance;
-}
-/* It shares a row with its neighbor and sits on the same baseline, so it keeps no margin of its own. */
-.prose > .margin { margin-top: 0; }
-.prose > :is(h2, h3, h4) + .margin + * { margin-top: 0.5em; }
-/* A part that stands on its own (each policy on the privacy page): a display head, with a margin
-   label on its baseline, the way the page's title has one. */
-.prose > h2.display { grid-column: 4 / -1; margin-top: var(--step); font-weight: 500; }
-.prose > h2.display + .margin + * { margin-top: var(--beat); }
-.prose > .wide { grid-column: 4 / -1; max-width: none; }
-.prose ul, .prose ol { padding-left: 1.25em; }
-.prose ul { list-style: square; }
-.prose li + li, .prose li > ul, .prose li > ol { margin-top: 0.4em; }
-.prose li::marker { color: var(--ink-3); }
-.prose ol > li::marker { font-family: var(--mono); font-size: var(--meta); }
-.prose code, .prose kbd, .prose samp { font-family: var(--mono); font-size: 1em; }
-.prose pre { font-family: var(--mono); font-size: var(--meta); line-height: 1.6; overflow-x: auto; padding: 1.25em 1.5em; background: var(--plinth); }
-.prose pre code { font-size: inherit; }
-.prose blockquote { position: relative; padding-left: 1.4em; color: var(--ink-2); }
-.prose blockquote::before { content: ""; position: absolute; left: 0; top: 0.6em; width: var(--bit); height: var(--bit); background: var(--app, var(--ink-3)); }
-.prose blockquote > * + * { margin-top: 0.75em; }
-.prose hr { height: 0; margin-block: 1.5em; border: 0; }   /* a rule, drawn as space */
-.prose table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-.prose th {
-  font-family: var(--mono);
-  font-size: var(--meta);
-  font-weight: 400;
-  color: var(--ink-3);
-  text-align: left;
-}
-.prose th, .prose td { padding: 0.55em 1.25em 0.55em 0; vertical-align: baseline; }
-.prose :is(th, td):last-child { padding-right: 0; }
-.prose sup { font-family: var(--mono); font-size: var(--meta); line-height: 0; }
-.prose .footnotes { margin-top: var(--step); font-family: var(--mono); font-size: var(--meta); line-height: 1.55; color: var(--ink-2); }
-.prose .footnotes ol { padding-left: 1.75em; }
-.prose .reversefootnote { margin-left: 0.4em; text-decoration: none; }
-
-/* ---------------------------------------------------------------- 404 */
-
-.lost { padding-top: clamp(3rem, 8vw, 8rem); padding-bottom: var(--room); align-items: stretch; }
-.lost__title { margin-left: -0.06em; }
-.lost__plinth { grid-column: 1 / span 7; margin-top: var(--step); }
-.lost__info {
-  grid-column: 9 / -1;
-  margin-top: var(--step);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 48px;
-}
-.lost__note { max-width: 26em; color: var(--ink-2); text-wrap: pretty; }
-.lost__more { margin-top: 18px; }
-
 /* ---------------------------------------------------------------- Motion (all of it off under reduced motion) */
 
 @media (prefers-reduced-motion: no-preference) {
-  /* The hero settles once. */
-  .hero__title { animation: settle 720ms var(--ease) both; }
-  .hero__lede { animation: settle 720ms 90ms var(--ease) both; }
-  @keyframes settle { from { opacity: 0; transform: translateY(0.5rem); } }
-
-  /* The lights come up once as each plinth enters (site.js adds .is-in). */
-  .js [data-light]::before { opacity: 0; transition: opacity 1100ms var(--ease); }
-  .js [data-light].is-in::before { opacity: 1; }
-
-  .more__arrow { transition: transform 240ms var(--ease); }
+  .more__arrow { transition: transform var(--t-line) var(--ease); }
   .more:hover .more__arrow { transform: translateX(3px); }
 
-  /* The logo's bit goes back into its notch, then comes out again. */
-  .brand:hover .mark__bit, .brand:focus-visible .mark__bit { animation: bit-home 900ms var(--ease); }
-  @keyframes bit-home { 40%, 62% { transform: translate(-6px, 6px); } }
-
-  .covered__line { transition: color 360ms var(--ease); }
-  .covered__word::after { transition: opacity 360ms var(--ease); }
-
-  /* A stamp comes up off the shelf, swings to the lean of its new place, and is pressed into it; a postmark
-     comes down on it, and goes again. */
-  .album__print { transition: rotate 320ms var(--ease), scale 220ms var(--ease), filter 220ms var(--ease); }
-  .album__stamp.is-pressed .album__print { animation: stamp-press 260ms var(--ease); }
-  @keyframes stamp-press { 45% { scale: 0.97; } }
-  .stamp__postmark { transition: opacity 240ms var(--ease); }
-  .album__stamp.is-striking .stamp__postmark { animation: postmark-strike 340ms cubic-bezier(0.55, 0, 0.3, 1) both; }
-  @keyframes postmark-strike { from { opacity: 0; scale: 1.25; } 62% { opacity: 1; scale: 0.985; } }
-
   /* The email's underline draws itself in on hover. */
-  .contact__link { transition: background-size 400ms var(--ease); }
+  .contact__link { transition: background-size var(--t-tick) var(--ease); }
 }
 
 /* ---------------------------------------------------------------- Tablet: 720 to 1079 */
 
 @media (max-width: 1079px) {
-  /* A column of space between the object and its words, as on desktop. */
-  .room--kozeni .plinth { grid-column: 1 / span 5; grid-row: 1; aspect-ratio: 1; }
-  .room--kozeni .room__head { grid-column: 7 / -1; grid-row: 1 / span 2; }
-  .room--kozeni .room__label { grid-column: 1 / span 5; grid-row: 2; align-self: start; margin-top: 24px; }
-  .room--kozeni.room--mirror .plinth, .room--kozeni.room--mirror .room__label { grid-column: 8 / -1; }
-  .room--kozeni.room--mirror .room__head { grid-column: 1 / span 6; }
+  /* The name across the room, still a fifth of the screen; the gloss, the pitch and the badge under it. */
+  .room__name { font-size: 20vw; }
+  .room__head { grid-column: 1 / -1; }
+  .room__intro { grid-column: 1 / span 8; align-self: auto; margin-top: 36px; }
+  .field__icon { width: 13cqi; }
 
-  .room--stage .room__intro, .room--brief .room__intro { grid-column: 5 / -1; }
-  .plinth__icon { width: 13cqi; }   /* about a third of the five-column plinth */
-
-  .points > li { grid-column: span 6; }
-
-  /* The shelves stack, three stamps to a row; three across, the leans simply take turns. */
-  .album { display: block; }
-  .album__shelf + .album__shelf { margin-top: calc(var(--beat) * 1.75); }
-  .album__shelf, .album__stamps { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--album-gap); }
-  /* An empty shelf is just its name, its note at the end of the name's line, in a gap less room than a
-     stamp row takes: the shelf holding every stamp has a gap more between its rows, so the album keeps
-     its height. */
-  .album__shelf.is-empty .album__stamps { min-height: 0; height: 0; margin-top: calc(var(--beat) * 1.25 - var(--album-gap)); }
-  .album__shelf.is-empty .album__stamps::before { content: none; }
-  /* on the name, not in the grid: Safari sets a grid's absolutely placed note past its last column */
-  .album__shelf.is-empty .album__name { position: relative; }
-  .album__shelf.is-empty .album__name::after {
-    content: attr(data-empty);
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    color: var(--ink-3);
-    text-box: trim-both cap alphabetic;
-  }
-
-  .studio__text, .bench { grid-column: 1 / -1; max-width: 40em; }
+  .studio__text { grid-column: 1 / -1; max-width: 40em; }
   .contact__note { grid-column: 1 / -1; }
-
-  .lost__plinth { grid-column: 1 / span 5; aspect-ratio: 1; }
-  .lost__info { grid-column: 7 / -1; }
-}
-
-/* On tablets, prose takes the width to the right edge; 31em still keeps its lines to about 68 characters. */
-@media (min-width: 720px) and (max-width: 1079px) {
-  .prose > :not(.margin) { grid-column: 4 / -1; }
 }
 
 /* ---------------------------------------------------------------- Phone: under 720 */
 
 @media (max-width: 719px) {
-  .site-head { padding-top: 8px; }
-  .site-nav ul { gap: 0; }
+  :root { --head-pad: 8px; }
+  .site-nav ul { gap: 0; margin-right: -7px; }
   .site-nav a { padding-inline: 7px; }
 
-  .hero { padding-top: clamp(2.5rem, 10vw, 4rem); }
-  .hero__title { margin-left: -0.05em; }
+  /* The footer stacks. */
+  .site-foot__row { flex-direction: column; align-items: flex-start; }
 
+  /* Stacked: the name, the gloss, the pitch and the badge, then the exhibit row (the icon on top, then
+     the exhibit). */
   .room__main { row-gap: 0; }
-  .room--kozeni .room__head, .room--kozeni .plinth, .room--kozeni .room__label { grid-column: 1 / -1; grid-row: auto; }
-  .room--kozeni .plinth { margin-top: 44px; aspect-ratio: 1; }
-  .room--kozeni .room__label { margin-top: 20px; }
-  .plinth__icon { width: 38cqi; }
-
-  .room--stage .room__head, .room--stage .room__intro, .room--stage .room__gloss, .room--stage .room__label, .room--stage .room__row { grid-column: 1 / -1; align-self: auto; }
-  .room--stage .room__head { order: -2; }
-  .room--stage .room__gloss { order: -1; }   /* stacked, the gloss goes back under the name, over the line */
-  .room--brief .room__head, .room--brief .room__intro { grid-column: 1 / -1; align-self: auto; }
-  .room--stage .room__pitch, .room--brief .room__pitch { margin-top: 30px; }
-  .room--stage .room__label { margin-top: 20px; }
-  .room--stage .room__row { margin-top: 36px; }
-  .stage { padding: 40px 24px 32px; row-gap: 32px; }
-  .stage__object { grid-column: 1 / -1; }
-  .stage__piece { grid-column: 1 / -1; padding-right: 0; }
-  .stage::before {
-    background:
-      radial-gradient(46% 26% at 50% 20%, var(--gel, transparent), transparent 70%),
-      radial-gradient(58% 34% at 50% 20%, var(--glow), transparent 74%),
-      radial-gradient(70% 40% at 50% 68%, var(--glow), transparent 76%);
-  }
-
-  .points > li { grid-column: 1 / -1; }
-
-  /* Two to a row, as the album has them on a phone; its second row starts leaning the other way. */
-  .album__shelf, .album__stamps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .album__stamp:nth-child(n) .album__print { rotate: calc(-1 * var(--lean, 2deg)); }
-  .album__stamp:is(:nth-child(4n+2), :nth-child(4n+3)) .album__print { rotate: var(--lean, 2deg); }
-
-  /* stacked: the squares keep their proportions (10 : 17 : 10), the captions get the width */
-  .rhythm { flex-direction: column; gap: 18px; }
-  .rhythm__run { flex: none; gap: 10px; }
-  .rhythm__run--play .rhythm__bits, .rhythm__run--again .rhythm__bits { width: calc(42% + var(--rgap)); }
-  .rhythm__run--turn .rhythm__bits { width: calc(71% + var(--rgap)); }
-  @supports (width: round(down, 1px, 1px)) {
-    .rhythm__run--play .rhythm__bits, .rhythm__run--again .rhythm__bits { width: round(down, calc(42% + var(--rgap)), calc(var(--rb) + var(--rgap))); }
-    .rhythm__run--turn .rhythm__bits { width: round(down, calc(71% + var(--rgap)), calc(var(--rb) + var(--rgap))); }
-  }
-
-  .workbench { gap: 16px; }
-  .workbench__item { grid-template-columns: 1fr; row-gap: 2px; }
-  .workbench__item:nth-child(n+9) { display: none; }
-  .workbench__more { padding-left: 0; }
+  .room__name { font-size: clamp(4rem, 24vw, 8rem); }   /* Kozeni, the longest, fits at 320px */
+  .room__head, .room__intro { grid-column: 1 / -1; align-self: auto; }
+  .room__intro { margin-top: 28px; }
+  .room__field { row-gap: 32px; }
+  .field__object, .field__piece { grid-column: 1 / -1; }
+  .field__icon { width: 38cqi; }
 
   .contact__mail { margin-top: 32px; }
-
-  .doc__label, .doc__title, .doc__updated { grid-column: 1 / -1; }
-  .doc__title { margin-top: 18px; }
-  .prose > *, .prose > .wide, .prose > h2.display { grid-column: 1 / -1; }
-  .prose > .margin { grid-column: 1 / -1; margin-top: 2em; }
-  .prose > .margin + * { margin-top: 0.35em; }
-  /* A display head's label goes above it; a jump to the head (/privacy/#kozeni) keeps the label in view. */
-  .prose > .margin + h2.display { margin-top: 0.35em; }
-  .prose > h2.display { scroll-margin-top: 2.5rem; }
-  .prose > h2.display + .margin { margin-top: var(--beat); }
-  .prose > h2.display + .margin + * { margin-top: 0.35em; }
-
-  .lost__plinth, .lost__info { grid-column: 1 / -1; }
-  .lost__info { margin-top: 40px; }
 }
 
 @media (max-width: 400px) {
   :root { --m: 20px; }
   .brand { gap: 9px; font-size: 1rem; }
+  .site-nav ul { margin-right: -6px; }
   .site-nav a { padding-inline: 6px; }
+}
+
+/* ---------------------------------------------------------------- Forced colors, more contrast, print */
+
+/* Forced colors drop backgrounds and shadows, which would take the stops, the bits and the toggles'
+   bits with them; the rooms' grounds go too, and the rooms are the page's colors. */
+@media (forced-colors: active) {
+  .stop, .bit { forced-color-adjust: none; background: CanvasText; }
+  .stop--hollow { background: transparent; box-shadow: inset 0 0 0 0.0214em CanvasText; }
+  .bit--hollow { background: transparent; box-shadow: inset 0 0 0 1px CanvasText; }
+  .toggle::before { forced-color-adjust: none; box-shadow: inset 0 0 0 1px ButtonText; }
+  .toggle.is-on::before { background: ButtonText; }
+}
+
+/* More contrast, when it's asked for: the second ink becomes the first, and the third the second, on the
+   page and in every room. */
+@media (prefers-contrast: more) {
+  :root { --ink-2: #0D0E10; --ink-3: #53575E; }
+  .room--text-light, .room--studio { --room-ink-2: #FFFFFF; --room-ink-3: rgb(255 255 255 / 0.86); }
+  .room--text-dark { --room-ink-2: #0D0E10; --room-ink-3: rgb(13 14 16 / 0.86); }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root { --ink-2: #EDEEF0; --ink-3: #A7ABB2; }
+  .room--text-dark { --room-ink-2: #0D0E10; --room-ink-3: rgb(13 14 16 / 0.94); }
+  .room--studio { --room-ink-2: #0D0E10; --room-ink-3: rgb(13 14 16 / 0.86); }
+}
+
+/* Printed: the light scheme on white paper, without the controls, which paper can't press, and without
+   the rooms' grounds: they print in the page's inks. */
+@media print {
+  :root {
+    color-scheme: light;
+    --canvas: #FFF;
+    --field: #E9EBEE;
+    --ink: #000;
+    --ink-2: #53575E;
+    --ink-3: #62666D;
+    --icon-shadow: none;
+  }
+  .room, .room--studio, .contact { background: none; }
+  .room--text-light, .room--text-dark, .room--studio { --room-ink: #000; --room-ink-2: #53575E; --room-ink-3: #62666D; }
+  .skip, .toggle, [data-js-only] { display: none !important; }
 }

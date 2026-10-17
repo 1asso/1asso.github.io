@@ -1,0 +1,993 @@
+/* Long-form prose (_layouts/doc.html): the privacy page in the home page's language (index.html, grid.css), so the
+   three pages read as one site. It is a long policy that people read, and App Review reads, so reading and finding come
+   first, and motion frames the parts, never the paragraphs.
+
+   The first screen is a poster, as the home page's is: the title set across the columns, margin to margin, and at
+   its foot the policy in short. It arrives as the home page's does: for a beat the void, the studio's ground, its
+   grid ruled down it and only the mark lit; then the canvas strikes up over it a column at a time, carrying the
+   title, and the header and the foot are uncovered column by column as they land; the i's dot, a square bit, pops
+   out of its stem; the square stop slides in along the baseline and clicks onto the right margin, which lights.
+   Then a part for the website and for each app, each opened by a band: the app's room, edge to edge (the website's,
+   the studio's, the home page's void: the ink, true black in dark mode), its label and its name, and its number
+   behind, cut by the band's edges. doc.js raises each band in columns as it comes up the screen, or as the index takes
+   the reader to it: until then it's drawn in outline, and each column, as it rises, pushes that strip of the drawing
+   out ahead of it and brings the band's own in behind, like the flaps of a departures board.
+   Then the text, in a measure set on the grid, its labels in the margin. Changes, Contact and Credits close it, on
+   the canvas. Ground and space divide it; no rule is drawn across it at rest. The grid is ruled down all of it, its
+   column edges as hairlines from the page's top to its foot, through the header and the footer, as on the home page
+   and the not-found page; each band rules its own, in its ink.
+
+   The header runs over all of it in the colors of what's under it, with the running index (00 This website, 01
+   Michi, 02 Lark, 03 Kozeni: the site's numbers, so an app's is its room's on the home page; the part being read
+   marked): under the real header, which is clear, lies a copy of it for each region of the page (the poster, each
+   band, each part's text, the end), fixed to the screen in a box that stands where its region does, so each is seen
+   just where its region is under the header, as the page scrolls. A browser that tints its bar from the theme colour
+   takes those colors too; Safari's bar on a Mac, which keeps the color it has at the reader's first scroll, is given
+   the canvas, and a phone's edges, which Safari reads again, the colors under them (.gd-chrome).
+   Without the script, under Reduce Motion, in forced colors and on paper, everything is simply there, still. */
+
+/* ---------------------------------------------------------------- The page */
+
+/* The header a little closer than the site's, as on the home page; its height is still exact. Set on the root, so
+   html's own scroll padding can use it. */
+html:has(> body.proto-grid-doc) {
+  --head-pad: clamp(10px, 1.3vw, 20px);
+  --head-h: calc(var(--head-pad) + 54px);
+  /* The small viewport: a phone's bars never cover what's composed to a screen. */
+  --sv: 100vh;
+  --sv: 100svh;
+}
+@media (max-width: 719px) {
+  html:has(> body.proto-grid-doc) { --head-pad: 8px; }
+}
+.proto-grid-doc {
+  /* The springs, a damped spring's step response sampled into linear() (zeta, its damping ratio: the lower, the
+     further past its place it goes before it settles), as on the home page. Click: a small piece pressed home (the
+     stop). Give: a pixel of give on the last impact, and back. Pop: a bit out of its stem. (The first screen's columns
+     strike up on the home page's own spring, which doc.js answers at every frame.) */
+  /* zeta 0.68: 5.4% past */
+  --spring-click: linear(0, 0.0075 1.3%, 0.0391 3.1%, 0.0981 5.2%, 0.1814 7.4%, 0.2827 9.8%, 0.3946 12.3%, 0.5098 15%, 0.6214 17.7%, 0.7242 20.5%, 0.8144 23.4%, 0.8898 26.3%, 0.9494 29.3%, 0.9939 32.4%, 1.0246 35.6%, 1.0433 38.8%, 1.0524 42%, 1.0542 45.4%, 1.0509 48.7%, 1.0444 52.1%, 1.0363 55.6%, 1.0279 59.1%, 1.02 62.6%, 1.0131 66.2%, 1.0075 69.8%, 1.0033 73.4%, 1.0003 77.1%, 0.9984 80.9%, 0.9974 84.6%, 0.9971 88.4%, 0.9972 92.2%, 0.9975 96.1%, 1);
+  /* zeta 0.42: 23% past, a small move that rings once */
+  --spring-give: linear(0, 0.0179 1.3%, 0.0927 3.1%, 0.2293 5.2%, 0.4135 7.4%, 0.6214 9.8%, 0.8257 12.3%, 1.002 15%, 1.1327 17.7%, 1.2095 20.5%, 1.2336 23.4%, 1.2145 26.3%, 1.1661 29.3%, 1.1043 32.4%, 1.0434 35.6%, 0.9938 38.8%, 0.9613 42%, 0.9467 45.4%, 0.9474 48.7%, 0.9585 52.1%, 0.9744 55.6%, 0.9902 59.1%, 1.0027 62.6%, 1.0102 66.2%, 1.0127 69.8%, 1.0115 73.4%, 1.008 77.1%, 1.0039 80.9%, 1.0004 84.6%, 0.9981 88.4%, 0.9971 92.2%, 0.9972 96.1%, 1);
+  /* zeta 0.55: 12.6% past, a bit popping out of its stem */
+  --spring-pop: linear(0, 0.0106 1.3%, 0.0554 3.1%, 0.1387 5.2%, 0.2549 7.4%, 0.3937 9.8%, 0.5424 12.3%, 0.6886 15%, 0.8217 17.7%, 0.9338 20.5%, 1.0203 23.4%, 1.0798 26.3%, 1.1139 29.3%, 1.1261 32.4%, 1.1213 35.6%, 1.1049 38.8%, 1.0822 42%, 1.0574 45.4%, 1.0342 48.7%, 1.0146 52.1%, 1 55.6%, 0.9904 59.1%, 0.9854 62.6%, 0.984 66.2%, 0.9853 69.8%, 0.9882 73.4%, 0.9916 77.1%, 0.995 80.9%, 0.9979 84.6%, 1 88.4%, 1.0013 92.2%, 1.0019 96.1%, 1);
+  /* The grid's hairlines rest at a tenth of the ink around them, always a whole pixel, so on a Retina screen they
+     still read. */
+  --hair-rest: 0.1;
+  /* The rooms' inks, as site.css has them: white on a deep ground, the ink on a light one; the second at 86% and the
+     third at 84%, which hold 4.85:1 or more on every room's ground by day and on the white rooms' at night (the ink
+     room's at night, Kozeni's deeper coral, takes 94% and 92%: below). */
+  --light-1: #FFFFFF;
+  --light-2: rgb(255 255 255 / 0.86);
+  --light-3: rgb(255 255 255 / 0.84);
+  --dark-1: #0D0E10;
+  --dark-2: rgb(13 14 16 / 0.86);
+  --dark-3: rgb(13 14 16 / 0.84);
+  /* The page's own inks, kept here for the bands, which take others: a band not yet arrived is drawn in these. */
+  --page-ink: var(--ink);
+  --page-ink-2: var(--ink-2);
+  --page-ink-3: var(--ink-3);
+  /* The studio's ground, the home page's void, which its poster opens on, as this page's does: the ink, and in dark
+     mode true black, so a band of it is darker than the page, never lighter; and the ink that stands on it. */
+  --void: var(--ink);
+  --void-ink: var(--canvas);
+  /* The text's measure, on the grid: from the fourth column, as many columns as hold 60 to 75 characters a line at
+     the text's size (below, by the screen's width), so the block's right edge is a column's edge too. */
+  --span: 9;
+  --span-foot: 6;   /* the first screen's foot, kept clear of the y's tail: the ninth column at most */
+}
+@media (prefers-color-scheme: dark) {
+  .proto-grid-doc { --void: #000; --void-ink: var(--ink); --dark-2: rgb(13 14 16 / 0.94); --dark-3: rgb(13 14 16 / 0.92); }
+}
+@media (min-width: 900px) { .proto-grid-doc { --span: 8; } }
+@media (min-width: 1080px) { .proto-grid-doc { --span: 7; } }
+@media (min-width: 1280px) { .proto-grid-doc { --span: 6; } }
+@media (min-width: 1500px) { .proto-grid-doc { --span: 5; --span-foot: 5; } }
+@media (min-width: 1800px) { .proto-grid-doc { --span: 4; --span-foot: 4; } }
+@media (min-width: 2300px) { .proto-grid-doc { --span: 3; --span-foot: 3; } }
+/* The page runs edge to edge, as the home page does, so its header and its grid stand where the home page's do at every
+   width. The text keeps to its measure. */
+.proto-grid-doc .wrap { max-width: none; }
+
+/* A part's text, and the end: no colors of their own, the page's, and no ground: the page's canvas, with the grid
+   ruled on it, shows through. Anything an app's part holds takes the app's color for its bits (head.html:
+   .is-<key>), its links' hover too. */
+.gd-region { position: relative; }
+
+/* The grid itself: one cell per column, each drawn as its two edges, a tenth of the ink, down the whole page from its
+   top to its foot (it's laid against the body), through the header and the footer, under everything on it. On a
+   phone, the six double columns the bands arrive in. A band covers it with its own, in its ink; the header's copies
+   draw it through themselves (below). */
+body.proto-grid-doc { position: relative; }
+.gd-lines, .gd-head__lines {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--g);
+  padding-inline: var(--m);
+  pointer-events: none;
+}
+.gd-lines { position: absolute; z-index: -1; inset: 0; color: var(--ink); }
+.gd-lines i, .gd-head__lines i { border-inline: 1px solid currentColor; opacity: var(--hair-rest); }
+@media (max-width: 719px) {
+  .gd-lines, .gd-head__lines { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  :is(.gd-lines, .gd-head__lines) i:nth-child(n+7) { display: none; }
+}
+
+/* The words of the copies (the header's in each region, the columns'), drawn by CSS: seen, but never found by a find
+   in the page or copied, so the page's words are found once, where they're read. */
+.gd-t::before { content: attr(data-t); content: attr(data-t) / ""; }
+
+/* ---------------------------------------------------------------- The first screen */
+
+/* A poster on the page's canvas: with the header, one screen. The title alone across the top, margin to margin; at
+   the foot, in the meta, when it was last updated, and the policy in short: its label in the margin, its words in
+   the measure. Behind it all, the page's grid: its 24 column edges as hairlines. Its layers stack by z-index, never
+   by the order they come in. */
+.gd-poster { isolation: isolate; overflow: clip; }
+.gd-poster__main {
+  position: relative;
+  z-index: 1;
+  container: poster / inline-size;
+  grid-template-rows: auto 1fr auto auto;
+  align-items: start;
+  padding-block: var(--top) var(--bottom);
+  --top: clamp(14px, 4.2svh, 48px);
+  --bottom: clamp(20px, 6svh, 60px);
+  --step-in: clamp(12px, 2svh, 28px);   /* from the date to the policy in short */
+  /* The title runs margin to margin at every size, as the home page's tagline does: "Privacy" in Inter Tight 500 at
+     -0.034em is 2.978em, and its square stop is kerned in under the y's arm, 2.905em on (its top corner as clear of
+     the y's stroke as the word's own letters are of each other, 0.046em), so with the P's side bearing (0.059em)
+     hung into the margin the word and its stop are 2.996em: the font-size is the measure over that, and the stop
+     ends on the right margin. The foot follows; on a short screen it goes on past the screen's foot, and the first
+     screen is the title and the start of what it says, as a document's should be. Only where the screen leaves the
+     title's caps (0.7275em) less than that, and 3.5rem under them, is it held to the height. */
+  --tag-d: 2.996;
+  --tag: min(100cqi / var(--tag-d), (var(--sv) - var(--head-h) - var(--top) - 3.5rem) / 0.7275);
+}
+
+.gd-title, .gd-title__decor {
+  grid-row: 1;
+  grid-column: 1 / -1;
+  margin-left: -0.059em;
+  font-size: var(--tag);
+}
+/* A jump to the title lands on the poster's top, the page's: its margin is more than the page can scroll. */
+h1.gd-title { scroll-margin-top: 100vh; }
+.gd-title {
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.034em;
+  white-space: nowrap;
+  text-box: trim-both cap alphabetic;
+}
+/* Its baseline, a hairline across the screen, like the columns' edges (drawn by the decoration, which the mask
+   doesn't cut); the first screen's columns carry it too, each its strip of it, as they carry the title. */
+.gd-poster__main > .gd-title__decor::after {
+  content: "";
+  position: absolute;
+  left: -100vw;
+  right: -100vw;
+  bottom: 0;
+  border-bottom: 1px solid currentColor;
+  opacity: var(--hair-rest);
+  pointer-events: none;
+}
+/* The title's decoration, over it, the same size: the square stop, kerned in under the y's arm (above), and the i's
+   dot. Not in the heading, so the heading is its words alone. The decoration runs to the right margin, and the stop
+   is set against that edge whenever the title is at the measure, so it ends on the margin to the pixel in every
+   engine, whatever each rounds; when the screen's height holds the title back, it stands after the word. */
+.gd-title__decor { position: relative; align-self: stretch; pointer-events: none; }
+.gd-stop.stop { position: absolute; left: min(2.905em + 1px, 100% - 0.15em); bottom: 0; margin: 0; }
+.gd-bit { position: absolute; display: block; width: 0.105em; height: 0.105em; background: currentColor; }
+.gd-title__decor .gd-bit { left: 0.922em; bottom: 0.6405em; }
+
+/* The square dot, once the face is in (.gd-type): the round dot masked off, a hole from the cap line down to just
+   under the dot (0.63em, with 0.006em to spare all round: the dot's ink runs from 0.037em to 0.171em of the i,
+   which starts 0.871em in), and a square bit the width of the stem (0.051em to 0.156em of the i) over the stem, its
+   middle on the round dot's (0.693em). The heading is padded down by its descenders' depth, and pulled back up, so
+   the mask keeps the y's tail. The first screen's columns carry copies of it masked the same way, so whichever is
+   showing is drawn to the same pixels. */
+.gd-type :is(h1.gd-title, .gd-a__card) {
+  padding-bottom: 0.25em;
+  margin-bottom: -0.25em;
+  -webkit-mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  -webkit-mask-position: 0.902em 0, 0 0;
+  -webkit-mask-size: 0.146em 0.1035em, 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-composite: xor;
+  mask-image: linear-gradient(#000 0 0), linear-gradient(#000 0 0);
+  mask-position: 0.902em 0, 0 0;
+  mask-size: 0.146em 0.1035em, 100% 100%;
+  mask-repeat: no-repeat;
+  mask-composite: exclude;
+}
+html:not(.gd-type) .gd-decor .gd-bit { display: none; }
+/* Its measures are on the cap line and the baseline, which the heading's box is trimmed to; where a browser can't trim
+   it (Safari before 18.2), the title keeps its own round dot and goes without the stop. */
+@supports not (text-box: trim-both cap alphabetic) {
+  .gd-title__decor { display: none; }
+  .gd-type :is(h1.gd-title, .gd-a__card) { -webkit-mask: none; mask: none; }
+}
+
+.gd-updated { grid-row: 3; grid-column: 1 / -1; margin-top: 18px; color: var(--ink-3); }
+
+/* Held upright (a phone, a tablet), the screen is taller than the poster needs: the foot follows the title, under
+   the y's tail (0.204em), rather than standing on the screen's foot with empty grid between, and the website's band
+   comes up under it on the first screen, by at least the room under the policy in short, so it's seen as the next
+   part's ground. Where it would come up by less (on a phone, a pixel or two of it, a line of its ground over the
+   browser's bar), the poster runs on to the foot of the screen as it is with the browser's bars at their smallest,
+   so the first screen holds the poster whole and nothing of the band, whatever the bars do (the layout's script
+   decides which, .gd-poster--whole, and doc.js asks again whenever the page is laid out anew). */
+@media (orientation: landscape) {
+  .gd-poster__main { min-height: calc(var(--sv) - var(--head-h)); }
+  .gd-fx .gd-poster__main { min-height: var(--sv); }
+}
+@media (orientation: portrait) {
+  .gd-updated { margin-top: calc(0.204 * var(--tag) + 24px); }
+}
+@media screen and (orientation: portrait) {
+  .gd-fx .gd-poster--whole { min-height: 100vh; min-height: 100lvh; }
+}
+
+/* The foot: the policy in short, on the grid as the text is, standing on the bottom margin. Its links to the parts
+   are plain words in the sentence; hovered, each is underlined in its part's color (doc.js sets it). The last sentence,
+   the one that names the parts, is balanced, so it never ends on a word alone. */
+.gd-intro { grid-row: 4; grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; margin-top: var(--step-in); }
+.gd-intro > p:last-child { text-wrap: balance; }
+/* On a screen on its side, its words keep to the fourth to ninth columns at most, clear of the y's tail. */
+@media (orientation: landscape) and (min-width: 720px) {
+  .gd-poster .gd-intro > :not(.margin) { grid-column: 4 / span var(--span-foot); }
+}
+
+/* ---------------------------------------------------------------- The first screen's arrival */
+
+/* As the home page's first screen arrives (grid.css), and the not-found page's (lost.css): over the whole screen, from
+   the first frame where it will play, before the script has run, and gone in about a second. The void in the grid's
+   columns (.gd-void), each holding its column's edges, ruled down it in the canvas's color at an eighth, the first
+   holding the mark, lit, where the header's is; and over them the canvas in the same columns (.gd-a), waiting under the
+   screen's foot, each carrying its strip of the title: a copy of the poster laid out as the poster is, with only the
+   title and its baseline in it (the decoration's line, above), so its strip stands to the pixel where the heading's
+   does, and the line rises with the letters it's under, as the home page's columns carry theirs. When the script says
+   (.gd-striking) the canvas strikes up, left to right; as each column lands, its void and its ground go, and the page
+   is there under it, the header and the foot uncovered column by column, while the strip, its baseline with it, settles
+   into register and the column's edges fade. The columns meet in the middle of the gutters, each from a whole pixel and
+   a pixel over the next, so the edges a column draws as it flies are the grid's own, to the pixel, in every engine; the
+   first and the last run out to the screen's edges. Twelve of them, or on a phone six, two of the grid's columns each,
+   as the page's grid is drawn there. A column is one box that clips its own strip and moves whole, its place written by
+   the script at every frame, and drawn with the page, never made a layer of its own: Safari can draw a layer that CSS
+   animates without the clip of the box it moves in. */
+.gd-arrive, .gd-lift { display: none; }
+.gd-arrive, .gd-lift {
+  --M: calc(100cqi - 2 * var(--m));
+  --P: calc((var(--M) + var(--g)) / 12);
+  --per: 1;
+}
+@media (max-width: 719px) {
+  .gd-arrive, .gd-lift { --per: 2; }
+}
+.gd-void, .gd-a, .gd-lift > i {
+  --x0: round(var(--m) + var(--col) * var(--per) * var(--P) - var(--g) / 2 - 0.5px, 1px);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--x0);
+  width: calc(round(var(--m) + (var(--col) + 1) * var(--per) * var(--P) - var(--g) / 2 - 0.5px, 1px) - var(--x0) + 1px);
+}
+:is(.gd-void, .gd-a, .gd-lift > i):first-child { --x0: 0px; }
+:is(.gd-void, .gd-a, .gd-lift > i):nth-child(12) { width: auto; right: 0; }
+@media (max-width: 719px) {
+  :is(.gd-void, .gd-a, .gd-lift > i):nth-child(n+7) { display: none; }
+  :is(.gd-void, .gd-a, .gd-lift > i):nth-child(6) { width: auto; right: 0; }
+}
+/* The void, under the canvas by its z-index. Nothing in it reaches past its column (its edges are inside it, and of
+   the header only the mark is drawn), so nothing that moves in it is clipped. */
+.gd-void { z-index: 0; background: var(--void); }
+.gd-void::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--m) + var(--col) * var(--per) * var(--P) - var(--x0));
+  width: calc(var(--per) * var(--P) - var(--g));
+  border-inline: 1px solid var(--void-ink);
+  opacity: 0.13;
+}
+.gd-void__head { position: absolute; top: 0; left: 0; width: 100cqw; color: var(--void-ink); }
+.gd-void__head .brand__name { visibility: hidden; }
+/* The canvas, a column of it, over the void by its z-index, under the screen's foot till the strike begins. It draws
+   its column's two edges, a tenth of the ink as the grid's are, and over them, while it flies, the same edges brighter
+   and its leading edge in the ink, which come in over its first 60ms in flight, as the home page's columns' do. As it
+   lands, its ground, its own tenth and its leading edge go (is-landed), so the page's grid is there under them on the
+   very same pixels and nothing is drawn across the header it uncovers (the home page's leading edge is out of the
+   top of the screen by then); and the brighter edges fade. The script says how bright they are (--gd-edges: 0 to 1
+   as the column starts, 1 to 0 as it lands). */
+.gd-a { z-index: 1; overflow: clip; }
+html:not(.gd-striking) .gd-a { transform: translateY(100%); }
+.gd-a__ground { position: absolute; inset: 0; background: var(--canvas); }
+.gd-a__ground::before, .gd-a__ground::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--m) + var(--col) * var(--per) * var(--P) - var(--x0));
+  width: calc(var(--per) * var(--P) - var(--g));
+  border-inline: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.gd-a__ground::after {
+  border-inline-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--ink) 80%, transparent);
+  opacity: var(--gd-edges, 1);
+}
+.gd-a__ground.is-landed { background: none; }
+.gd-a__ground.is-landed::before { content: none; }
+.gd-a__ground.is-landed::after { border-top-color: transparent; }
+.gd-a__plate { position: absolute; top: 0; left: calc(-1 * var(--x0)); width: 100cqw; }
+/* Its strip of the baseline ends where the next column begins (the script says where), so the pixel the two share is
+   drawn once, as the page's line is. */
+.gd-a__plate > .gd-title__decor::after { right: var(--gd-to, -100vw); }
+/* At night the canvas is only a step off the void's black: while a column of it rises over the void it's lifted a
+   step more, and its leading edge drawn twice as thick in the full ink, and it settles to the canvas as it lands (in
+   200ms, from the moment its edges begin to fade), as the home page's columns do, so the strike reads at night as it
+   does by day, and the screen still never floods with light. Once a column has landed, what shows in it is the page,
+   so the canvas that settles there is the page's own: the lift (.gd-lift, laid against the body before the grid), a
+   column of it under each of the arrival's, on the same pixels, under everything on the page, the grid too. It's
+   there only while the strike plays, a step lighter till the script settles it (--gd-lift, 100% to 0%), and then
+   gone (the motion, below). */
+@media (prefers-color-scheme: dark) {
+  .proto-grid-doc { --lift: #1E1F22; }
+  .gd-a__ground { background: var(--lift); }
+  .gd-a__ground::after { border-top: 2px solid var(--ink); }
+}
+.gd-lift { position: absolute; z-index: -1; top: 0; left: 0; right: 0; height: 100vh; height: 100lvh; container-type: inline-size; pointer-events: none; }
+.gd-lift > i { background: color-mix(in srgb, var(--lift) var(--gd-lift, 100%), var(--canvas)); }
+
+/* The right margin, lit for a moment as the stop clicks onto it (the motion, below): a hairline on the margin's own
+   pixel, the last column's edge, from the header's foot down the poster. */
+@media screen {
+  .gd-fx .gd-poster::after {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    top: var(--head-h);
+    bottom: 0;
+    right: var(--m);
+    width: 0;
+    border-right: 1px solid var(--ink);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* ---------------------------------------------------------------- Prose */
+
+/* The text in its measure from the fourth column (--span columns: 60 to 75 characters a line), its labels in the
+   margin's first three, on the baseline of what they label. As doc.html's markdown writes it: no classes but
+   .margin. Inter Tight is a display cut, close-set; at reading sizes the text is opened up a hundredth of an em. */
+.prose { align-items: baseline; }
+.prose > * { grid-column: 4 / span var(--span); }
+.gd .prose > :not(.margin, .gd-end h2) { letter-spacing: 0.012em; }
+.prose > * + * { margin-top: 1em; }
+.prose > h2 { margin-top: 2.75em; font-weight: 600; }
+.prose > h3 { margin-top: 2em; font-weight: 600; }
+.prose > :is(h2, h3, h4):where(:not(.margin)) + * { margin-top: 0.5em; }
+.prose > :first-child { margin-top: 0; }
+.prose :is(p, li, dd) { text-wrap: pretty; }
+.prose > .margin {
+  grid-column: 1 / span 3;
+  margin-top: 0;
+  padding-right: var(--g);
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-3);
+  text-wrap: balance;
+}
+.prose > :is(h2, h3, h4) + .margin + * { margin-top: 0.5em; }
+.prose > .margin + * { margin-top: 0; }
+.prose > * + .margin { margin-top: 2em; }
+.prose > * + .margin + * { margin-top: 2em; }
+/* Lists: each item's marker a bit, in the part's color, hung in the gutter before the text's column, so every line
+   of the text, a list's too, starts on the one edge the names and the paragraphs share. On a phone, where the text
+   starts on the margin, the items are indented instead. */
+.prose ul, .prose ol { padding-left: 1.25em; }
+.prose ul { list-style: none; }
+.prose ul > li { position: relative; }
+.prose ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1.25em;
+  top: calc(0.725em - var(--bit) / 2);
+  width: var(--bit);
+  height: var(--bit);
+  background: var(--app, var(--ink-3));
+}
+@media (min-width: 720px) {
+  .prose > ul { padding-left: 0; }
+  .prose > ul > li::before { left: calc(-1 * (var(--bit) + 10px)); }
+}
+.prose li + li, .prose li > ul, .prose li > ol { margin-top: 0.4em; }
+.prose ol > li::marker { font-family: var(--mono); font-size: var(--meta); color: var(--ink-3); }
+.prose code, .prose kbd, .prose samp { font-family: var(--mono); font-size: 1em; }
+.prose pre { font-family: var(--mono); font-size: var(--meta); line-height: 1.6; overflow-x: auto; padding: 1.25em 1.5em; background: var(--field); }
+.prose blockquote { position: relative; padding-left: 1.4em; color: var(--ink-2); }
+.prose blockquote::before { content: ""; position: absolute; left: 0; top: 0.6em; width: var(--bit); height: var(--bit); background: var(--app, var(--ink-3)); }
+.prose hr { height: 0; margin-block: 1.5em; border: 0; }
+/* Tables, on the grid: from the text's column to the right margin, their heads in the meta. */
+.prose > table, .prose > .wide { grid-column: 4 / -1; max-width: none; }
+.prose table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.prose th { font-family: var(--mono); font-size: var(--meta); font-weight: 400; color: var(--ink-3); text-align: left; }
+.prose th, .prose td { padding: 0.55em 1.25em 0.55em 0; vertical-align: baseline; border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
+.prose :is(th, td):last-child { padding-right: 0; }
+
+/* A part's text: a step under its band, a room before the next. */
+.gd-text > .prose { padding-block: var(--step) var(--room); }
+
+/* The end: Changes, Contact and Credits, the studio's again, on the canvas, as the home page's last screen is, set off
+   from the last part by space alone (the room after a part's text, and a step more). Each heading is set as a label
+   in the margin, as the parts' labels are, but in the ink. */
+.gd-end > .prose { padding-block: calc(var(--step) * 1.5) var(--room); }
+.gd-end .prose > h2 {
+  grid-column: 1 / span 3;
+  padding-right: var(--g);
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.gd-end .prose > h2 + * { margin-top: 0; }
+.gd-end .prose > * + h2 { margin-top: var(--beat); }
+.gd-end .prose > * + h2 + * { margin-top: var(--beat); }
+.gd-end .prose > :first-child { margin-top: 0; }
+.gd-end .prose > :first-child + * { margin-top: 0; }
+
+/* ---------------------------------------------------------------- Bands */
+
+/* A part opens on a band: its room's ground, edge to edge, its ink standing on it (white on a deep ground, the ink on
+   a light one: room_text in apps.yml), or for this website, the studio's, the home page's void with the canvas
+   standing on it. Its label in the margin and its name from the fourth column, the text's, at the top, under the
+   header's band; under them the part in short, its label in the margin and its words in the text's measure, as a
+   room carries its pitch on the home page; its number behind, cut by the band's foot and the screen's right edge.
+   The band's grid, its column edges at a tenth of its ink, and a tick on each at its foot, like a rule's. */
+.gd-band {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  container-type: inline-size;
+  background: var(--ground);
+  color: var(--ink);
+  /* The name: "This website", the longest, is 4.98em of ink at -0.045em, from the fourth column to the right margin
+     (nine columns and eight gutters); the others at its size. It never wraps there: a fraction of a pixel's
+     difference in how an engine measures it can't put "website" on a line of its own (only a phone sets it on
+     two, below). */
+  --name: min(calc((9 * (100cqi - 2 * var(--m) + var(--g)) / 12 - var(--g)) / 4.98), calc(var(--sv) * 0.3 / 0.7275));
+  --band-top: clamp(20px, 4svh, 48px);
+  --band-low: clamp(56px, 10svh, 128px);
+  --lead-gap: clamp(28px, 5svh, 56px);   /* from the name's baseline to the summary's first line */
+  --hang: 0.059em;
+}
+/* A band's inks, and its header copy's (the header over it, .gd-head below). */
+.gd-band--light, .gd-head--light { --ink: var(--light-1); --ink-2: var(--light-2); --ink-3: var(--light-3); --app: var(--light-1); }
+.gd-band--dark, .gd-head--dark { --ink: var(--dark-1); --ink-2: var(--dark-2); --ink-3: var(--dark-3); --app: var(--dark-1); }
+.gd-band--void, .gd-head--void { --ink: var(--void-ink); --ink-2: color-mix(in srgb, var(--void-ink) 86%, transparent); --ink-3: color-mix(in srgb, var(--void-ink) 84%, transparent); --app: var(--void-ink); }
+[data-gd-part="website"] .gd-band { --hang: 0.023em; }   /* the T's side bearing, not a stem's */
+.gd-band__grid {
+  position: relative;
+  z-index: 1;
+  grid-template-rows: auto;
+  align-items: last baseline;
+  align-content: start;
+  padding-block: calc(var(--head-h) + var(--band-top)) var(--band-low);
+}
+.gd-band .margin {
+  grid-column: 1 / span 3;
+  grid-row: 1;
+  font-family: var(--mono);
+  font-size: var(--meta);
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-3);
+}
+/* The label carries a bit, in the band's ink, as a room's bits are in its ink. */
+.gd-band .margin::before {
+  content: "";
+  display: inline-block;
+  width: var(--bit);
+  height: var(--bit);
+  margin-right: 10px;
+  vertical-align: 0.02em;
+  background: var(--ink);
+}
+.gd-band h2 {
+  position: relative;
+  grid-column: 4 / -1;
+  grid-row: 1;
+  margin-top: var(--name-gap, 0px);
+  margin-left: calc(-1 * var(--hang));
+  font-size: var(--name);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  text-box: trim-both cap alphabetic;
+  /* /privacy/#kozeni lands on the band's top: the heading's cap line is the band's top padding down (and on a phone its
+     label's line more), less what the heading is padded out by for its dots (--pad), and html's scroll padding is 24px,
+     and the header's height more where the header is fixed. */
+  --pad: 0em;
+  --to-cap: calc(var(--head-h) + var(--band-top) + var(--name-gap, 0px) + var(--label-h, 0px));
+  scroll-margin-top: calc(var(--to-cap) - var(--pad) - 24px);
+}
+.gd-fx .gd-band h2 { scroll-margin-top: calc(var(--to-cap) - var(--head-h) - var(--pad) - 24px); }
+/* A name with its square dots (doc.js measures where they go, as it does where the title's does): padded out over its
+   ascenders and under its descenders, and past its ends (the e of "This website" rounds past the right margin, as a
+   round letter does, and Lark's k reaches 0.056em past its box), and pulled back, so the mask keeps all of its letters
+   whole, and the bits drawn beside it, over it, the same size. */
+.gd-type .gd-band h2.gd-dotted {
+  --pad: 0.08em;
+  padding-block: var(--pad) 0.25em;
+  margin-block: calc(var(--name-gap, 0px) - var(--pad)) -0.25em;
+  padding-inline: 0.1em;
+  margin-inline: calc(-1 * var(--hang) - 0.1em) -0.1em;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-composite: xor;
+  mask-repeat: no-repeat;
+  mask-composite: exclude;
+}
+.gd-name__decor {
+  position: relative;
+  grid-row: 1;
+  grid-column: 4 / -1;
+  align-self: stretch;
+  margin-top: var(--name-gap, 0px);
+  margin-left: calc(-1 * var(--hang));
+  font-size: var(--name);
+  color: var(--ink);
+  pointer-events: none;
+}
+/* The summary: its label on its first line, in the margin; its words in the band's own ink, in the text's measure. Only
+   the part's own label carries a bit. */
+.gd-band .gd-lead { grid-row: 2; align-self: baseline; margin-top: var(--lead-gap); }
+.gd-band .margin.gd-lead { grid-column: 1 / span 3; padding-right: var(--g); }
+.gd-band .margin.gd-lead::before { content: none; }
+.gd-band p.gd-lead { grid-column: 4 / span var(--span); color: var(--ink); text-wrap: pretty; letter-spacing: 0.012em; }
+.gd-band ::selection { background: var(--ink); color: var(--ground); }
+
+/* The number: architecture, not a label. Its cap line on the name's, its caps a third again the band from there to its
+   foot, so the foot cuts it, and the screen's right edge too. Its words are drawn by CSS, so it's never found or
+   copied. Each band has it its own way, as each room does on the home page: a tint of the band's ink (Michi's, and the
+   studio's), or in outline, 2.5px of it (Lark's and Kozeni's); both opaque mixes of the ink and the ground, so where
+   two columns' copies overlap nothing shows twice. */
+.gd-no {
+  position: absolute;
+  z-index: -1;
+  right: calc(-0.06 * var(--no));
+  top: calc(var(--head-h) + var(--band-top) + var(--label-h, 0px) + var(--name-gap, 0px));
+  font-size: var(--no);
+  /* how far it is from its cap line to the band's foot, measured (doc.js, --below); without the script, the name's caps
+     and the space under them */
+  --no: calc(var(--below, 0.7275 * var(--name) + var(--band-low)) * 1.3 / 0.7275);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: lining-nums;
+  white-space: nowrap;
+  text-box: trim-both cap alphabetic;
+  color: color-mix(in srgb, var(--ink) 10%, var(--ground));
+  pointer-events: none;
+  user-select: none;
+}
+.gd-band--outline .gd-no { color: transparent; -webkit-text-stroke: 2.5px color-mix(in srgb, var(--ink) 22%, var(--ground)); }
+.gd-no::before { content: attr(data-t); content: attr(data-t) / ""; }
+
+/* The band's grid: each column's two edges at a tenth of its ink, and at its foot a tick on each, brighter. */
+.gd-band__lines {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--g);
+  padding-inline: var(--m);
+  pointer-events: none;
+}
+.gd-band__lines i { position: relative; border-inline: 1px solid color-mix(in srgb, var(--ink) 10%, transparent); }
+.gd-band__lines i::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -1px;
+  right: -1px;
+  height: 8px;
+  border-inline: 1px solid color-mix(in srgb, var(--ink) 42%, transparent);
+}
+/* ---------------------------------------------------------------- The header, over the page */
+
+/* Where the page can (.gd-fx: a screen, and clip; set before the first frame), the header is fixed over the page,
+   clear, and takes the pointer and the keyboard. Under it lies a copy of it for each region of the page, in the
+   region's own colors, the grid ruled through it (doc-head.html): each copy fixed to the screen too, but each in a box
+   of its own that stands where its region stands on the page, and clips it (.gd-heads, laid against the body; the
+   layout's script places the boxes, and places them again whenever a region's size changes). The browser moves the
+   boxes with the page as it scrolls it, so in every frame each copy is seen just where its region is under the header's
+   band: the header never moves, and where an edge between two regions crosses its band, each region draws its own part
+   of it, split where the edge is, as crisply as the page is split below it. The first box reaches up past the page's
+   top, and the last down to its foot, so the header is whole when the page is pulled past either end. Nothing of the
+   header is inside a region: nothing a region clips is ever held to the screen.
+   A band not yet arrived has its copy in its plan's colors, the canvas and the page's ink (.is-waiting). One arriving
+   has it in its own colors, under a copy in its plan's in the same box (.gd-head__plan), which doc.js cuts back, frame
+   by frame, to what of each column the band hasn't brought in yet, so the header changes over each column just where
+   the column's edge is. The real header's links show their hover, their press and their focus on the copies (below),
+   and its focus rings take the ink of what's under them (doc.js). The real header is opaque to the pointer across its
+   whole band, as it looks, so a click on its bar never reaches a link scrolled under it.
+   The bands clip what they hold twice over, by overflow and by a clip-path (which Safari also keeps to for layers it
+   composites on their own: a band's moving columns), as the poster does its own. */
+.gd-heads, .gd-runner { display: none; }
+@media screen and (forced-colors: none) {
+  html.gd-fx:has(> body.proto-grid-doc) { scroll-padding-top: calc(var(--head-h) + 24px); }
+  .gd-fx :is(.gd-poster, .gd-band) { overflow: clip; isolation: isolate; clip-path: inset(0); }
+  .gd-fx .gd-band { z-index: 0; }
+  .gd-fx :is(.gd-poster, .gd-text, .gd-end) { z-index: 1; }
+  .gd-fx .gd-heads { display: block; position: absolute; z-index: 30; inset: 0; pointer-events: none; user-select: none; }
+  /* Each copy's box, where its region is on the page (--t, its top; --h, its height: the layout's script). Until the
+     boxes are placed, the copy for where the page opens (.is-on) is over all of it. */
+  .gd-fx .gd-head { position: absolute; left: 0; right: 0; top: var(--t, 0px); height: var(--h, 0px); clip-path: inset(0); }
+  .gd-fx .gd-head[data-gd-head="start"] { top: calc(var(--t, 0px) - 100vh); height: calc(var(--h, 0px) + 100vh); }
+  .gd-fx .gd-head[data-gd-head="end"] { top: var(--t, 100%); bottom: 0; height: auto; }
+  .gd-fx .gd-head.is-on { top: -100vh; bottom: 0; height: auto; }
+  .gd-head__bar { position: relative; height: var(--head-h); background: var(--bar, var(--ground, var(--canvas))); color: var(--ink); }
+  .gd-fx .gd-head__bar { position: fixed; top: 0; left: 0; right: 0; }
+  .gd-fx .gd-head__plan { position: absolute; inset: 0; }
+  .gd-head__lines { position: absolute; inset: 0; }
+  .gd-fx .gd-head .site-head { position: relative; }
+  .gd-fx .gd-head .gd-runner { display: block; }
+  .gd-fx .gd-poster__main { padding-top: calc(var(--head-h) + var(--top)); }
+
+  .gd-fx body > .site-head { position: fixed; z-index: 40; top: 0; left: 0; right: 0; }
+  .gd-fx body > .site-head :is(a, .mark), .gd-fx .gd-runner--real :is(a, span) { color: transparent !important; fill: transparent !important; }
+  .gd-fx body > .site-head a:focus-visible, .gd-fx .gd-runner--real a:focus-visible { outline-color: var(--gd-ink, var(--ink)); }
+  .gd-fx .gd-runner--real { display: block; position: fixed; z-index: 41; }
+  /* The first screen and the end are the studio's, and show no index, as on the home page; but it's still there for
+     the keys, in its place in the order (after the wordmark), and shows itself, in the page's quiet ink, while it
+     has the focus. (Its pieces named by their classes, not their tags: the page's class changes as the reader comes
+     to the first screen or leaves it, and a tag here would have every link and span on the page restyled each time.) */
+  .gd-fx:is(.gd-at-start, .gd-at-end) .gd-runner--real { opacity: 0; }
+  .gd-fx:is(.gd-at-start, .gd-at-end) .gd-runner--real .gd-runner__link { pointer-events: none; }
+  .gd-fx:is(.gd-at-start, .gd-at-end) .gd-runner--real:focus-within { opacity: 1; }
+  .gd-fx:is(.gd-at-start, .gd-at-end) .gd-runner--real:focus-within .gd-runner__link { pointer-events: auto; }
+  .gd-fx:is(.gd-at-start, .gd-at-end) .gd-runner--real:focus-within :is(.gd-runner__link, .gd-runner__no, .gd-runner__name) { color: var(--ink-3) !important; }
+  .gd-fx:is(.gd-at-start, .gd-at-end) .gd-runner--real:focus-within .gd-runner__link:focus-visible :is(.gd-runner__no, .gd-runner__name) { color: var(--ink) !important; }
+  .gd-fx .proto-grid-doc > .skip { z-index: 50; }
+  /* The header's mark is over every screen, the last one too, so the footer goes without its own: one mark to a
+     screen, as on the home page. (Where the header stays at the top of the page, and on paper, the footer keeps it.) */
+  .gd-fx body > .site-foot .site-foot__mark { display: none; }
+}
+
+/* The browser's own bars. Safari 26 and later don't tint them from theme-color. On a Mac, Safari's compact tab bar
+   takes the color of a fixed element lying along the top of the page, and follows it as it changes once it's at least
+   12px tall, until the reader's first scroll, click or scroll key, when the bar keeps the color it has for good. A
+   band's color there would stay on the bar over all the canvas after it, and an App Store link lands on a band, with
+   the script or without. So this is that element, over the header and over the first screen's arrival (Safari takes
+   the color of the fixed element highest along the edge), and there it's the canvas, but for the void's while the
+   first screen arrives, as the home page's does (the motion, below). On a phone or a tablet (iOS, where every browser
+   is Safari's engine), the edges over and under the page take their colors from a strip along the top and one along
+   the foot (.gd-chrome--foot), and read a strip again whenever it's a new one, never a change of its color alone:
+   there both are the color of what's under them, the void's while it's there, a band's ground where it's at that edge
+   and the canvas elsewhere, and new strips each time that changes (doc.js, --gd-chrome). Each paints nothing: its
+   background is clipped to its text, and it has none. The theme colour still follows the regions, for the browsers that
+   honour it (doc.js). */
+.gd-chrome { display: none; }
+@media screen and (forced-colors: none) {
+  .gd-chrome {
+    display: block;
+    position: fixed;
+    z-index: 51;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    pointer-events: none;
+    background-color: var(--gd-chrome, var(--canvas));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .gd-chrome--foot { top: auto; bottom: 0; }
+}
+
+/* The running index, 00 This website 01 Michi 02 Lark 03 Kozeni, in the header's row: each part on the column its
+   number gives it, two columns apart from the third, a column clear of the logo, where the home page's index starts
+   too; its number, then its name. The part being
+   read is in full ink after a filled bit; the others are quiet. Under 1080px just the numbers (from the fourth
+   column, clear of the wordmark), and on a phone a column each, the current one underlined. Where the names aren't
+   drawn they're still read: each link is named, number and name (doc-runner.html). */
+.gd-runner { position: absolute; top: 0; left: 0; right: 0; height: var(--head-h); padding-top: calc(var(--head-pad) + var(--gd-runner-dy, 4px)); pointer-events: none; }
+.gd-runner__list { align-items: start; }
+.gd-runner__item { grid-column: calc(3 + 2 * var(--n)) / span 2; min-width: 0; }
+.gd-runner__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  min-height: 44px;
+  padding-right: 8px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  pointer-events: auto;
+  transition: color var(--t-hover) var(--ease);
+}
+.gd-runner__link::before { content: ""; flex: none; width: var(--bit); height: var(--bit); box-shadow: inset 0 0 0 1px currentColor; }
+.gd-runner__item.is-current .gd-runner__link { color: var(--ink); }
+.gd-runner__item.is-current .gd-runner__link::before { background: currentColor; }
+@media (max-width: 1079px) {
+  .gd-runner__name { display: none; }
+  .gd-runner__item { grid-column: calc(4 + 2 * var(--n)) / span 2; }
+  .gd-runner__link { gap: 0.5em; }
+}
+/* On a phone each entry is a column wide and a column on from the last, from the third, and its target is the
+   column and its gutter, 44px tall: the targets meet and never overlap, and the first keeps clear of the mark. */
+@media (max-width: 719px) {
+  .gd-runner__item { grid-column: calc(3 + var(--n)) / span 1; }
+  .gd-runner__link { gap: 0; width: calc(100% + var(--g)); margin-left: calc(var(--g) / -2); padding: 0 0 0 calc(var(--g) / 2); }
+  .gd-runner__link::before { display: none; }
+  .gd-runner__item.is-current .gd-runner__no { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.3em; }
+  /* With the index in the header's row, the wordmark gives way to the mark alone; on the first screen and at the
+     end too, while the index has the focus there. */
+  .gd-head:has(.gd-runner) .brand__name, .gd-fx:not(.gd-at-start):not(.gd-at-end) body > .site-head .brand__name { display: none; }
+  .gd-fx:has(.gd-runner--real:focus-within) :is(body > .site-head, .gd-head:is([data-gd-head="start"], [data-gd-head="end"])) .brand__name { display: none; }
+}
+
+/* Pressed, on a touch screen: no grey box from the browser over the real header, which is clear (it would be drawn
+   where nothing is seen to be pressed); the copy under the link dims while it's held instead, as on the home page. */
+.gd-fx :is(body > .site-head, .gd-runner--real) a { -webkit-tap-highlight-color: transparent; }
+.gd-fx:has(body > .site-head .brand:active) .gd-head .brand,
+.gd-fx:has(body > .site-head .site-nav li:nth-child(1) a:active) .gd-head .site-nav li:nth-child(1) a,
+.gd-fx:has(.gd-runner--real .gd-runner__item:nth-child(1) a:active) .gd-head .gd-runner__item:nth-child(1) a,
+.gd-fx:has(.gd-runner--real .gd-runner__item:nth-child(2) a:active) .gd-head .gd-runner__item:nth-child(2) a,
+.gd-fx:has(.gd-runner--real .gd-runner__item:nth-child(3) a:active) .gd-head .gd-runner__item:nth-child(3) a,
+.gd-fx:has(.gd-runner--real .gd-runner__item:nth-child(4) a:active) .gd-head .gd-runner__item:nth-child(4) a,
+.gd-fx:has(.gd-runner--real .gd-runner__item:nth-child(5) a:active) .gd-head .gd-runner__item:nth-child(5) a { opacity: 0.55; }
+/* A link's hover in the real header, which is clear, shown on the copies. */
+@media (hover: hover) {
+  .gd-fx:has(body > .site-head .site-nav li:nth-child(1) a:hover) .gd-head .site-nav li:nth-child(1) a,
+  .gd-fx:has(.gd-runner--real .gd-runner__item:nth-child(1) a:hover) .gd-head .gd-runner__item:nth-child(1) a,
+  .gd-fx:has(.gd-runner--real .gd-runner__item:nth-child(2) a:hover) .gd-head .gd-runner__item:nth-child(2) a,
+  .gd-fx:has(.gd-runner--real .gd-runner__item:nth-child(3) a:hover) .gd-head .gd-runner__item:nth-child(3) a,
+  .gd-fx:has(.gd-runner--real .gd-runner__item:nth-child(4) a:hover) .gd-head .gd-runner__item:nth-child(4) a,
+  .gd-fx:has(.gd-runner--real .gd-runner__item:nth-child(5) a:hover) .gd-head .gd-runner__item:nth-child(5) a { color: var(--ink); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gd-fx:has(body > .site-head .brand:is(:hover, :focus-visible)) .gd-head .mark__bit { animation: bit-home var(--t-sign) var(--ease); }
+}
+
+/* ---------------------------------------------------------------- Tablets and phones */
+
+@media (max-width: 1079px) {
+  .gd-band { --name: min(calc((9 * (100cqi - 2 * var(--m) + var(--g)) / 12 - var(--g)) / 4.98), calc(var(--sv) * 0.24 / 0.7275)); }
+}
+/* On a phone, one column: the labels over what they label, the name across the band, "website" the widest word
+   (3.14em), so "This website" goes on two lines and the others stand on one at its size. */
+@media (max-width: 719px) {
+  .prose > *, .prose > table, .prose > .wide { grid-column: 1 / -1; }
+  .prose > .margin { grid-column: 1 / -1; padding-right: 0; }
+  .prose > .margin + * { margin-top: 0.35em; }
+  .prose > * + .margin + * { margin-top: 0.35em; }
+  .gd-end .prose > h2 { grid-column: 1 / -1; }
+  .gd-end .prose > h2 + * { margin-top: 0.35em; }
+  .gd-end .prose > * + h2 + * { margin-top: 0.35em; }
+  .gd-band { --name: calc((100cqi - 2 * var(--m)) / 3.16); --band-top: 18px; --band-low: clamp(48px, 10svh, 96px); }
+  .gd-band__grid { grid-template-rows: auto auto; align-items: start; --name-gap: 14px; --label-h: calc(1.55 * var(--meta)); }
+  .gd-band .margin { grid-column: 1 / -1; grid-row: 1; }
+  .gd-band .margin.gd-lead { grid-column: 1 / -1; grid-row: 3; padding-right: 0; }
+  .gd-band p.gd-lead { grid-column: 1 / -1; grid-row: 4; margin-top: 0.35em; }
+  .gd-name__decor { grid-column: 1 / -1; grid-row: 2; }
+  .gd-band h2 { grid-column: 1 / -1; grid-row: 2; line-height: 0.96; white-space: normal; text-wrap: balance; }
+  .gd-band__lines { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .gd-band__lines i:nth-child(n+7) { display: none; }
+  .gd-intro > .margin { margin-top: 0; }
+  .gd-intro > .margin + p { margin-top: 0.35em; }
+}
+
+/* ---------------------------------------------------------------- Motion (on screen only, and none of it under Reduce Motion) */
+
+/* The first screen, on arrival, as the home page's (grid.css, the motion): from the first frame, the void over the
+   whole screen, the header too, its grid ruled down it, a column after another, and the mark's bit coming out of its
+   notch. Once the type is in, and the void has held a beat, doc.js strikes the canvas up over it in the grid's columns,
+   left to right, quicker as they go, each carrying its strip of the title, and as each lands the page is there under it
+   (.gd-arrive, above; html.gd-striking from the strike's first frame). The heading's words are clear meanwhile, not
+   hidden, so they're still read and found, and its baseline unseen; it takes over from the columns' copies once every
+   strip is home (html.gd-here), under them and in register with them, so no frame is without the title or its line and
+   none has either twice. Then the beats that finish the poster, timed from the strike's first frame, as the home page's
+   are: the dot comes out of the i's stem as the last columns land (440ms); the square stop slides in along the baseline
+   from the screen's edge and clicks onto the right margin (620ms), which lights for a moment; and the poster gives a
+   pixel and a half the way the stop was going, and rings back (780ms). The dot and the stop are the heading's own (the
+   columns carry the title and its baseline alone), seen through the columns, which have all landed by then; the give
+   moves the heading and the columns' copies alike, so whichever is showing gives. Readable by about two thirds of a
+   second, still by about two seconds, when it's simply there for good (html.gd-posted). Only where scripts run
+   (head.html marks the page .js before it's drawn) and the header runs over the page (.gd-fx), so without them the
+   poster is simply there, as the home page's is; should the script never come, the void goes at 3s, and should it stop
+   on the way, 2s after the strike began. Never in forced colors, which can't draw the columns, nor where the page opens
+   further on (.gd-posted: the layout's script, or doc.js, which also fades the void away, if it was drawn, where it's
+   not to play after all). */
+@media screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  html.js.gd-fx:not(.gd-posted) .gd-arrive {
+    display: block;
+    position: fixed;
+    z-index: 50;
+    inset: 0;
+    container-type: inline-size;
+    overflow: clip;
+    pointer-events: none;
+  }
+  html.gd-here .gd-arrive { visibility: hidden; }
+  html.gd-unvoid .gd-arrive { opacity: 0; transition: opacity 240ms var(--ease); }
+  html.js.gd-fx:not(.gd-striking, .gd-posted) .gd-arrive { animation: gd-gone 1ms 3s forwards; }
+  html.gd-striking:not(.gd-posted) .gd-arrive { animation: gd-end 1ms 2s forwards; }
+  @keyframes gd-gone { to { visibility: hidden; } }
+  @keyframes gd-end { to { visibility: hidden; } }
+  /* Safari's bars (.gd-chrome, below): the void's color while the void is at the top, as on the home page, and the
+     canvas's once the script gives the strips theirs (--gd-chrome) as the columns pass; should it never come, the
+     canvas's as the void goes. */
+  html.js.gd-fx:not(.gd-posted) .gd-chrome { background-color: var(--gd-chrome, var(--void)); }
+  html.js.gd-fx:not(.gd-striking, .gd-posted) .gd-chrome { animation: gd-unchrome 1ms 3s forwards; }
+  @keyframes gd-unchrome { to { background-color: var(--gd-chrome, var(--canvas)); } }
+  /* The void's beat: its grid ruled down it, a column after another, and the mark's bit out of its notch. */
+  .gd-void::before { transform-origin: top; animation: gd-rule 380ms var(--ease) backwards; animation-delay: calc(var(--col) * var(--per) * 14ms); }
+  @keyframes gd-rule { from { transform: scaleY(0); } }
+  .gd-void__head .mark__bit { animation: gd-bit-out 460ms var(--spring-pop) 40ms backwards; }
+  @keyframes gd-bit-out { from { transform: translate(-6px, 6px); } }
+  /* The heading, clear while the columns' copies carry the title, and two seconds at most; and its baseline unseen as
+     long, as they carry that too, each its strip of it with its letters. */
+  html.gd-striking h1.gd-title { animation: gd-clear 1ms 2s backwards, gd-give 520ms var(--spring-give) 780ms none; }
+  html.gd-striking.gd-here h1.gd-title { animation-name: none, gd-give; }
+  @keyframes gd-clear { from, to { color: transparent; } }
+  html.gd-striking .gd-poster .gd-title__decor::after { animation: gd-unseen 1ms 2s backwards; }
+  html.gd-striking.gd-here .gd-poster .gd-title__decor::after { animation: none; }
+  @keyframes gd-unseen { from, to { visibility: hidden; } }
+  /* The dot: a bit that comes out of the top of its stem, the way the mark's bit leaves its notch: it starts sunk in
+     the stem, the same ink, unseen, and pops up a little past its place and clicks back onto it. */
+  .gd-striking .gd-title__decor .gd-bit { animation: gd-dot 420ms var(--spring-pop) 440ms backwards; }
+  @keyframes gd-dot { from { translate: 0 0.2em; } }
+  .gd-striking .gd-title__decor .gd-stop { animation: gd-stop-in 520ms var(--spring-click) 620ms backwards; }
+  @keyframes gd-stop-in { from { translate: calc(var(--m) + 0.3em) 0; } }
+  /* The give: at the stop's impact, the whole title is pushed a pixel and a half the way the stop was going, and
+     rings back, in the heading and in the columns' copies; and the margin lights, unless the stop lands short of it
+     (.gd-short, doc.js). */
+  .gd-striking :is(.gd-title__decor, .gd-a__card) { animation: gd-give 520ms var(--spring-give) 780ms none; }
+  @keyframes gd-give { from { translate: -1.5px 0; } to { translate: 0 0; } }
+  .gd-striking .gd-poster::after { animation: gd-flash 700ms var(--ease) 770ms; }
+  .gd-striking.gd-short .gd-poster::after { animation: none; }
+  @keyframes gd-flash { 6% { opacity: 1; } }
+}
+/* At night, the lift under the page while the strike plays (above); and over it, where the first screen has grounds
+   of its own, they let it show through as the page does: the header's copy (its grid the page's own, under it), and a
+   band still in its plan at the screen's foot (its grid the page's, its ticks its own). */
+@media screen and (prefers-color-scheme: dark) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  html.gd-striking:not(.gd-posted) .gd-lift { display: block; }
+  html.gd-striking:not(.gd-posted) .gd-head[data-gd-head="start"] .gd-head__bar,
+  html.gd-striking:not(.gd-posted) .gd-band.is-waiting { background: transparent; }
+  html.gd-striking:not(.gd-posted) .gd-head[data-gd-head="start"] .gd-head__lines { visibility: hidden; }
+  html.gd-striking:not(.gd-posted) .gd-band.is-waiting .gd-band__lines i { border-inline-color: transparent; }
+}
+
+/* ---------------------------------------------------------------- Bands arriving (doc.js; on screen, with motion) */
+
+/* The plan: a band not yet arrived, drawn in outline on the page's canvas in the page's inks: its grid, its label, its
+   name and its number as hairlines, its bits hollow (the site's mark for "not yet"). The plan's pane of each column
+   (below) is drawn the same way, and the header over the plan in the same colors (its copy waiting, or the plan's
+   copy over it while it arrives). */
+.gd-band.is-waiting, .gd-pane--plan, .gd-head.is-waiting, .gd-head__plan { --ink: var(--page-ink); --ink-2: var(--page-ink-2); --ink-3: var(--page-ink-3); --app: var(--page-ink); --ground: var(--canvas); --bar: var(--canvas); }
+.gd-band.is-waiting { background: var(--canvas); color: var(--ink); }
+:is(.gd-band.is-waiting, .gd-pane--plan) h2 { color: transparent; -webkit-text-stroke: 1px var(--ink); }
+:is(.gd-band.is-waiting, .gd-pane--plan) .gd-bit, :is(.gd-band.is-waiting, .gd-pane--plan) .margin::before { background: transparent; box-shadow: inset 0 0 0 1px var(--ink); }
+:is(.gd-band.is-waiting, .gd-pane--plan) .gd-no { color: transparent; -webkit-text-stroke: 1px color-mix(in srgb, var(--ink) 22%, var(--ground)); }
+
+/* Arriving: the band's columns, opaque, cover all of it and carry copies of all of it; its own words stay where they
+   are under them, so a find in the page or a screen reader still finds them there meanwhile. (The header over it is
+   its copy's, above.) */
+.gd-band.is-arriving { background: var(--canvas); color: var(--page-ink); }
+
+/* The columns: one to a column of the grid (two on a phone), meeting in the middle of its gutters a pixel over, the
+   first and last running out to the screen's edges. Each holds a belt of two panes, one over the other: the plan,
+   where the band is now, and the band, just below it (above, for a column that drops), with a lip of its ground on
+   its leading side and more on its trailing side, as much as its spring goes past its place and back (doc.js), so that
+   ringing it never shows what's beyond. Each pane clips what it holds, so what's held still in it (the summary) changes
+   from the plan's to the band's exactly as the column's edge passes it. A column's leading edge is drawn in the page's
+   ink, which reads over both grounds it parts, and fades as it lands. While they move, each belt is a layer of its own;
+   then they're gone. */
+.gd-cols { position: absolute; z-index: 20; inset: 0; pointer-events: none; }
+.gd-col { position: absolute; top: 0; bottom: 0; overflow: clip; clip-path: inset(0); contain: layout paint style; }
+.gd-belt { position: absolute; inset: 0; }
+.gd-band.is-moving .gd-belt { will-change: transform; }
+.gd-pane { position: absolute; left: 0; right: 0; overflow: clip; }
+.gd-pane--plan { top: 0; height: 100%; background: var(--canvas); color: var(--ink); }
+.gd-pane--band { background: var(--ground); color: var(--ink); }
+/* What a pane holds still where the band is, while its belt moves (.gd-pane__still): the band's number, carried on a
+   layer of its own (so the number, behind the name as in the band, at z-index -1, stays over the pane's ground); a
+   window down to the summary's top, through which the label, the name and its dots are seen, carried on another, so
+   the type never crosses the summary; and the summary itself. */
+.gd-pane__type { position: absolute; z-index: 0; inset: 0; }
+.gd-pane__type > * { position: absolute !important; margin: 0 !important; translate: none !important; }
+.gd-pane__type > .gd-no { right: auto; }
+.gd-pane__still { position: absolute; top: 0; left: 0; right: 0; }
+.gd-pane__win { position: absolute; top: 0; left: 0; right: 0; overflow: clip; clip-path: inset(0); }
+.gd-pane__still > .gd-pane__held { position: absolute !important; margin: 0 !important; translate: none !important; }
+.gd-pane__edge {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--edge);
+}
+.gd-cols { --edge: color-mix(in srgb, #0D0E10 80%, transparent); }
+@media (prefers-color-scheme: dark) { .gd-cols { --edge: color-mix(in srgb, #EDEEF0 80%, transparent); } }
+/* The grid in each pane: the column's two edges, at a tenth of the pane's ink, and its tick at the band's foot. */
+.gd-pane__lines { position: absolute; top: 0; height: var(--h); border-inline: 1px solid color-mix(in srgb, var(--ink) 10%, transparent); }
+.gd-pane__lines::after { content: ""; position: absolute; bottom: 0; left: -1px; right: -1px; height: 8px; border-inline: 1px solid color-mix(in srgb, var(--ink) 42%, transparent); }
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Once the band has taken over from its columns, its name's dots come out of their stems one after another, as the
+     title's did. */
+  .gd-band.is-here .gd-name__decor .gd-bit { animation: gd-dot 420ms var(--spring-pop) 40ms backwards; }
+  .gd-band.is-here .gd-name__decor .gd-bit + .gd-bit { animation-delay: 125ms; }
+  .gd-pane--band .gd-name__decor .gd-bit { translate: 0 0.2em; }
+  /* Kozeni's name dropped into its slot: the band gives two pixels under it, and rings back; what the give uncovers at
+     the band's top is its own ground, which every column has brought in by then. */
+  .gd-band.is-give > :is(.gd-cols, .gd-band__grid, .gd-band__lines) { animation: gd-band-give 460ms var(--spring-give); }
+  .gd-band.is-arriving.is-give { background: var(--ground); }
+  @keyframes gd-band-give { from { translate: 0 2.5px; } to { translate: 0 0; } }
+}
+
+/* ---------------------------------------------------------------- Forced colors, more contrast, print */
+
+/* Forced colors take the grounds: no fixed header or copies (the page can't paint their grounds), no grid, no
+   number, no motion; the bands are their label and their name, and since their grounds are gone, a rule over each
+   says where a part begins. It's drawn over the band's top rather than added to it, so a link to the part lands
+   where it does in color, and a pixel lower, so the rule is never cut at the top of the screen. A label stands over
+   the name's backplate where it's set above the name (a phone). The title keeps its own dot. */
+@media (forced-colors: active) {
+  .gd-lines, .gd-no, .gd-band__lines, .gd-arrive, .gd-lift, .gd-decor .gd-bit { display: none; }
+  .gd-title, .gd-band h2 { -webkit-mask: none !important; mask: none !important; }
+  .gd-stop.stop { forced-color-adjust: none; background: CanvasText; }
+  .gd-band .margin::before, .prose ul > li::before { forced-color-adjust: none; background: CanvasText; }
+  .gd-band::before { content: ""; position: absolute; z-index: 2; top: 0; left: 0; right: 0; border-top: 1px solid CanvasText; pointer-events: none; }
+  .gd-band h2, .gd-fx .gd-band h2 { scroll-margin-top: calc(var(--to-cap) - var(--pad) - 23px); }
+  .gd-band .margin { position: relative; z-index: 1; }
+}
+@media (prefers-contrast: more) {
+  .gd-band, .gd-head { --light-3: rgb(255 255 255 / 0.86); --dark-3: rgb(13 14 16 / 0.86); }
+}
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  .gd-band, .gd-head { --dark-3: rgb(13 14 16 / 0.94); }
+}
+
+/* Printed, a booklet: black on white, no bands, index or motion; each part starts a page, every label stands over its
+   text, and a link to another site has its address written after it. */
+@media print {
+  @page { margin: 18mm; }
+  html:has(> body.proto-grid-doc) { background: #FFF !important; }
+  .site-nav, .site-foot__nav, .gd-runner, .gd-heads, .gd-lines, .gd-arrive, .gd-lift, .gd-no, .gd-band__lines, .gd-decor { display: none !important; }
+  /* One left edge for everything: the page's own margin. */
+  .proto-grid-doc .wrap { padding-inline: 0; }
+  .gd-title, .gd-band h2 { -webkit-mask: none !important; mask: none !important; }
+  .gd-poster, .gd-band { background: none; overflow: visible; }
+  .gd-band { --ink: #000; --ink-2: #53575E; --ink-3: #62666D; color: #000; }
+  .gd-poster__main { min-height: 0; display: block; padding-block: 0 24px; }
+  .gd-title { font-size: 72pt; margin-left: -0.059em; }
+  .gd-title__decor { display: none; }
+  .gd-updated { margin-top: 14pt; }
+  .gd-intro, .prose { display: block; }
+  .gd-intro { margin-top: 24pt; }
+  .gd-band__grid { display: block; min-height: 0; padding: 0; }
+  .gd-band h2 { font-size: 40pt; margin: 0.35em 0 0 -0.059em; }
+  /* A band still waiting to arrive prints as it will be, solid. */
+  .gd-band h2 { color: #000 !important; -webkit-text-stroke: 0 !important; }
+  .gd-band .margin::before { box-shadow: none !important; }
+  .gd-cols { display: none !important; }
+  .gd-part { break-before: page; }
+  .gd-text > .prose { padding-block: 24pt 0; }
+  .gd-end > .prose { padding-block: 36pt 0; }
+  .prose > :is(.margin, h2, h3, h4) { break-after: avoid; }
+  .prose > .margin, .gd-end .prose > h2 { margin-top: 2em; }
+  .prose > .margin + *, .gd-end .prose > h2 + * { margin-top: 0.35em; }
+  .prose > :first-child { margin-top: 0; }
+  .gd-band .margin::before, .prose ul > li::before { background: #000; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .prose a[href^="http"]::after { content: " (" attr(href) ")"; font-family: var(--mono); font-size: var(--meta); overflow-wrap: anywhere; }
+}

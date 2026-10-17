@@ -1,18 +1,90 @@
 ---
 layout: default
 title: Not found
-description: There’s nothing at this address. The page may have moved to another room, or it was never here.
+description: There’s nothing at this address. The page may have moved, or it was never here.
 permalink: /404.html
 sitemap: false
+body_class: proto-grid-lost
+styles: [lost]
+scripts: [lost]
+bitless: true
 ---
-<section class="lost wrap grid" aria-labelledby="lost-title">
-  <h1 class="display lost__title" id="lost-title">Nothing on view&nbsp;here{% include stop.html %}</h1>
-  <div class="plinth plinth--room lost__plinth" data-light></div>
-  <div class="lost__info">
-    <div class="lost__head">
-      <p class="lost__note">This address isn’t in the collection. The work may have moved to another room, or it was never&nbsp;here.</p>
-      {% include link-arrow.html href="/" text="Back to the entrance" class="more--block lost__more" %}
-    </div>
-    {% include label.html title="Untitled (404)" medium="Space, on a plinth" art_term="Work" art_light="An empty plinth, in daylight" art_dark="An empty plinth, lit anyway" credit="Gift of a broken link" %}
+{%- comment -%}
+  The not-found page, which GitHub Pages serves for any address that doesn't exist: the home page's first screen, with
+  nothing at its address.
+
+  It arrives as the home page's first screen does. For a beat the screen is the void (the ink; true black in dark
+  mode), its grid ruled down it and only the mark lit, its bit coming out of its notch. Then the canvas strikes up
+  over it in all twelve of the grid's columns (six on a phone), left to right, quicker as they go, each carrying its
+  strip of the title, "Nothing at this address", and the header and the foot are uncovered column by column as they
+  land (at night the canvas rises a step lighter, and settles as each column lands, as the home page's does); the
+  last runs out to the screen's edge, bringing nothing into its column. The i's dots, square bits the width of the
+  stem, pop out of their stems, one after another, and the third bit is the stop: hollow, the site's mark for "not
+  here", it slides out of the last column's edge into that empty column, a column short of the margin the home page's
+  stop clicks onto. What never comes home here is the stop. Readable in about 0.7s, still in about 1.4s.
+
+  The title is set so that its words end where the last column begins, the stop on that column's edge, at every size
+  and in every engine (its last line is set against that edge). With a mouse the column under the pointer is the home
+  page's lens: through it the poster is drawn in outline, in register with its letters, with the decisions in that
+  strip written on (lost.js); on a touch screen a sideways drag on the title moves it. A moment after it's let go, it
+  goes quiet where it is. At the foot, where the home page has its lede: the note and the way home alone, from the
+  left margin.
+
+  Without the script, under Reduce Motion, in forced colors and on paper, it's simply there: the poster, the empty
+  column, the foot. The page is one screen (it runs on only on the shortest phones held sideways): the header, the
+  poster and the footer at its foot, with the grid ruled down all of it. One mark to a screen, the header's, so the
+  footer goes without its own (lost.css), which has no bit either (bitless, above). Its every address is root-relative,
+  as GitHub Pages serves it at any depth.
+{%- endcomment %}
+{%- comment -%} The first frame the page draws, noted: the void is held its beat from then (lost.js), as the home page's and the privacy page's are. {%- endcomment %}
+<script>if (window.requestAnimationFrame) requestAnimationFrame(function (t) { window.glSeen = t; });</script>
+{%- capture titleset -%}{% include lost-title.html %}{%- endcapture %}
+{%- comment -%} What Safari tints its bars from while the arrival plays: a fixed strip along the top that paints nothing (lost.css; on iOS, one along the foot too, lost.js). {%- endcomment %}
+<i class="gl-chrome" aria-hidden="true"></i>
+{%- comment -%}
+  At night, the canvas the arrival's columns settle on as they land: the page's own, a column of it under each, under
+  everything on the page, the grid too, a step lighter till its column has landed and settled. There only while the
+  strike plays (lost.css, lost.js).
+{%- endcomment %}
+<div class="gl-lift" aria-hidden="true">{% for c in (0..11) %}<i style="--col: {{ c }}"></i>{% endfor %}</div>
+{%- comment -%} The grid, ruled down the whole page, through the header and the footer too (lost.css). {%- endcomment %}
+<div class="gl-lines" aria-hidden="true">{% for n in (1..12) %}<i></i>{% endfor %}</div>
+{%- comment -%}
+  The arrival (lost.css, lost.js), over the whole screen and gone in about a second: the void in the grid's twelve
+  columns, the first holding the mark, lit (a copy of the header); and over them, the canvas in the same twelve columns,
+  which strikes up, each column carrying its strip of the title (a copy of the poster laid out as it is, with only the
+  title in it, its stop held back) and clipping it to itself, so what moves is the column whole.
+  The stop that slides into the last column is the heading's own, on the page under this. It comes before the poster,
+  as the home page's void comes before its heading: a browser may draw the page as far as it has read it (Chrome does,
+  where it waits on the stylesheets at the script under the foot), and whatever it draws first has the void over it,
+  so nothing of the finished page is seen before the arrival. Decorative copies, never there without the script, under
+  Reduce Motion or in forced colors.
+{%- endcomment %}
+<div class="gl-arrive" aria-hidden="true" inert data-gl-arrive>
+  <div class="gl-voids">
+    {%- for c in (0..11) %}<div class="gl-void" style="--col: {{ c }}">{% if c == 0 %}<div class="gl-void__head">{% include header.html %}</div>{% endif %}</div>{% endfor -%}
   </div>
+  <div class="gl-cols">
+    {%- for c in (0..11) %}
+    <div class="gl-a" style="--col: {{ c }}"><i class="gl-a__ground"></i><div class="gl-a__plate gl-main wrap grid"><div class="gl-title"><span class="gl-set">{{ titleset }}</span></div></div></div>
+    {%- endfor %}
+  </div>
+</div>
+<section class="gl" data-gl>
+  <div class="gl-main wrap grid" data-gl-main>
+    {%- comment -%} The visible set first, so a search for the title lands on the letters; the hidden copy is what's read. {%- endcomment %}
+    <h1 class="gl-title" id="gl-title"><span class="gl-set" aria-hidden="true" data-gl-title>{{ titleset }}</span><span class="visually-hidden">Nothing at this address.</span></h1>
+    <div class="gl-foot" data-gl-foot>
+      <p class="gl-note">The page may have moved, or it was never&nbsp;here.</p>
+      {% include link-arrow.html href="/" text="Back to the home page" class="more--block gl-home" %}
+    </div>
+  </div>
+  {%- comment -%}
+    What the foot takes, measured before the first frame is drawn, so the title is set from the first frame to what
+    the foot leaves of the screen, if that's less than the columns allow (lost.css, --gl-foot; lost.js measures it again
+    when the fonts are in, and on every resize).
+  {%- endcomment %}
+  <script>(function () { var f = document.querySelector('[data-gl-foot]'); if (f && f.getBoundingClientRect) document.documentElement.style.setProperty('--gl-foot', Math.ceil(f.getBoundingClientRect().height) + 'px'); })();</script>
+  {%- comment -%} The lens, built by lost.js when it's first moved. Decorative. {%- endcomment %}
+  <div class="gl-lens" aria-hidden="true" inert data-gl-lens></div>
 </section>

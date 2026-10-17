@@ -1,8 +1,13 @@
 {%- comment -%}
-  Site header: the mark and wordmark (home), then Studio and Contact, the two sections of the home
-  page that sit well below the first screen. The apps need no link: they're on the first screen.
-  The links are set in meta, like the titles of the sections they lead to and the footer's links.
-  The same on every page.
+  Site header: the mark and wordmark (home), then Contact, the last screen of the home page. The apps
+  have no link here: over the home page's rooms and the privacy page's parts, a running index joins
+  this row (grid-runner.html, doc-runner.html), and the footer links to each app.
+  The link is set in meta, like the footer's links, and Contact's last letter ends exactly on the
+  right margin. The same on every page, at the top of the page on its canvas; where the home page's and
+  the privacy page's scripts take it over, it stays at the top of the screen, clear, over copies of it
+  drawn in the ink of what's under it (grid.css, doc.css). Its height is exact (--head-h in site.css,
+  a little closer on each page's own sheet), so each page's first screen can be composed to exactly
+  one screen under it. The mark's bit goes home and back on hover or focus.
 {%- endcomment -%}
 <header class="site-head wrap">
   <a class="brand" href="{{ '/' | relative_url }}" aria-label="{{ site.title }}, home">
@@ -11,7 +16,6 @@
   </a>
   <nav class="site-nav" aria-label="Main">
     <ul class="meta" role="list">
-      <li><a href="{{ '/#studio' | relative_url }}">Studio</a></li>
       <li><a href="{{ '/#contact' | relative_url }}">Contact</a></li>
     </ul>
   </nav>

@@ -1,0 +1,33 @@
+{%- comment -%}
+  The home page (index.html): a word of the first screen's tagline set as one span per letter, so the magnifier
+  (grid.js) can find each letter and write on the decisions between them. Letters set apart lose the font's kerning
+  between them, so the pairs here that Inter Tight kerns get it back as a margin (--k, measured at weight 500 and
+  -0.034em in Chrome, Safari and Firefox: th +0.0112em, ny -0.0195em, ts -0.0089em). A dotless i (ı, U+0131, in the
+  font's subset) gets a square bit for its dot, the width of its stem, on the height of the round one (.g-dot,
+  grid.css). The whole sentence is read from the heading's visually hidden copy; these letters are aria-hidden by
+  the caller.
+  Params
+    text      required  the word, with ı where an i is to take a square dot
+    from      optional  the first letter's place in the stagger (default 0)
+    dot       optional  this word's dot's place in the order the dots come down (default 0)
+  (Never name an include parameter size, first or last: Liquid reads those as properties of the list.)
+{%- endcomment -%}
+{%- assign chars = include.text | split: '' -%}
+{%- assign start = include.from | default: 0 -%}
+{%- assign prev = '' -%}
+{%- for ch in chars -%}
+  {%- assign order = forloop.index0 | plus: start -%}
+  {%- assign pair = prev | append: ch -%}
+  {%- assign kern = '' -%}
+  {%- case pair -%}
+    {%- when 'th' -%}{%- assign kern = '0.0112' -%}
+    {%- when 'ny' -%}{%- assign kern = '-0.0195' -%}
+    {%- when 'ts' -%}{%- assign kern = '-0.0089' -%}
+  {%- endcase -%}
+  {%- if ch == 'ı' -%}
+    <span class="g-l g-l--i" style="--i: {{ order }}"><span class="g-i">ı<b class="g-dot" style="--d: {{ include.dot | default: 0 }}"></b></span></span>
+  {%- else -%}
+    <span class="g-l" style="--i: {{ order }}{% if kern != '' %}; --k: {{ kern }}em{% endif %}">{{ ch }}</span>
+  {%- endif -%}
+  {%- assign prev = ch -%}
+{%- endfor -%}

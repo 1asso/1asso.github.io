@@ -1,0 +1,557 @@
+/* The not-found page (404.html, styles: [lost]): the home page's first screen (grid.css), with nothing at its address.
+
+   A poster on the page's canvas, under the site's header, with the footer at the foot of the screen and the grid
+   ruled down the whole of it. The title is set so its words end where the last column begins: on that column's edge
+   stands the hollow stop, and nothing else is in it. The page arrives as the home page's first screen does, from the
+   void, all twelve of the grid's columns striking up, the last bringing nothing into its column; then, where the
+   home page's stop clicks onto the right margin, this one slides out of the last column's edge into it, hollow, a
+   column short of home (and there's no flash of the margin, nor a sweep of the lens). With a mouse the column under
+   the pointer is the home page's lens, and on touch a sideways drag on the title moves it (lost.js). At the foot, as on
+   the home page, the note and the way home alone, from the left margin.
+
+   The header's height, the poster's margins, the text sizes and the springs are the home page's, copied here and in
+   lost.js (this page loads neither grid.css nor grid.js); only on a laptop's screen is the poster's foot a little
+   closer (below). The arrival is laid out here, from the first frame, and played by lost.js frame by frame, as the home
+   page's is by grid.js. Without the script, under Reduce Motion, in forced colors and on paper, the poster is simply
+   there, the last column empty. Loaded on this page only. */
+
+/* ---------------------------------------------------------------- The page */
+
+.proto-grid-lost {
+  /* The screen, less the browser's bars on a phone, so nothing is ever under them. */
+  --sv: 100vh;
+  --sv: 100svh;
+  /* The header as close as the home page's, its height still exact. */
+  --head-pad: clamp(10px, 1.3vw, 20px);
+  --head-h: calc(var(--head-pad) + 54px);
+  /* The site's footer, its mark gone (below): one row, 44px to the finger, its 24px of padding over it and under it
+     what frames the page (site.css: the header's padding and 13px, less 0.323 of the mono's size); on a phone, two,
+     the copyright line (1.55 of the mono's size) and 8px over the links. A pixel over, so the screen always holds it. */
+  --foot-h: calc(var(--head-pad) + 82px - 0.323 * var(--meta));
+  /* The pop, a damped spring's step response sampled into linear(), as the home page's (zeta is its damping ratio):
+     the mark's bit coming out of its notch while the void holds the screen. (The i's dots and the stop pop on the
+     same spring in lost.js, and the poster's columns strike up on the home page's.) */
+  /* zeta 0.55: 12.6% past */
+  --spring-pop: linear(0, 0.0106 1.3%, 0.0554 3.1%, 0.1387 5.2%, 0.2549 7.4%, 0.3937 9.8%, 0.5424 12.3%, 0.6886 15%, 0.8217 17.7%, 0.9338 20.5%, 1.0203 23.4%, 1.0798 26.3%, 1.1139 29.3%, 1.1261 32.4%, 1.1213 35.6%, 1.1049 38.8%, 1.0822 42%, 1.0574 45.4%, 1.0342 48.7%, 1.0146 52.1%, 1 55.6%, 0.9904 59.1%, 0.9854 62.6%, 0.984 66.2%, 0.9853 69.8%, 0.9882 73.4%, 0.9916 77.1%, 0.995 80.9%, 0.9979 84.6%, 1 88.4%, 1.0013 92.2%, 1.0019 96.1%, 1);
+  /* The grid's hairlines rest at a tenth of the ink, always a whole pixel. */
+  --hair-rest: 0.1;
+  /* The void the page opens on: the ink, and in dark mode the dark itself, under the canvas, so nothing flashes white
+     at night; its grid and the mark in the canvas's color (the home page's). */
+  --void: var(--ink);
+  --void-ink: var(--canvas);
+}
+@media (prefers-color-scheme: dark) {
+  .proto-grid-lost { --void: #000; --void-ink: var(--ink); }
+}
+@media (max-width: 719px) {
+  .proto-grid-lost { --head-pad: 8px; --foot-h: calc(var(--head-pad) + 90px + 1.227 * var(--meta)); }
+}
+/* On a screen the size of a big desktop display, the small words grow with it, as the home page's do: the text from
+   20px to 28px, mono (Contact, the footer) to 18px. */
+@media (min-width: 1800px) and (min-height: 1000px) {
+  .proto-grid-lost { --text: clamp(1.25rem, 0.25rem + 0.9vw, 1.75rem); --meta: clamp(0.875rem, 0.25rem + 0.5vw, 1.125rem); }
+}
+/* Edge to edge on a wide screen, as the home page runs. */
+.proto-grid-lost .wrap { max-width: none; }
+/* The header over the poster, so the focus ring of Contact, which reaches a few pixels below it, is drawn whole. */
+.proto-grid-lost .site-head { position: relative; z-index: 4; }
+/* One mark to a screen: the header's is on the page's one screen, so the footer goes without its own, as the home
+   page's deck footer does, and its line starts on the margin. Where the page runs on (below), the footer's line is
+   already on the first screen, under the header's mark, so it goes without there too. */
+.proto-grid-lost .site-foot__mark { display: none; }
+
+/* One screen: the header, the poster, and the footer at the foot of it. On a screen too short for all three (the
+   shortest phones, on their side: 36px at 568 x 320, 4px at 640 x 360) the page runs on, and scrolls. The grid is
+   ruled down all of it (.gl-lines, below), from the page's top to its foot. */
+body.proto-grid-lost { position: relative; display: flex; flex-direction: column; min-height: var(--sv); }
+body.proto-grid-lost > main { flex: 1 0 auto; display: flex; flex-direction: column; }
+
+/* ---------------------------------------------------------------- The poster */
+
+/* The poster's measures, for everything in it, and for the arrival's copies of it, which lie over the whole screen
+   and are laid out to the same measures (.gl-arrive, below), as is the canvas the arrival's columns settle on at
+   night (.gl-lift, below). They're read by what's inside, never by the poster itself (its own container units would
+   be its parent's). P is a column and its gutter; the last column's left edge is --last, its width --colw (on a phone
+   the grid is six double columns: the last is two of the grid's, and the gutter between).
+
+   The title is set so that its stop's left edge falls on --last, its last line set against that edge (.gl-w, below).
+   On a screen on its side, two lines: "Nothing at" from the margin and "this address" a column in, from the t's bar
+   (hung 0.04em, half its arm, past the column's edge, so its stem reads on it) to the stop's left edge, 4.9502em (in
+   Inter Tight 500 at -0.034em, in every engine: "this address" is 4.9452em, less the hang, and the stop's 0.045em
+   before it). So the font-size is what's between the column's edge it starts on and the last column's, over 4.9502.
+   The lines, trimmed to their caps and baselines, are 1.755em tall, and under them is the room the lens's notes
+   take, kept clear of the foot (--under), so what the screen's height leaves for the lines is --avail. Where that's
+   too little for a title so large, the last line starts by whole columns further in (as the home page's motto does),
+   the fewest that let it fit, so it keeps to the grid at both ends: on every laptop's screen it's the one column,
+   the same shape at every size. */
+.gl, .gl-arrive, .gl-lift {
+  --M: calc(100cqi - 2 * var(--m));
+  --P: calc((var(--M) + var(--g)) / 12);
+  --span: 1;
+  --last: calc(var(--m) + 11 * var(--P));
+  --colw: calc(var(--P) - var(--g));
+  --hero-top: clamp(14px, 4.2svh, 48px);
+  --hero-bottom: clamp(20px, 6svh, 60px);
+  /* Under the last baseline: the room the lens's notes take there (each column's number and width, 8px down and two
+     lines tall), and 14px under them, clear of the foot. Nothing is in it at rest. */
+  --under: 48px;
+  /* What the foot needs: measured by the page (--gl-foot) before the first frame, and again by lost.js; without the
+     script, this guess, a pixel over what it takes: the note's two lines in the site's text (its caps, 0.7275em, and a
+     line, 1.45em), the gap under them (.gl-foot), and the way home's caps. */
+  --foot: calc(2.905 * var(--text) + clamp(14px, 1.6svh, 20px) + 1px);
+  --lead: 0.3em;
+  --lines: 1.755;
+  --fit: 4.9502;
+  /* A column (on a phone, a double one): the last line's first indent on a screen on its side, and its step. */
+  --step: calc(var(--span) * var(--P));
+  --indent0: var(--step);
+  --avail: calc(var(--sv) - var(--head-h) - var(--foot-h) - var(--hero-top) - var(--hero-bottom) - var(--gl-foot, var(--foot)) - var(--under));
+  --indent: max(var(--indent0), round(up, var(--last) - var(--m) - var(--fit) * var(--avail) / var(--lines), var(--step)));
+  /* Half a pixel short of the edge, so a rounding never wraps the line (set against the edge, it's still on it). */
+  --tag: max(2.75rem, (var(--last) - var(--m) - var(--indent) - 0.5px) / var(--fit));
+}
+/* The poster has no ground of its own: the page's canvas, with the grid ruled on it, shows through. */
+.gl {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  container-type: inline-size;
+  display: grid;
+  flex: 1 0 auto;
+}
+.gl-main {
+  position: relative;
+  z-index: 1;
+  grid-template-rows: auto 1fr auto;
+  padding-block: var(--hero-top) var(--hero-bottom);
+}
+
+/* The grid itself: one cell per column, each drawn as its two edges, a tenth of the ink, down the whole page, through
+   the header and the footer, as the home page rules every screen; under everything on it. On a phone, the six double
+   columns the poster arrives in. */
+.gl-lines {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--g);
+  padding-inline: var(--m);
+  pointer-events: none;
+  color: var(--ink);
+}
+.gl-lines i { border-inline: 1px solid currentColor; opacity: var(--hair-rest); }
+
+/* The title: one box a word, flowed in a row that wraps where a break is on, each word's box trimmed to its caps and
+   baseline, so the gap between rows is exactly the lead, from one baseline to the next caps: 0.3em on a screen on its
+   side, which keeps the tail of the g of "Nothing" 0.078em clear of the d of "address" under it, the home page's
+   clearance for its y over its t; 0.23em upright, the home page's. The hangs are a word's first letter's, set on its
+   slot: the N by its side bearing (0.0586em), so its stem stands on the margin; the t by half its bar. The last line
+   is set against the last column's edge (its first word's margin takes what's left of the line), and what's left of
+   that column after the stop is kept clear, so the stop's left edge is the column's, to the pixel, in every engine,
+   at any size, and with any font. */
+.gl-title {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  margin-bottom: var(--under);
+  font-size: var(--tag);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.034em;
+  /* A sideways drag here is the lens's (lost.js); up and down is still the page's, and two fingers still zoom. */
+  touch-action: pan-y pinch-zoom;
+}
+.gl-set { display: flex; flex-wrap: wrap; column-gap: 0.1886em; }
+.gl-w { position: relative; display: block; }
+.gl-slot { display: block; white-space: nowrap; text-box: trim-both cap alphabetic; }
+.gl-break { display: none; flex-basis: 100%; height: var(--lead); }
+.gl-break--b { display: block; }
+.gl-w--nothing .gl-slot { margin-left: -0.0586em; }
+.gl-w--this { margin-left: auto; }
+.gl-w--this .gl-slot { margin-left: -0.04em; }
+.gl-w--address { margin-right: calc(var(--colw) - 0.15em); }
+/* Each line's baseline, a hairline across the screen, like the columns' edges. */
+.gl-w--nothing::after, .gl-w--this::after {
+  content: "";
+  position: absolute;
+  left: -100vw;
+  right: -100vw;
+  bottom: 0;
+  border-bottom: 1px solid currentColor;
+  opacity: var(--hair-rest);
+  pointer-events: none;
+}
+
+/* An i's dot: a square bit, the width of its stem (0.105em, from 0.051em to 0.156em of the glyph), its middle on the
+   height of the round dot's (0.693em), set over its stem, as the home page's Contact address sets them (grid.css,
+   .g-mi). The letter itself stays an i, inline in its word, so a search finds the word and a copy takes it whole; its
+   round dot is cut off by drawing the letter as its own background, clipped to its shape, and clear above 0.588em (the
+   gap between the stem's top, 0.546em, and the dot's foot, 0.63em): an inline box's background is as tall as the font,
+   its top 0.969em over the baseline, in every engine, so the cut is 0.381em down. The bit is drawn by the box round the
+   letter, so there's nothing but the letter in the word (an element there would break the word in two for a copy), and
+   placed from the same box: its foot 0.8817em up from the box's foot, which is 0.241em under the baseline. */
+.gl-mi { position: relative; }
+.gl-mi__i {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(transparent 0.381em, var(--ink) 0.381em);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.gl-mi::after {
+  content: "";
+  position: absolute;
+  left: 0.051em;
+  bottom: 0.8817em;
+  inline-size: 0.105em;
+  block-size: 0.105em;
+  background: var(--ink);
+}
+
+/* Upright (a phone, a tablet held upright): three lines, "Nothıng", "at thıs" and "address", the last from the a's
+   bowl, overshooting the margin by 0.012em as a round letter should, to the stop's left edge 3.2991em ("address" is
+   3.2905em, less the a's 0.0364em hang, and the stop's 0.045em before it); 2.6425em tall, trimmed. Set by the measure;
+   where the height is too little for that (a phone in a browser's bars, say), the last line starts a column in, as
+   on a screen on its side, or as few more as it takes. On a tall screen (a tablet, a phone without its bars) that
+   leaves the canvas empty under the title, down to the foot, and it's left so: "address" is the measure, so more
+   lines, as the home page's tagline takes there, wouldn't set it any larger. */
+@media (orientation: portrait) {
+  .gl, .gl-arrive { --lead: 0.23em; --lines: 2.6425; --fit: 3.2991; --indent0: 0px; }
+  .gl-break--b { display: none; }
+  .gl-break--a, .gl-break--c { display: block; }
+  .gl-w--this { margin-left: 0; }
+  .gl-w--this .gl-slot { margin-left: 0; }
+  .gl-w--address { margin-left: auto; }
+  .gl-w--at .gl-slot, .gl-w--address .gl-slot { margin-left: -0.0364em; }
+  .gl-w--this::after { content: none; }
+  .gl-w--at::after, .gl-w--address::after {
+    content: "";
+    position: absolute;
+    left: -100vw;
+    right: -100vw;
+    bottom: 0;
+    border-bottom: 1px solid currentColor;
+    opacity: var(--hair-rest);
+    pointer-events: none;
+  }
+}
+/* A short screen on its side (a phone held sideways): the title on one line, 9.3666em from the N's stem to the stop's
+   left edge, set by the columns alone; on the shortest, the page runs on past the screen's foot. The line never
+   wraps, and it's packed to its end: where Firefox rounds the font's size up a hair, the line is that much too long
+   for its room, and it's the N's stem that moves past the margin by as much (under a pixel), not the stop off its
+   edge. The lens's notes go under the g's tail (--under), and the note under the title is on one line too (the
+   foot, below). */
+@media (orientation: landscape) and (max-height: 560px) {
+  .gl, .gl-arrive { --lines: 0.7275; --fit: 9.3666; --indent: 0px; --avail: 100vw; --under: calc(0.3 * var(--tag) + 45px); }
+  .gl-set { flex-wrap: nowrap; }
+  .gl-title .gl-set { justify-content: flex-end; }
+  .gl-break { display: none !important; }
+  .gl-w--nothing { margin-left: auto; }
+  .gl-w--this { margin-left: 0; }
+  .gl-w--this .gl-slot { margin-left: 0; }
+  .gl-w--this::after { content: none; }
+}
+@media (max-width: 719px) {
+  .gl, .gl-arrive, .gl-lift { --span: 2; --last: calc(var(--m) + 10 * var(--P)); --colw: calc(2 * var(--P) - var(--g)); }
+  .gl-lines { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .gl-lines i:nth-child(n+7) { display: none; }
+}
+/* A laptop's screen in a browser (1440 x 789, 1366 x 768): the poster's foot a little closer to it (the home page
+   keeps its 6svh), so the title keeps the size its columns give it. */
+@media (orientation: landscape) and (min-height: 561px) and (max-height: 820px) {
+  .gl, .gl-arrive { --hero-bottom: clamp(20px, 4.6svh, 60px); }
+}
+
+/* ---------------------------------------------------------------- The foot */
+
+/* As on the home page, the lede's place: the note and the way home alone, from the left margin, in the first three
+   columns (under 1080px the first nine, on a phone the measure), standing on the poster's foot. The note is two lines
+   wherever the title is two or three, the first ending at "moved," (11.92em, or 13.04em with "or"), so the foot keeps
+   one shape as the title keeps its. */
+.gl-foot { grid-column: 1 / span 3; grid-row: 3; --gap: clamp(14px, 1.6svh, 20px); }
+.gl-note { max-width: 12.5em; color: var(--ink-2); text-box: trim-both cap alphabetic; }
+/* The way home under it, trimmed the same, so its top margin is the gap the eye sees, less the 4px of padding its
+   focus ring is drawn round, which keeps the ring 5px clear of the note at the least. To the finger it's 44px tall,
+   from a pixel under the note down into the poster's foot. */
+.gl-home { position: relative; padding-block: 4px; margin-block: calc(var(--gap) - 4px) -4px; text-box: trim-both cap alphabetic; }
+.gl-home::after { content: ""; position: absolute; left: 0; right: 0; top: calc(5px - var(--gap)); height: 44px; }
+
+@media (max-width: 1079px) {
+  .gl-foot { grid-column: 1 / span 9; }
+}
+/* On a short screen on its side (a phone held sideways, a short window), under the title on one line, the note on
+   one line, in the first nine columns, so the page keeps to one screen where it can. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .gl-foot { grid-column: 1 / span 9; }
+  .gl-note { max-width: none; }
+}
+@media (max-width: 719px) {
+  .gl, .gl-arrive { --hero-top: clamp(10px, 3svh, 28px); --hero-bottom: clamp(18px, 3.4svh, 32px); }
+  .gl-foot { grid-column: 1 / -1; }
+}
+
+/* ---------------------------------------------------------------- The lens */
+
+/* The home page's magnifier (grid.css, .g-lens), built by lost.js the first time it's moved: a column of the grid (two,
+   where one is too narrow to write in; on a phone, a third of the measure), from the header's foot to just under its
+   notes, as the home page's, so it never lies over the foot; and in it a plate laid out as the poster is, slid the
+   other way as the window slides, so what shows through is always the strip it's over, drawn: the canvas faintly inked,
+   the title in outline in register with its letters, each line's caps, x-height and baseline ruled across and named,
+   what was decided in that strip, and each column's number and width; in the last column, the stop at its own weight,
+   in register, and 404. Shown only while it's moved; a moment after it's let go, it goes quiet where it is. Its window
+   and its edges stack by z-index, never by the order they come in. */
+.gl-lens { position: absolute; z-index: 3; inset: 0; pointer-events: none; display: none; }
+.gl-lens.is-built { display: block; }
+.gl-lens__win, .gl-lens__edges {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 320ms var(--ease);
+}
+.gl-lens__win { z-index: 0; overflow: clip; }
+.gl-lens__edges { z-index: 1; border-inline: 1px solid color-mix(in srgb, var(--ink) 55%, transparent); }
+.gl-lens.is-on :is(.gl-lens__win, .gl-lens__edges) { opacity: 1; transition-duration: 160ms; }
+.gl-lens__plate { position: absolute; top: 0; left: 0; }
+.gl-lens__ground { position: absolute; inset: 0; background: color-mix(in srgb, var(--ink) 4%, var(--canvas)); }
+/* The poster in outline: a copy of the title, its letters drawn as their edges, exactly where they stand, so the
+   rules for their caps, x-height and baseline meet them. Its i's are boxes of their own here, their round dots
+   clipped off (an outline is drawn whatever the background). */
+.gl-lens__type { position: absolute; margin: 0; font-weight: 500; line-height: 1; color: transparent; -webkit-text-stroke: 1px var(--ink); }
+.gl-lens__type .gl-mi__i { display: inline-block; line-height: 1; clip-path: inset(0.276em -0.2em -0.3em -0.2em); background: none; }
+.gl-lens__type .gl-mi::after { background: none; box-shadow: inset 0 0 0 1px var(--ink); }
+.gl-lens__type .gl-stop, .gl-lens__type .gl-w::after { visibility: hidden; }
+.gl-lens__type .gl-w::after { content: none; }
+/* The stop, the one thing here drawn at its weight: the hollow stop is already the site's drawing of a bit that isn't
+   there (a seventh of its side, site.css), so it's shown as it is, in register. */
+.gl-lens__stop { position: absolute; box-shadow: inset 0 0 0 var(--sw, 1px) var(--ink); }
+/* The redlines: the metrics as hairlines across the plate, solid for caps and baselines, dashed for the x-height. */
+.gl-lens__rule { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--ink); }
+.gl-lens__rule--x { border-top-style: dashed; opacity: 0.6; }
+.gl-lens__rule--v { right: auto; width: 0; border-top: 0; border-left: 1px solid var(--ink); }
+
+/* A note: mono, its name over its value, on a chip of the window's ground so it reads over an outline. A metric's
+   name stands at the column's right, against the line it names, as does every note in the last column. */
+.gl-lens__note {
+  position: absolute;
+  padding: 0 3px;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 13px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.gl-lens__note { background: color-mix(in srgb, var(--ink) 4%, var(--canvas)); }
+.gl-lens__note b { display: block; font-weight: 400; }
+.gl-lens__note--quiet { color: var(--ink-2); }
+.gl-lens__note--end { translate: -100% 0; }
+.gl-lens__note--mid { translate: -50% 0; text-align: center; }
+/* A measure between two edges: a hairline with a tick at each end; and a box round a thing measured. */
+.gl-lens__span { position: absolute; height: 0; border-top: 1px solid var(--ink); }
+.gl-lens__span::before, .gl-lens__span::after { content: ""; position: absolute; top: -4px; height: 7px; border-left: 1px solid var(--ink); }
+.gl-lens__span::before { left: 0; }
+.gl-lens__span::after { right: 0; }
+.gl-lens__box { position: absolute; outline: 1px solid var(--ink); outline-offset: 2px; }
+
+/* ---------------------------------------------------------------- The arrival */
+
+/* Over the whole screen, from the first frame where it will play (on screen, the script there, motion allowed, no
+   forced colors, a screen held upright or at least 561px tall, so the page is one screen), before the script has run,
+   and gone in about a second: the void in the grid's columns (.gl-void), each holding its column's edges, ruled down
+   it in the canvas's color at an eighth, the first holding the mark, lit, where the header's is, its bit coming out of
+   its notch; and over them the canvas in the same columns (.gl-a), waiting under the screen's foot, each carrying its
+   strip of the title. When the script says (html.gl-go, lost.js) the canvas strikes up, left to right; as each column
+   lands, its void and its ground are gone, and the page is there under it, the header and the foot uncovered column by
+   column, while the strip settles into register and the column's edges fade. The columns meet in the middle of the
+   gutters, as the home page's do, each from a whole pixel and a pixel over the next, so the edges a column draws as it
+   flies are the grid's own, to the pixel, in every engine; the first and the last run out to the screen's edges.
+
+   All twelve come (six on a phone), the last bringing nothing into its column (only the tip of the s, in the gutter
+   before it): what never comes home here is the stop. The copies' stops are held back, and the heading's own, hollow,
+   slides into the empty column once it's there. A column is one box that clips its own strip and moves whole, its
+   place written by the script at every frame, and drawn with the page, never made a layer of its own, as the home
+   page's poster's columns are: Safari 27 can draw a layer that CSS animates without the clip of the box it moves in,
+   and each column's copy is the whole title. The script takes it all away once it's done (html.gl-done), at once if
+   the reader does anything first, and fades it if it's not to play after all; should the script never come, the
+   arrival goes at 3s, and should it stop on the way, 2s after it began. */
+.gl-arrive, .gl-chrome { display: none; }
+.gl-void, .gl-a, .gl-lift > i {
+  --x0: round(var(--m) + var(--col) * var(--span) * var(--P) - var(--g) / 2 - 0.5px, 1px);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--x0);
+  width: calc(round(var(--m) + (var(--col) + 1) * var(--span) * var(--P) - var(--g) / 2 - 0.5px, 1px) - var(--x0) + 1px);
+}
+:is(.gl-void, .gl-a, .gl-lift > i):first-child { --x0: 0px; }
+:is(.gl-void, .gl-a, .gl-lift > i):nth-child(12) { width: auto; right: 0; }
+@media (max-width: 719px) {
+  :is(.gl-void, .gl-a, .gl-lift > i):nth-child(n+7) { display: none; }
+  :is(.gl-void, .gl-a, .gl-lift > i):nth-child(6) { width: auto; right: 0; }
+}
+/* The void, under the canvas by its z-index. Nothing in it reaches past its column (its edges are inside it, and of
+   the header's copy only the mark is shown), so nothing that moves in it is clipped. */
+.gl-void { z-index: 0; background: var(--void); }
+.gl-void::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--m) + var(--col) * var(--span) * var(--P) - var(--x0));
+  width: calc(var(--span) * var(--P) - var(--g));
+  border-inline: 1px solid var(--void-ink);
+  opacity: 0.13;
+}
+.gl-void__head { position: absolute; top: 0; left: 0; width: 100cqw; }
+.gl-void__head .site-head { z-index: auto; }
+.gl-void__head .brand { color: var(--void-ink); }
+.gl-void__head :is(.brand__name, .site-nav) { visibility: hidden; }
+/* The canvas, a column of it, over the void by its z-index, under the screen's foot till the strike begins. It draws
+   its column's two edges, a tenth of the ink as the grid's are, and over them, while it flies, the same edges brighter
+   and its leading edge in the ink, which reads over the black of dark mode; both come in over the column's first 60ms
+   in flight, as the home page's columns' do. It carries the poster's copy, laid out as the poster is, under the header,
+   so its strip of the title (and of its baselines) stands to the pixel where the heading's does. As it lands, its
+   ground and its own tenth go (is-landed), and the page's grid is there under them on the very same pixels; its leading
+   edge goes once it's at its place, at the top of the screen (is-home); and the brighter edges fade. The script says
+   how bright they are (--gl-edges: 0 to 1 as the column starts, 1 to 0 as it lands). */
+.gl-a { z-index: 1; overflow: clip; }
+html:not(.gl-go) .gl-a { transform: translateY(100%); }
+.gl-a__ground { position: absolute; inset: 0; background: var(--canvas); }
+.gl-a__ground::before, .gl-a__ground::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--m) + var(--col) * var(--span) * var(--P) - var(--x0));
+  width: calc(var(--span) * var(--P) - var(--g));
+  border-inline: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.gl-a__ground::after {
+  border-inline-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--ink) 80%, transparent);
+  opacity: var(--gl-edges, 1);
+}
+.gl-a__ground.is-landed { background: none; }
+.gl-a__ground.is-landed::before { content: none; }
+.gl-a__ground.is-home::after { border-top-color: transparent; }
+.gl-a__plate { position: absolute; top: var(--head-h); left: calc(-1 * var(--x0)); width: 100cqw; }
+/* At night the canvas is only a step off the void's black: while a column of it rises over the void it's lifted a
+   step more, and its leading edge drawn twice as thick in the full ink, and it settles to the canvas as it lands (in
+   200ms, from the moment its edges begin to fade), as the home page's columns do (grid.css), so the strike reads at
+   night as it does by day, and the screen still never floods with light. Once a column has landed, what shows in it is
+   the page, so the canvas that settles there is the page's own: the lift (.gl-lift, in the page's markup before the
+   grid), a column of it under each of the arrival's, on the same pixels, under everything on the page, the grid too.
+   It's there only while the strike plays, under the void till its column lands, a step lighter till the script settles
+   it (--gl-lift, 100% to 0%), and then gone; and only where the arrival is drawn (below), so it goes with the arrival
+   should motion be reduced or colors forced on the way. */
+@media (prefers-color-scheme: dark) {
+  .proto-grid-lost { --lift: #1E1F22; }
+  .gl-a__ground { background: var(--lift); }
+  .gl-a__ground::after { border-top: 2px solid var(--ink); }
+}
+.gl-lift { display: none; position: absolute; z-index: -1; inset: 0; container-type: inline-size; pointer-events: none; }
+.gl-lift > i { background: color-mix(in srgb, var(--lift) var(--gl-lift, 100%), var(--canvas)); }
+@media screen and (prefers-color-scheme: dark) and (prefers-reduced-motion: no-preference) and (forced-colors: none) and (orientation: portrait),
+  screen and (prefers-color-scheme: dark) and (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-height: 561px) {
+  html.gl-go:not(.gl-done) .gl-lift { display: block; }
+}
+/* The copies' stops are held back: the stop that slides in is the heading's own, on the page under the layer
+   (below), so it never has to change hands. The copies' dots wait sunk in their stems, the same ink, unseen, and
+   come out as the script says (--gl-sink: 1 sunk, 0 home), each its own stacking context. */
+.gl-a .gl-stop { visibility: hidden; }
+.gl-a .gl-mi::after { z-index: 0; translate: 0 calc(var(--gl-sink, 1) * 0.2em); }
+
+@media screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) and (orientation: portrait),
+  screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-height: 561px) {
+  html.js:not(.gl-done) .gl-arrive {
+    display: block;
+    position: fixed;
+    z-index: 50;
+    inset: 0;
+    container-type: inline-size;
+    overflow: clip;
+    pointer-events: none;
+  }
+  /* Safari's bars: Safari 26 and later extend the color of a fixed element lying along the top of the page up under
+     the bar, and on the Mac follow it as it changes. This is that element, and it paints nothing (its background is
+     clipped to its text, and it has none): the void's color, and the canvas's (--gl-chrome) as the first columns
+     pass the top. On iOS the edge under the page takes its color from one along the foot (.gl-chrome--foot): the
+     canvas's, by day as the columns come up across the foot, at night with the top's (lost.js); both are read only
+     when they're new. The home page's (grid.css, .g-chrome). */
+  html.js:not(.gl-done) .gl-chrome {
+    display: block;
+    position: fixed;
+    z-index: 51;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    pointer-events: none;
+    background-color: var(--gl-chrome, var(--void));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  html.js:not(.gl-done) .gl-chrome--foot { top: auto; bottom: 0; }
+  /* Gone at 3s should the script never come; once it has (html.gl-go), 2s from then, should it stop on the way.
+     That end has a name of its own: an animation whose delay is all that changes keeps the start it had, here the
+     page's first frame. */
+  html.js:not(.gl-go, .gl-done) :is(.gl-arrive, .gl-chrome) { animation: gl-gone 1ms 3s forwards; }
+  html.gl-go:not(.gl-done) :is(.gl-arrive, .gl-chrome, .gl-lift) { animation: gl-end 1ms 2s forwards; }
+  @keyframes gl-gone { to { visibility: hidden; } }
+  @keyframes gl-end { to { visibility: hidden; } }
+  /* The heading, held unseen while the columns' copies carry the title, and shown in the frame the layer goes
+     (html.gl-here), under it and in register with it, so no frame is ever without the title, and none has it twice
+     (its edges would thicken). Should the script stop on the way, it's shown at 2s too. */
+  html.gl-go:not(.gl-here, .gl-done) h1 .gl-set { visibility: hidden; animation: gl-shown 1ms 2s forwards; }
+  html.gl-here .gl-arrive { visibility: hidden; }
+  @keyframes gl-shown { to { visibility: visible; } }
+  /* Drawn, and then not to play after all (the page shown, or its script in, long after it opened, or scrolled
+     already): the void fades away over the poster, as the home page's does. */
+  html.gl-unvoid .gl-arrive { opacity: 0; transition: opacity 240ms var(--ease); }
+  /* The stop: the heading's own, the one thing of it shown while the copies carry the title, through the last column
+     once that has landed. It slides out of the column's edge into it, clipped to its own square, its ring drawn by its
+     ::before till the arrival's done, where the script puts it (--gl-in: 0 out, 1 home), and then by itself again:
+     the same ring in the same place, on the same element, so the stop is never drawn twice, nor missing, at any
+     frame. While its ring moves, the stop is a stacking context of its own (z-index), so the ring is drawn in it and
+     nowhere else. */
+  html.gl-go:not(.gl-done) h1 .gl-stop { visibility: visible; position: relative; z-index: 0; overflow: clip; box-shadow: none; }
+  html.gl-go:not(.gl-done) h1 .gl-stop::before { content: ""; position: absolute; inset: 0; box-shadow: inset 0 0 0 0.0214em currentColor; translate: calc((var(--gl-in, 0) - 1) * 100%) 0; }
+}
+
+@media screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+  /* The void's beat, the home page's (grid.css, the motion): while it holds the screen, its grid is ruled down it, a
+     column after another, and the mark's bit comes out of its notch. The strike that follows, its columns on the home
+     page's springs and its dots and stop on a quicker one, is lost.js's. */
+  .gl-void::before { transform-origin: top; animation: gl-rule 380ms var(--ease) backwards; animation-delay: calc(var(--col) * var(--span) * 14ms); }
+  @keyframes gl-rule { from { transform: scaleY(0); } }
+  .gl-void__head .mark__bit { animation: gl-bit-out 460ms var(--spring-pop) 40ms backwards; }
+  @keyframes gl-bit-out { from { transform: translate(-6px, 6px); } }
+}
+/* The header's mark, hovered or focused: everywhere else its bit goes back into its notch and out again (site.css);
+   here it goes half way, and turns back. */
+@media (prefers-reduced-motion: no-preference) {
+  .proto-grid-lost .brand:is(:hover, :focus-visible) .mark__bit { animation: gl-bit-short var(--t-sign) var(--ease); }
+  @keyframes gl-bit-short { 40%, 62% { transform: translate(-3px, 3px); } }
+}
+
+/* ---------------------------------------------------------------- Forced colors, print */
+
+/* Forced colors take the grounds and the outlines: no grid, no lens; the heading's own hollow stop ends the title.
+   Each word of the title is a box of its own, whose plate would cut off the descenders of the line above, so the big
+   type goes without; its i's are boxes of their own, their round dots clipped off, as on paper. */
+@media (forced-colors: active) {
+  .gl-lines, .gl-lens, .gl-w::after { display: none !important; }
+  .gl-title { forced-color-adjust: none; color: CanvasText; }
+  .gl-mi::after { forced-color-adjust: none; background: CanvasText; }
+  .gl-mi__i { display: inline-block; line-height: 1; clip-path: inset(0.276em -0.2em -0.3em -0.2em); color: CanvasText; -webkit-text-fill-color: CanvasText; background: none; }
+}
+/* On paper, the same, and the bits printed whatever the print settings say of backgrounds (else the i's would go
+   without dots). */
+@media print {
+  .gl-lines, .gl-lens, .gl-w::after { display: none !important; }
+  body.proto-grid-lost { min-height: 0; }
+  .gl-mi__i { display: inline-block; line-height: 1; clip-path: inset(0.276em -0.2em -0.3em -0.2em); color: inherit; -webkit-text-fill-color: currentColor; background: none; }
+  .gl-mi::after { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

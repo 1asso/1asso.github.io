@@ -1,0 +1,14 @@
+{%- comment -%}
+  The not-found page (404.html): its title, "Nothing at this address", set once here, as the first screen of the home
+  page sets its tagline (grid-letters.html): one box a word, flowed in a row that wraps where a break is on, so the same
+  set lays out to the pixel wherever it's used: in the heading, in each of the columns that carry the poster in on
+  arrival, and in the lens's drawing of it. Each i's dot is a square bit, the width of its stem, as the home page's
+  Contact address draws them (lost.css, .gl-mi): the letter stays an i, inline in its word, its round dot cut off, and
+  the bit is drawn by CSS, not set in the word, so the words are found by a search and copied whole. The title ends on
+  the hollow stop, the site's mark for "not here", and a period for copying. The words are whole, so the font's kerning
+  stands (th, which Inter Tight kerns, is in one run), and spaced, for copying (a flex row lays no space between its
+  boxes). Decorative copies: the heading's visually hidden copy is what's read, so the caller sets these aria-hidden.
+  The breaks: a, after "Nothing", and c, after "this", on a screen held upright (three lines); b, after "at", on a
+  screen on its side (two lines); none on a short screen on its side (one).
+{%- endcomment -%}
+<span class="gl-w gl-w--nothing"><span class="gl-slot">Noth<span class="gl-mi" style="--d: 0"><span class="gl-mi__i">i</span></span>ng</span></span> <span class="gl-break gl-break--a"></span><span class="gl-w gl-w--at"><span class="gl-slot">at</span></span> <span class="gl-break gl-break--b"></span><span class="gl-w gl-w--this"><span class="gl-slot">th<span class="gl-mi" style="--d: 1"><span class="gl-mi__i">i</span></span>s</span></span> <span class="gl-break gl-break--c"></span><span class="gl-w gl-w--address"><span class="gl-slot">address<span class="stop stop--hollow gl-stop"></span><span class="visually-hidden">.</span></span></span>

@@ -1,0 +1,1608 @@
+/* The home page (index.html): Swiss editorial, with the site's 12-column grid as the show.
+
+   The first screen is a poster set on the grid, and it arrives as every screen after it does: it opens on the ink
+   (the void, true black in dark mode) with only the mark lit, and twelve columns of the canvas strike up over it, left
+   to right, each carrying its strip of the tagline; then the square dots of its i's pop out of their stems one after
+   another, the square full stop slides in along the baseline and clicks onto the right margin, and the redline lens
+   sweeps across the tagline once and goes. A mouse moves the lens, and on a touch screen
+   a sideways drag on the tagline scrubs it. Every screen after it (the
+   rooms, then the Studio with Contact) arrives as twelve columns of its ground, six on a phone, each carrying its
+   strip of the room's big type, so the name is built a column at a time, and each pushing the strip of the screen
+   before's type out ahead of it (but a poster of more than two lines, which they cover where it stands); then the
+   rest of the room is uncovered column by column as they land. Every room
+   is set differently: Michi's name across the top left, Lark's against the right margin, Kozeni's up the left
+   margin like the spine of a book. A header runs over every screen, in that screen's ink.
+
+   The scroll is the page's own, and it snaps a screen at a time. A finger moves it; the keys that step a screen and
+   the wheel grid.js takes itself, each press or gesture one instant move to the next stop, so they go the same
+   everywhere.
+
+   How the screens hold still: each screen after the first is an article three screens tall (the last, two): a
+   track, the screen itself, then a tail, overlapping the two articles before it. The screen is sticky at both
+   ends, so it holds the viewport from the moment the screen before it comes to rest until the one after it does:
+   it waits there, its columns down, while the screen before it settles, rises over that screen, and is then risen
+   over in turn. Each article stacks by its own z-index and paints only inside its screen (overflow: clip), so
+   nothing animated depends on the order the sections come in (Safari 27 can draw an animated layer over what
+   comes after it in the page).
+
+   The columns are grid.js's: each is a damped spring. Under a finger it follows how far the scroll has come through its
+   screen's track, so a slow drag scrubs the cascade and scrolling back runs it backwards; a key, a gesture of the wheel
+   or a link plays it out by time, each column let go at its moment in its app's cascade.
+   Springs rather than the scroll's own curve, so a step reads as twelve columns, one after another.
+   No scroll-driven CSS animations at all, in any browser: what moves is transform, and a clip that changes a
+   column at a time. Without the script (no JavaScript), under Reduce Motion, in forced colors and on paper, the
+   screens stack edge to edge and still snap. Loaded on this page only. */
+
+/* ---------------------------------------------------------------- The page */
+
+.proto-grid {
+  /* A screen of the deck is the large viewport, so a ground always covers what's on screen; the content keeps to
+     the small one, so a phone's bars never cover it. */
+  --V: 100vh;
+  --V: 100lvh;
+  --sv: 100vh;
+  --sv: 100svh;
+  /* The header a little closer than the site's, so the rooms have the height; its height is still exact. */
+  --head-pad: clamp(10px, 1.3vw, 20px);
+  --head-h: calc(var(--head-pad) + 54px);
+  /* A room's content inside its screen: a little room under the header, the bottom margin below, and what that
+     leaves (the room's sizes are measured against it, so a room fits a short screen as well as a tall one). */
+  --room-top: clamp(10px, 3.2svh, 40px);
+  --room-bottom: clamp(14px, 4.4svh, 52px);
+  --avail: calc(var(--sv) - var(--head-h) - var(--room-top) - var(--room-bottom));
+  /* The springs, a damped spring's step response sampled into linear() (zeta is its damping ratio: the lower,
+     the further past its place it goes before it settles). Click: a small piece pressed home (the stop). Give: the
+     poster's pixel of give on the last impact, and back. Pop: a bit coming out of its stem. (The columns are
+     grid.js's.) */
+  /* zeta 0.68: 5.4% past */
+  --spring-click: linear(0, 0.0075 1.3%, 0.0391 3.1%, 0.0981 5.2%, 0.1814 7.4%, 0.2827 9.8%, 0.3946 12.3%, 0.5098 15%, 0.6214 17.7%, 0.7242 20.5%, 0.8144 23.4%, 0.8898 26.3%, 0.9494 29.3%, 0.9939 32.4%, 1.0246 35.6%, 1.0433 38.8%, 1.0524 42%, 1.0542 45.4%, 1.0509 48.7%, 1.0444 52.1%, 1.0363 55.6%, 1.0279 59.1%, 1.02 62.6%, 1.0131 66.2%, 1.0075 69.8%, 1.0033 73.4%, 1.0003 77.1%, 0.9984 80.9%, 0.9974 84.6%, 0.9971 88.4%, 0.9972 92.2%, 0.9975 96.1%, 1);
+  /* zeta 0.42: 23% past, a small move that rings once */
+  --spring-give: linear(0, 0.0179 1.3%, 0.0927 3.1%, 0.2293 5.2%, 0.4135 7.4%, 0.6214 9.8%, 0.8257 12.3%, 1.002 15%, 1.1327 17.7%, 1.2095 20.5%, 1.2336 23.4%, 1.2145 26.3%, 1.1661 29.3%, 1.1043 32.4%, 1.0434 35.6%, 0.9938 38.8%, 0.9613 42%, 0.9467 45.4%, 0.9474 48.7%, 0.9585 52.1%, 0.9744 55.6%, 0.9902 59.1%, 1.0027 62.6%, 1.0102 66.2%, 1.0127 69.8%, 1.0115 73.4%, 1.008 77.1%, 1.0039 80.9%, 1.0004 84.6%, 0.9981 88.4%, 0.9971 92.2%, 0.9972 96.1%, 1);
+  /* zeta 0.55: 12.6% past, a bit popping out of its stem */
+  --spring-pop: linear(0, 0.0106 1.3%, 0.0554 3.1%, 0.1387 5.2%, 0.2549 7.4%, 0.3937 9.8%, 0.5424 12.3%, 0.6886 15%, 0.8217 17.7%, 0.9338 20.5%, 1.0203 23.4%, 1.0798 26.3%, 1.1139 29.3%, 1.1261 32.4%, 1.1213 35.6%, 1.1049 38.8%, 1.0822 42%, 1.0574 45.4%, 1.0342 48.7%, 1.0146 52.1%, 1 55.6%, 0.9904 59.1%, 0.9854 62.6%, 0.984 66.2%, 0.9853 69.8%, 0.9882 73.4%, 0.9916 77.1%, 0.995 80.9%, 0.9979 84.6%, 1 88.4%, 1.0013 92.2%, 1.0019 96.1%, 1);
+  /* The grid's hairlines are drawn in the full ink of what's around them, and rest at a tenth of it: always a whole
+     pixel, so that on a Retina screen they still read. */
+  --hair-draw: currentColor;
+  --hair-rest: 0.1;
+  /* The display type's weight, and what's measured of it: the spacing each kind of big type is set at, the stem of a
+     dotless ı (from 0.051em, 0.105em wide, in an advance of 0.2068em), which a square bit is the width of, and the ink
+     of the rooms' numbers as a phone sets them: "03" 1.124em from the 0's to the 3's, the 0's 0.035em into its box,
+     and the line running on 0.055em past the 1's and 0.040em past the 3's. */
+  --wt: 500;
+  --ls-tag: -0.034em;
+  --ls-name: -0.045em;
+  --ls-no: -0.04em;
+  --ls-motto: -0.04em;
+  --ls-mail: -0.04em;
+  --stem-l: 0.051em;
+  --stem-w: 0.105em;
+  --i-adv: 0.2068em;
+  --no-ink: 1.124;
+  --no-l: 0.035em;
+  --no-r1: 0.055em;
+  --no-r3: 0.040em;
+}
+/* Light type on the dark reads heavier than dark type on the light: in dark mode the display type is set a little
+   lighter (470: the font is variable), and spaced by as much as the lighter weight narrows each kind of it (its own
+   measure, so every fit and every whole column holds, to a fraction of a pixel); its ı's bits are the width of the
+   lighter stem (0.098em, from 0.052em, in an advance of 0.2019em), the numbers' ink as much narrower (1.111em, its
+   bearings 0.0355em, 0.0573em and 0.041em), and the mono is a hair looser. */
+@media (prefers-color-scheme: dark) {
+  .proto-grid {
+    --wt: 470;
+    --ls-tag: -0.0300em;
+    --ls-name: -0.0407em;
+    --ls-no: -0.036em;
+    --ls-motto: -0.0374em;
+    --ls-mail: -0.0350em;
+    --stem-l: 0.052em;
+    --stem-w: 0.098em;
+    --i-adv: 0.2019em;
+    --no-ink: 1.111;
+    --no-l: 0.0355em;
+    --no-r1: 0.0573em;
+    --no-r3: 0.041em;
+  }
+  .proto-grid .g-set--michi { --ls-name: -0.0405em; }
+  .proto-grid .g-set--lark { --ls-name: -0.0411em; }
+  .proto-grid .meta { letter-spacing: 0.003em; }
+}
+@media (max-width: 719px) {
+  .proto-grid { --head-pad: 8px; }
+}
+/* The page runs edge to edge: on a wide screen the poster and the rooms take the whole of it, margins and all,
+   rather than a column in the middle. */
+.proto-grid .wrap { max-width: none; }
+
+/* The browser's own snapping, a screen at a time, never past one (snap-stop): a stop where each screen rests
+   (.g-snap, an empty mark, so no stop is ever taller than the screen). Stacked (no deck), the stops are the
+   screens' tops, the first screen's being the page's top, over the header, and the footer's foot. Mandatory only
+   where the script has checked that every room fits on a screen (it says .g-tall where one doesn't); without the
+   script nobody has, so there the page snaps only near its stops and every part of a room can be read. */
+html:has(> body.proto-grid) { scroll-padding-top: 0; scroll-snap-type: y proximity; }
+html.js:has(> body.proto-grid) { scroll-snap-type: y mandatory; }
+html.js.g-tall:has(> body.proto-grid) { scroll-snap-type: y proximity; }
+/* Safari on a Mac, and Firefox on a desktop, while the deck is drawn: no snapping, the deck puts the page on its stops
+   itself (grid.js, ownSnap). Left on, Safari 27 crashes the page when the window is resized after a trackpad gesture,
+   and Firefox runs a screen on for every pixel of a sideways swipe's drift. */
+html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
+.g-snap { display: block; height: 0; scroll-snap-align: start; scroll-snap-stop: always; }
+.g-stage > .g-snap { display: none; }
+.proto-grid > .site-head { scroll-snap-align: start; scroll-snap-stop: always; }
+.proto-grid > .site-foot { scroll-snap-align: end; }
+
+/* ---------------------------------------------------------------- The first screen */
+
+/* A poster on the page's canvas: with the header, one screen. The tagline at the top, set to the measure; at the
+   foot, the lede, in the first three columns, and nothing else (the rooms introduce the apps). Behind it all, the
+   grid: its 24 column edges as hairlines. Its layers stack by z-index, never by
+   the order they come in: the void it opens on, its ground, the poster, the strips of the tagline the columns
+   carry, the margin's flash, the lens, the band a finger works the lens in, the tease and the header's copy (the
+   void lies over them all until the canvas strikes up over it, grid.js). */
+.g-stage { position: relative; z-index: 1; }
+.g-hero { position: relative; isolation: isolate; overflow: clip; background: var(--canvas); }
+.g-hero__main {
+  position: relative;
+  z-index: 2;
+  container: hero / inline-size;
+  grid-template-rows: auto 1fr auto;
+  min-height: calc(var(--sv) - var(--head-h));
+  padding-block: var(--hero-top) var(--hero-bottom);
+  --hero-top: clamp(14px, 4.2svh, 48px);
+  --hero-bottom: clamp(20px, 6svh, 60px);
+  /* What the foot (the lede) needs under the tagline, which sizes the tagline on a short screen: a guess, a little over
+     what it takes, for a page without the script, which measures it (--g-foot). And what that leaves the tagline,
+     less the least gap between them (--hero-gap), wherever the type is sized by the height. */
+  --foot: 108px;
+  --hero-gap: clamp(12px, 2.4svh, 28px);
+  --tag-h: calc(var(--sv) - var(--head-h) - var(--hero-top) - var(--hero-bottom) - var(--g-foot, var(--foot)) - var(--hero-gap));
+}
+
+/* The grid itself: one cell per column, each drawn as its two edges. In the deck the poster's ground draws them
+   (.g-ground, below), column by column; these are the stacked page's, and the void's. */
+.g-lines {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--g);
+  padding-inline: var(--m);
+  pointer-events: none;
+  color: var(--ink);
+}
+/* At rest a tenth of the ink, from the first frame on. On a phone the grid is drawn as the six double columns its
+   screens arrive in. */
+.g-lines i { position: relative; border-inline: 1px solid var(--hair-draw); opacity: var(--hair-rest); }
+@media (max-width: 719px) {
+  .g-lines { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .g-lines i:nth-child(n+7) { display: none; }
+}
+
+/* The void: what the page opens on, for a beat, until the screen it opens on arrives over it (grid.js): the canvas
+   striking up over it on the first screen, or, where the page lands on a room (a link to it, a reload on it), that
+   room's columns. The ink, and in dark mode the dark itself, under the canvas, so nothing flashes white at night; its
+   grid ruled down it at an eighth of the light ink, and only the mark lit, where the header's is, in the canvas's
+   color. It's there from the first frame wherever the deck can play an arrival (motion allowed, a screen tall enough: a
+   phone held upright, or 620px, under which a wide screen's rooms stack), before the script has run: then it lies over
+   the whole screen, the header and the footer too, wherever the browser has the page, so nothing under it is seen
+   first. The script takes it over (.g-arriving), laying it in the room's screen if it's a room, and lets it go
+   (.g-arrived) once the screen is up, or at once where there's to be no arrival (faded, if it had already been drawn);
+   should the script never come, the poster is shown after three seconds. */
+.proto-grid { --void: var(--ink); --void-ink: var(--canvas); }
+@media (prefers-color-scheme: dark) { .proto-grid { --void: #000; --void-ink: var(--ink); } }
+.g-void, .g-void__head { display: none; }
+@media screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-height: 620px),
+  screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) and (orientation: portrait) and (min-height: 460px) {
+  html:where(.g-arriving, .js:not(.g-arrived)) .g-void {
+    display: block;
+    position: fixed;
+    z-index: 10;
+    inset: 0;
+    background: var(--void);
+    color: var(--void-ink);
+    pointer-events: none;
+  }
+  html:where(.js:not(.g-arrived, .g-arriving)) .g-void { animation: g-void-gone 1ms 3s both; }
+  @keyframes g-void-gone { to { visibility: hidden; } }
+  /* Before the deck, over the stacked page's footer too (which lies over the first screen's stage there). */
+  html.js:not(.g-arrived, .g-fx) .g-stage { z-index: 3; }
+  /* In the deck it's the first screen's (which is the screen), and once the columns begin to strike up it lies under
+     them; or, laid in the screen of the room the page has landed on, under that room's columns, over the screens before
+     it (the room's article stacks over theirs). */
+  html.g-fx .g-void { position: absolute; }
+  .g-hero.is-striking .g-void { z-index: 0; }
+  .g-fx .g-screen > .g-void { z-index: -1; }
+  /* Drawn, and then no arrival after all (the screens stack): it fades away. */
+  html.g-unvoid .g-void { opacity: 0; transition: opacity 240ms var(--ease); }
+  html:where(.g-arriving, .js:not(.g-arrived)) .g-void__head { display: block; position: absolute; top: 0; left: 0; right: 0; }
+}
+.g-void .brand { color: var(--void-ink); }
+.g-void :is(.brand__name, .site-nav) { visibility: hidden; }
+.g-lines--void { color: var(--void-ink); }
+.g-lines--void i { opacity: 0.13; }
+
+/* Safari's toolbar. Safari 26 and later don't tint the bar from theme-color: they extend the color of a fixed element
+   lying along the top of the page up under the bar, and follow that color as it changes once the element is at least
+   12px tall (a sticky one, such as every screen here, is read once and never again). This is that element, and it
+   paints nothing: its background is clipped to its text, and it has none. Its color is the void's while the poster is
+   still to arrive and the canvas after that, on every screen (grid.js writes it as --g-chrome): Safari stops following
+   it for good at the reader's first click, scroll key, wheel or scroll of the page, so a room's color would stay on the
+   bar over every screen after it. On a phone (iOS) Safari reads a strip again whenever it's a new one, and takes the
+   edge under the page from one along the foot (.g-chrome--foot): there both are the ground of the screen the reader is
+   on (grid.js, redo). (An iPad's bar is the Mac's, and stops following as the Mac's does: there the strip has the Mac's
+   colours, each in a new strip.) Only in the deck: stacked, the page scrolls as any other. */
+.g-chrome { display: none; }
+@media screen {
+  html:where(.g-fx, .g-arriving, .js:not(.g-arrived)) .g-chrome {
+    display: block;
+    position: fixed;
+    z-index: 45;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    pointer-events: none;
+    background-color: var(--g-chrome, var(--canvas));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  html:where(.g-fx, .g-arriving, .js:not(.g-arrived)) .g-chrome--foot { top: auto; bottom: 0; }
+}
+@media screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-height: 620px),
+  screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) and (orientation: portrait) and (min-height: 460px) {
+  html:where(.g-arriving, .js:not(.g-arrived)) .g-chrome { background-color: var(--g-chrome, var(--void)); }
+}
+
+/* The poster's ground, in the deck: a column of the canvas to each column of the grid (two on a phone), laid out as
+   the poster's columns of type are (.g-cast, below), meeting in the middle of the gutters half a pixel over, the first
+   and last running out to the screen's edges; each a little taller than the screen at both ends (--lead, --over), as a
+   room's are, so that going past its place and back it never shows what's under it. Each draws its column's two edges
+   at a tenth of the ink (in the deck they are the poster's grid), and, while it rises over the void, those edges
+   brighter and its leading edge in the ink, which reads over the black of dark mode (grid.js says when). */
+.g-ground, .g-flash, .g-scrub { display: none; }
+.g-ground i {
+  --span: 1;
+  --P: calc((100cqw - 2 * var(--m) + var(--g)) / 12);
+  --x0: calc(var(--m) + var(--col) * var(--span) * var(--P) - var(--g) / 2 - 0.5px);
+  position: absolute;
+  top: calc(-1 * var(--lead));
+  height: calc(100% + var(--lead) + var(--over));
+  left: var(--x0);
+  width: calc(var(--span) * var(--P) + 1px);
+  background: var(--canvas);
+}
+.g-ground i:first-child { --x0: 0px; width: calc(var(--m) + var(--span) * var(--P) - var(--g) / 2 + 0.5px); }
+.g-ground i:last-child { width: auto; right: 0; }
+.g-ground i::before, .g-ground i::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--m) + var(--col) * var(--span) * var(--P) - var(--x0));
+  width: calc(var(--span) * var(--P) - var(--g));
+  border-inline: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+}
+.g-ground i::after {
+  border-inline-color: color-mix(in srgb, var(--ink) 30%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--ink) 80%, transparent);
+  opacity: 0;
+  transition: opacity 260ms var(--ease);
+}
+.g-ground i.is-flying::after { opacity: 1; transition-duration: 60ms; }
+/* At night the canvas is only a step off the void's black: while a column of it rises over the void (the poster's
+   strike, or the Studio's curtain where the page lands on it) it's lifted a step more, and its leading edge drawn
+   twice as thick in the full ink, and both settle as it lands (in 200ms), so the strike reads at night as it does by
+   day, and the screen still never floods with light. */
+@media (prefers-color-scheme: dark) {
+  .g-hero.is-striking .g-ground i { transition: background-color 200ms var(--ease); }
+  .g-hero.is-striking .g-ground i.is-flying { background: #1E1F22; transition-duration: 0s; }
+  .g-hero.is-striking .g-ground i::after { border-top: 2px solid var(--ink); }
+  html.g-arriving .g-set--studio .g-slab { transition: background-color 200ms var(--ease); }
+  html.g-arriving .g-set--studio .g-slab.is-flying { background: #1E1F22; transition-duration: 0s; }
+  html.g-arriving .g-set--studio .g-slab__lines { border-bottom: 2px solid var(--ink); }
+}
+@media (max-width: 719px) {
+  .g-ground i { --span: 2; }
+  .g-ground i:nth-child(n+7) { display: none; }
+  .g-ground i:nth-child(6) { width: auto; right: 0; }
+}
+.g-hero__main > .g-tagline { grid-row: 1; }
+
+/* The tagline: one word a box, flowed in a row that wraps where a break is on. Each word's box is trimmed to its
+   caps and baseline, so the gap between rows is exactly the space from one baseline to the next caps. On a wide
+   screen two lines: "Get the tıny", margin to margin, its G hung into the left margin; "bıts rıght" against the
+   right margin, its square stop ending on it. In Inter Tight 500 at -0.034em, "Get the tiny" is 4.6594em and a
+   space 0.1886em (the dotless ı is as wide as the i, and kerns with nothing here); less the G's hang (0.06em),
+   and plus the 0.027em the y's tail reaches past its box, that's 4.627em, so the font-size is the measure over
+   4.627, or what the screen's height leaves, if that's less: the two lines, trimmed, are 1.685em tall (two caps
+   of 0.7275em and the break between them, 0.23em, which keeps the y's tail in "tıny" clear of the t of "rıght"
+   under it), and with the room under them for the descenders 1.925em, so it's the height left over that. What the
+   foot needs (--foot) is measured by grid.js (--g-foot), so the tagline takes exactly what it leaves; without the
+   script, the guess here, a little over what it takes. Where it's the height that sets it, the first line would end
+   wherever that leaves it, a few pixels short of the margin the stop ends on, which reads as a miss: so it ends a whole
+   number of columns short instead, on a column's edge (--tag-in), or, if it would be no more than 18px short, on the
+   margin, the gap over the lede giving the pixels that takes (--tag-over, at most 7.5px). */
+.g-tagline {
+  grid-column: 1 / -1;
+  margin-bottom: calc(0.24em + var(--hero-gap) - var(--tag-over));   /* its last line's descenders (0.2158em), and a gap, clear of the foot however short the screen */
+  font-size: var(--tag);
+  font-weight: var(--wt);
+  line-height: 1;
+  letter-spacing: var(--ls-tag);
+  --ls: var(--ls-tag);
+  --tag-in: max(0px, round(up, 100cqi - 4.627 * var(--tag-h) / 1.925 - 18px, (100cqi + var(--g)) / 12));
+  --tag: max(2.75rem, (100cqi - var(--tag-in)) / 4.627);
+  --tag-over: max(0px, 1.925 * var(--tag) - var(--tag-h));
+}
+.g-tagline__set { display: flex; flex-wrap: wrap; column-gap: 0.1886em; }
+.g-w { position: relative; display: block; }
+/* A word's line, trimmed to its caps and baseline (the hairline is the word's, outside it). */
+.g-slot { display: block; white-space: nowrap; text-box: trim-both cap alphabetic; }
+.g-l { display: inline-block; margin-left: var(--k, 0); }
+/* A break is a flex line of its own, as tall as the gap between the lines it parts (and the lines have no gap of
+   their own, or there'd be two). */
+.g-break { display: none; flex-basis: 100%; height: 0.23em; }
+.g-break--b { display: block; }
+.g-w--get { margin-left: -0.06em; }
+.g-w--bits { margin-left: auto; }
+/* Each line's baseline, a hairline across the screen, like the columns' edges, drawn by the word that begins the
+   line. */
+.g-w::after {
+  position: absolute;
+  left: -100vw;
+  right: -100vw;
+  bottom: 0;
+  border-bottom: 1px solid var(--hair-draw);
+  opacity: var(--hair-rest);
+  pointer-events: none;
+}
+.g-w--get::after, .g-w--bits::after { content: ""; }
+/* A dotless i's dot: a square bit, the width of its stem (--stem-w, from --stem-l: 0.105em from 0.051em of the
+   glyph, or the lighter dark-mode stem's), its middle on the height of the round dot's (0.693em). It's set inline
+   straight after the ı, on the baseline raised by its foot's height, and pulled back over the stem by what's
+   between the stem and the ı's advance (--i-adv) with its letter spacing (--ls, where the spacing is set); the same
+   measures in every engine. In a vertical line (Kozeni's spine) the same, along that line. */
+.g-dot {
+  display: inline-block;
+  inline-size: var(--stem-w);
+  block-size: var(--stem-w);
+  margin-inline: calc(var(--stem-l) - var(--i-adv) - var(--ls, 0em)) calc(var(--i-adv) + var(--ls, 0em) - var(--stem-l) - var(--stem-w));
+  vertical-align: calc(0.693em - var(--stem-w) / 2);
+  background: currentColor;
+}
+
+/* The foot: the lede alone, in the first three columns, standing on the bottom margin (trimmed to its caps and its
+   last baseline). */
+.g-foot {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+.g-lede {
+  grid-column: 1 / span 3;
+  max-width: 24em;
+  color: var(--ink-2);
+  text-wrap: balance;   /* where pretty isn't, so it's never filled greedily to a lone word */
+  text-wrap: pretty;
+  text-box: trim-both cap alphabetic;
+}
+
+/* The taller the screen for its width, the more lines, so that the tagline fills the poster down to the lede
+   whatever its shape: each arrangement takes the lesser of its measure's size and its height's, and a screen takes
+   the one that sets the type largest, or nearly (within about a twentieth), and fills it, rather than leave a band
+   of the screen empty under the type. But never more than four: "Get the" stays on one line (a "the" alone on a line
+   reads as a stammer), so on the tallest phones the four lines are the measure's, and what they leave is the band
+   between them and the lede at the foot, as on a wide screen. The words keep two groups however many lines: "Get the
+   tıny" from the left margin, "bıts rıght" against the right one, the stop on it.
+   Three lines (a tablet held upright, a phone that isn't tall, a screen on its side that's nearly square): "Get the",
+   "tıny bıts" set to the measure (3.1086em, so the font-size is the measure over 3.12), and "rıght" against the right
+   margin; 2.6425em tall, trimmed, and with the room for the descenders 2.8825em. */
+@media (orientation: portrait), (orientation: landscape) and (max-aspect-ratio: 25/18) and (min-height: 561px) {
+  .g-tagline { --tag: max(2.75rem, min(100cqi / 3.12, var(--tag-h) / 2.8825)); --tag-over: 0px; }
+  .g-break--b { display: none; }
+  .g-break--a, .g-break--c { display: block; }
+  .g-w--bits { margin-left: 0; }
+  .g-w--right { margin-left: auto; }
+  .g-w--bits::after { content: none; }
+  .g-w--tiny::after, .g-w--right::after { content: ""; }
+}
+/* Four lines (a phone taller than two to three, the tallest too, and a tablet taller than three to four, held
+   upright): "Get the" set to the measure (from its G, hung into the margin, to the e's edge, 2.9595em), "tıny" from
+   the left margin, "bıts" and "rıght" against the right one (the s's edge and the stop on it); 3.6em tall, trimmed,
+   and 3.84em with the room for the descenders. */
+@media (orientation: portrait) and (max-width: 719px) and (max-aspect-ratio: 2/3), (orientation: portrait) and (min-width: 720px) and (max-aspect-ratio: 19/25) {
+  .g-tagline { --tag: max(2.75rem, min(100cqi / 2.9595, var(--tag-h) / 3.84)); --tag-over: 0px; }
+  .g-break--b { display: block; }
+  .g-w--bits { margin-left: auto; margin-right: 0.0102em; }
+  .g-w--bits::after { content: ""; }
+}
+
+/* A short screen on its side (a phone held sideways): too short for the poster, so the tagline goes on one line,
+   set to the measure as on the home page ("Get the tiny bits right" and its stop, less the G's hang, 8.4745em),
+   and the first screen runs on past the screen's foot (the screens stack there, and snap only near their tops). */
+@media (orientation: landscape) and (max-height: 560px) {
+  .g-tagline { --tag: max(2.75rem, 100cqi / 8.4745); --tag-over: 0px; }
+  .g-tagline__set { flex-wrap: nowrap; }
+  .g-break--b { display: none; }
+  .g-w--bits { margin-left: 0; }
+  .g-w--bits::after { content: none; }
+  .g-hero__main { --foot: 0px; }
+}
+
+/* Under 1080px, the lede across the first nine columns. */
+@media (max-width: 1079px) {
+  .g-hero__main { --foot: 52px; }
+  .g-lede { grid-column: 1 / span 9; max-width: 30em; }
+}
+@media (max-width: 719px) {
+  .g-hero__main { --foot: 96px; --hero-top: clamp(10px, 3svh, 28px); --hero-bottom: clamp(18px, 3.4svh, 32px); }
+  .g-lede { grid-column: 1 / -1; }
+}
+
+/* ---------------------------------------------------------------- The poster's columns */
+
+/* The tagline in columns (index.html's .g-cast): twelve of them on the poster's grid (six on a phone, two of its
+   columns each), meeting in the middle of its gutters half a pixel over, the first and last running out to the
+   screen's edges, as the poster's ground does, and Michi's columns (grid.js). Each holds a copy of the first screen's
+   grid laid out exactly as the poster is, with only the tagline in it, so its strip of the tagline (and of its
+   baselines) stands to the pixel where the heading's does. They are seen while the poster arrives, each moved with its
+   column of the ground as it strikes up, its type on a card that goes only a fifth as far past its place
+   (.is-arriving), and later while Michi's columns push them out of the top of the screen, a strip at a time
+   (.is-pushed), where the tagline is two lines (one of three or four is covered where it stands: grid.js); otherwise
+   the heading is. In the deck their top is the header's foot, so what's pushed is cut there, under the header, never
+   across it. */
+.g-cast {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  container-type: inline-size;
+  pointer-events: none;
+  visibility: hidden;
+}
+.g-hero:is(.is-pushed, .is-arriving) .g-cast { visibility: visible; }
+.g-hero:is(.is-pushed, .is-arriving) h1 .g-tagline__set { visibility: hidden; }
+.g-cast__col {
+  --span: 1;
+  --P: calc((100cqw - 2 * var(--m) + var(--g)) / 12);
+  --x0: calc(var(--m) + var(--col) * var(--span) * var(--P) - var(--g) / 2 - 0.5px);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--x0);
+  width: calc(var(--span) * var(--P) + 1px);
+  overflow: clip;
+}
+.g-cast__col:first-child { --x0: 0px; width: calc(var(--m) + var(--span) * var(--P) - var(--g) / 2 + 0.5px); }
+.g-cast__col:last-child { width: auto; right: 0; }
+.g-cast__plate { position: absolute; top: 0; left: calc(-1 * var(--x0)); width: 100cqw; }
+.g-cast__card { position: relative; }
+@media (max-width: 719px) {
+  .g-cast__col { --span: 2; }
+  .g-cast__col:nth-child(n+7) { display: none; }
+  .g-cast__col:nth-child(6) { width: auto; right: 0; }
+}
+.g-fx .g-cast__col { top: var(--head-h); }
+.g-fx .g-cast__plate { top: calc(-1 * var(--head-h)); }
+
+/* Michi's ground, teased in the first column at the foot (the motion, below), as its columns will rise there. */
+.g-tease {
+  position: absolute;
+  z-index: 7;
+  left: 0;
+  bottom: 0;
+  width: calc(var(--m) + (100% - 2 * var(--m) + var(--g)) / 12 - var(--g) / 2 + 0.5px);
+  height: 40px;
+  background: var(--ground);
+  translate: 0 100%;
+  pointer-events: none;
+}
+.g-tease::before { content: ""; position: absolute; top: 0; left: 0; right: 0; border-top: 1px solid color-mix(in srgb, var(--ink) 80%, transparent); }
+.g-fx .g-tease { bottom: calc(var(--V) - var(--sv)); }
+@media (max-width: 719px) {
+  .g-tease { width: calc(var(--m) + 2 * (100% - 2 * var(--m) + var(--g)) / 12 - var(--g) / 2 + 0.5px); }
+}
+
+@media screen {
+  /* The right margin, lit for a moment as the stop clicks onto it (the motion, below): a hairline down the screen
+     under the header, on the margin's own pixel, which is the last column's edge. */
+  .g-fx .g-flash {
+    display: block;
+    position: absolute;
+    z-index: 4;
+    top: var(--head-h);
+    bottom: 0;
+    right: var(--m);
+    width: 0;
+    border-right: 1px solid var(--ink);
+    opacity: 0;
+    pointer-events: none;
+  }
+  /* The band a finger, or a mouse, works the lens in: the tagline's (grid.js sets its top and height). A sideways drag
+     there is the lens's; up and down is still the page's scroll, and two fingers still zoom. */
+  .g-hero.is-lensed .g-scrub {
+    display: block;
+    position: absolute;
+    z-index: 6;
+    left: 0;
+    right: 0;
+    touch-action: pan-y pinch-zoom;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+}
+
+/* ---------------------------------------------------------------- The lens (the first screen's redlines) */
+
+/* A column of the grid (on a phone, a pair of the screen's double columns: a third of the measure) is a lens on the
+   poster's decisions (grid.js builds it, and slides its window from column to column on a spring). Through it the
+   poster is in outline, as a drawing is checked, in register with the type around it; on it, in mono, what was decided
+   in that strip: the caps and the baselines, the G's hang, the kerning put back, the word spaces, the dots' size, the
+   stop on the margin. The window is a column of the grid; the plate inside it stays where the poster is, so what you
+   see through it is always the strip it's over. Once the stop has clicked home it sweeps across the tagline once and
+   goes quiet: its edges and everything drawn in it go, and the poster is simply there again. A mouse moves it, and on a
+   touch screen a sideways drag on the tagline scrubs it; a moment after it's let go, it goes quiet where it is. Its
+   window and its edges stack by z-index, never by the order they come in. */
+.g-lens { position: absolute; z-index: 5; inset: 0; pointer-events: none; display: none; }
+.g-lens.is-built { display: block; }
+.g-lens__win {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 0;
+  width: var(--lw, 0px);
+  translate: var(--x, 0px) 0;
+  overflow: clip;
+  opacity: 0;
+  transition: opacity 160ms var(--ease);
+}
+.g-lens__edges {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: var(--lw, 0px);
+  translate: var(--x, 0px) 0;
+  border-inline: 1px solid color-mix(in srgb, var(--ink) 55%, transparent);
+  opacity: 0;
+  transition: opacity 160ms var(--ease), border-color 360ms var(--ease);
+}
+.g-lens.is-on :is(.g-lens__win, .g-lens__edges) { opacity: 1; }
+.g-lens__plate { position: absolute; top: 0; left: 0; width: var(--w, 100vw); translate: calc(-1 * var(--x, 0px)) 0; }
+/* The window's ground: the canvas, faintly inked, so the type it's over is hidden and only its outline shows. */
+.g-lens__ground { position: absolute; top: 0; left: 0; right: 0; background: color-mix(in srgb, var(--ink) 4%, var(--canvas)); }
+/* The poster in outline: a copy of the tagline, its letters drawn as their edges, in register with the type around
+   it, so the redlines meet them. The edge alone, 1px: a 2px stroke under a fill of the window's ground, so none of
+   the font's overlapping contours (the t's bar through its stem, the e's into its bowl) is drawn. */
+.g-lens__type {
+  position: absolute;
+  margin: 0;
+  font-weight: var(--wt);
+  line-height: 1;
+  --ls: var(--ls-tag);
+  color: color-mix(in srgb, var(--ink) 4%, var(--canvas));
+  -webkit-text-stroke: 2px var(--ink);
+  paint-order: stroke fill;
+}
+.g-lens__type .g-dot, .g-lens__type .stop { background: none; box-shadow: inset 0 0 0 1px var(--ink); }
+.g-lens__type .g-w::after { content: none !important; }
+.g-lens__type, .g-lens__type *, .g-lens__type *::before, .g-lens__type *::after { animation: none !important; translate: none; }
+/* The redlines: the metrics as hairlines across the plate, solid for caps and baselines, dotted for the x-height. */
+.g-lens__rule { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--ink); }
+.g-lens__rule--x { border-top-style: dashed; opacity: 0.6; }
+.g-lens__rule--v { right: auto; width: 0; border-top: 0; border-left: 1px solid var(--ink); }
+/* A note: mono, its name over its value, on a chip of the window's ground so it reads over an outline. A metric's
+   name stands at the column's right, against the line it names, as does every note in the last column. */
+.g-lens__note {
+  position: absolute;
+  padding: 0 3px;
+  background: color-mix(in srgb, var(--ink) 4%, var(--canvas));
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 13px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.g-lens__note b { display: block; font-weight: 400; }
+.g-lens__note--quiet { color: var(--ink-2); }
+.g-lens__note--end { translate: -100% 0; }
+/* A measure between two edges: a hairline with a tick at each end. */
+.g-lens__span { position: absolute; height: 0; border-top: 1px solid var(--ink); }
+.g-lens__span::before, .g-lens__span::after { content: ""; position: absolute; top: -4px; height: 7px; border-left: 1px solid var(--ink); }
+.g-lens__span::before { left: 0; }
+.g-lens__span::after { right: 0; }
+.g-lens__box { position: absolute; outline: 1px solid var(--ink); outline-offset: 2px; }
+/* Quiet (its sweep done, or a moment after it's let go): nothing of it drawn, its edges gone, the poster solid
+   through the window. */
+.g-lens__plate > * { transition: opacity 320ms var(--ease); }
+.g-lens.is-quiet .g-lens__plate > * { opacity: 0; }
+.g-lens.is-quiet .g-lens__edges { border-color: transparent; }
+
+/* ---------------------------------------------------------------- Rooms */
+
+/* A room, as in site.css (its ground, its ink), but its own ground is its screen's, so the article (taller than its
+   screen, in the deck) has none, and no padding: its content keeps to one screen. */
+.proto-grid .g-room { padding: 0; background: none; scroll-margin-top: 0; }
+.g-track, .g-tail, .g-slabs, .g-types, .g-head, .g-foot-copy { display: none; }
+.g-screen { position: relative; background: var(--ground); }
+.g-content { position: relative; }
+.g-grid {
+  container: room / inline-size;
+  grid-template-rows: auto minmax(var(--beat), 1fr) auto;
+  align-content: start;
+  min-height: var(--sv);
+  padding-block: calc(var(--head-h) + var(--room-top)) var(--room-bottom);
+  /* A column and its gutter, in this room's measure (resolved where it's used). */
+  --P: calc((100cqi + var(--g)) / 12);
+}
+
+/* The big type of a room (its name, its number, the Studio's motto): one line or two, trimmed to its caps and
+   baseline, so it stands exactly on its line. In the deck the columns carry copies of it (grid.js), which are what's
+   seen; this one keeps its place and is read. */
+.g-art { display: block; font-weight: var(--wt); line-height: 1; white-space: nowrap; text-box: trim-both cap alphabetic; }
+.g-art--name { letter-spacing: var(--ls-name); --ls: var(--ls-name); }
+.g-art--no { letter-spacing: var(--ls-no); --ls: var(--ls-no); font-variant-numeric: lining-nums; }
+.g-name { position: relative; font-weight: var(--wt); line-height: 1; }
+.g-no__digits { display: block; text-box: trim-both cap alphabetic; }
+
+/* The room's number is architecture, not a label: set far larger than anything else in the room, behind it all,
+   cut by the screen's edges (on a phone, run to its edge, whole), and carried in by its columns like the name. Each
+   room places it its own way (below:
+   Michi's the value in a stamp's corner), and every one is the same outline, 2.5px of it at 38% of the ink, one
+   vocabulary from 01 to 03 (on Lark's and Kozeni's grounds a tint would take the small words over it under 4.5:1).
+   It's an opaque mix of the ink and the ground, so where two columns' copies overlap by their half pixel, nothing
+   shows twice.
+   An outline is the letter's edge only, never the font's own overlapping contours (where the r's shoulder meets its
+   stem, the k's arm its leg, the t's bar its stem): a stroke twice as wide painted under a fill of the ground, which
+   covers its inner half and every contour inside the letter. The room's grid is its stacking context, so the number
+   lies under the room's every word whatever the order they come in. */
+.g-grid { position: relative; isolation: isolate; }
+/* (Each of these is set twice over, .g-room .g-no, so that it holds on the columns' copies too, which take the room's
+   ink, .g-ride, otherwise.) */
+.g-room .g-no {
+  --hair: color-mix(in srgb, var(--room-ink) 38%, var(--ground));
+  z-index: -1;
+}
+.g-room .g-no.g-no { color: var(--ground); -webkit-text-stroke: 5px var(--hair); paint-order: stroke fill; }
+/* Lark's echo: its name again in outline, at the same size, a line of the room's ink at 72% (opaque, as above), a
+   two-hundredth of its size and never under 1.5px, so it holds on a large screen as on a laptop's. */
+.g-room .g-echo { display: none; position: relative; color: var(--ground); -webkit-text-stroke: calc(2 * max(1.5px, 0.005em)) color-mix(in srgb, var(--room-ink) 72%, var(--ground)); paint-order: stroke fill; }
+
+.g-gloss { color: var(--ink-3); }
+.g-gloss + .g-pitch { margin-top: 12px; }
+/* The intro's first line trimmed to its caps, so they hang from the line they're set on: the big caps' (Lark's call),
+   the spine's head (Kozeni's), the name's foot (tall rooms). */
+.g-intro > :first-child { text-box: trim-start cap alphabetic; }
+.g-pitch { max-width: 22em; }
+/* Short lines, wrapped as a whole (balanced where the browser can't do better), never ending on a dangling word:
+   the pairs that belong together are joined in _data/apps.yml. */
+.g-gloss, .g-pitch { text-wrap: balance; text-wrap: pretty; }
+.g-store { margin-top: clamp(14px, 2.6svh, 24px); }
+.g-icon picture { display: contents; }
+.g-icon source { display: none; }   /* unwrapped, a picture's source would take a cell */
+.g-icon__img { display: block; width: 100%; height: auto; border-radius: 26%; box-shadow: var(--icon-shadow); }
+
+/* ---------------------------------------------------------------- Wide rooms: a screen on its side, 900px and more */
+
+/* Every size here is the lesser of what the columns allow and what the screen's height leaves (--avail), so a room
+   fits a short laptop screen as well as a tall monitor. A room's name is a whole number of columns wide, from its
+   first letter's stem to its last's (as the Studio's motto is set in by whole columns), so both its ends stand on
+   the grid's lines: the most whole columns the height allows (or, for Michi, the nearest). The numbers are measured
+   against the screen itself. */
+@media (orientation: landscape) and (min-width: 900px) {
+  .g-room .g-no { position: absolute; margin: 0; }
+
+  /* Michi: the name across the top left, at most the first nine columns ("Mıchı" is 2.072em of ink), its M's side
+     bearing hung into the margin, as many whole columns as are nearest to caps two fifths of the room's height; the
+     gloss, the pitch and the badge in the last three, standing on the name's baseline; at the foot, the icon in the
+     first two columns and the album in the last nine, its stamps kept to what the name leaves of the height. Its
+     number in the top right corner, the value of a stamp, three quarters of the screen tall and cut by its top and
+     right edges. */
+  .g-set--michi .g-grid { --michi: calc((min(9 * var(--P), round(var(--avail) * 0.4 / 0.7275 * 2.072 + var(--g), var(--P))) - var(--g)) / 2.072); }
+  .g-set--michi .g-name { grid-column: 1 / span 9; grid-row: 1; align-self: start; font-size: var(--michi); }
+  .g-set--michi .g-name .g-art { margin-left: -0.0586em; }
+  .g-set--michi .g-no { top: 0; right: 0; font-size: calc(var(--sv) * 0.66 / 0.737); margin: -0.16em -0.05em 0 0; }
+  .g-set--michi .g-intro { grid-column: 10 / -1; grid-row: 1; align-self: end; }
+  .g-set--michi .g-icon { grid-column: 1 / span 2; grid-row: 3; align-self: end; }
+  .g-set--michi .g-piece { grid-column: 4 / -1; grid-row: 3; align-self: end; }
+  .g-set--michi .album { max-width: calc(6 * (var(--avail) - 0.7275 * var(--michi) - 112px - var(--beat)) / 1.25 + 5 * var(--album-gap)); }
+
+  /* Lark: a call and its echo, as its drill plays a sentence and you say it back, one figure: the name, the call,
+     against the right margin, the k's arm on it (it reaches 0.056em past its box; "Lark" is 1.724em of ink from its
+     L's stem), and a line under it the echo, the name again in outline at the same size, a column further in, as you
+     say a sentence back a beat behind. Their size is the most whole columns (at most six) that the two lines, 1.685em
+     tall, can take of what the practice at the foot leaves of the room (--g-piece, measured by grid.js). Their columns
+     come the same way, from the right margin in, the echo's strip in each a beat behind its column (grid.js). The pitch
+     and the badge beside the name, in the three columns before it, their foot on its line's, as Michi's are beside its
+     own on the other side; under them, in the band the echo leaves, the number in outline, as tall as the band and cut
+     by the screen's left edge, so that it crosses nothing. At the foot, all on the room's foot line: the sentence in
+     the first seven columns, its toggles last (the meaning, kept its place while it's hidden, above them, under the
+     sentence it gives the sense of); the rhythm of a turn in the next three (its runs and their labels shown while
+     Practice runs, below), the labels over the runs; the icon in the last two. */
+  .g-set--lark .g-grid {
+    grid-template-rows: auto auto minmax(var(--beat), 1fr) auto;
+    --lark-size: calc((min(6 * var(--P), round(down, (var(--avail) - var(--g-piece, calc(var(--avail) * 0.36)) - var(--beat)) / 1.685 * 1.724 + var(--g), var(--P))) - var(--g)) / 1.724);
+  }
+  .g-set--lark .g-name { grid-column: 7 / -1; grid-row: 1; justify-self: end; align-self: start; font-size: var(--lark-size); }
+  .g-set--lark .g-name .g-art { margin-right: 0.056em; }
+  .g-set--lark .g-intro { grid-column: 5 / span 3; grid-row: 1; align-self: end; }
+  .g-set--lark .g-echo { display: block; grid-column: 1 / -1; grid-row: 2; justify-self: end; align-self: start; font-size: var(--lark-size); margin: 0.23em calc(var(--P) + 0.056em) 0 0; }
+  .g-set--lark .g-no { position: relative; grid-column: 1 / span 5; grid-row: 2 / 4; margin: clamp(8px, 1.6svh, 16px) 0 clamp(8px, 1.6svh, 16px) calc(-1 * var(--m)); container-type: size; overflow: clip visible; }
+  /* The figures' round tops (0.737em) to the band's top, their feet on its foot: set by the caps (0.7275em, the trim)
+     and lowered by what the rounds rise past them; clipped across only, by the screen's edge, so the rounds' overshoot
+     and the outline's outer half are never cut flat. */
+  .g-set--lark .g-no__digits { font-size: calc(100cqh / 0.737); margin: 0.0095em 0 0 -0.2em; }
+  .g-set--lark .g-piece { grid-column: 1 / span 10; grid-row: 4; align-self: end; display: grid; grid-template-columns: subgrid; }
+  .g-set--lark .turn { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: end; --display: min(5.2cqi, var(--avail) * 0.085); }
+  .g-set--lark .covered { grid-column: 1 / span 7; }
+  .g-set--lark .covered__meaning { order: -1; }
+  .g-set--lark .covered__foot .toggle { text-box: trim-end cap alphabetic; }
+  .g-set--lark .rhythm { grid-column: 8 / span 3; flex-direction: column; gap: 18px; margin-top: 0; }
+  .g-set--lark .rhythm__run { width: auto; gap: 10px; flex-direction: column-reverse; }
+  .g-set--lark .g-icon { grid-column: 11 / -1; grid-row: 4; align-self: end; }
+
+  /* Kozeni: the name set up the left margin, a spine reading from the foot of the room to its head, its caps
+     against the margin, as long as the room is tall ("Kozenı" is 2.67em) and no wider than two columns; beside it
+     at the head the gloss, the pitch and the badge; at the foot the keypad, its keys and amount kept to what the
+     height leaves, and the icon in the last two, as every room's is. Its number on its side too, up the right edge, a second spine in
+     outline, most of the screen tall and cut by the edge. */
+  .g-set--kozeni .g-grid { --koz: min(var(--avail) / 2.68, (2 * var(--P) - var(--g)) / 0.75); }
+  .g-set--kozeni .g-name { grid-column: 1 / span 2; grid-row: 1 / -1; align-self: end; font-size: var(--koz); }
+  .g-set--kozeni .g-name .g-art { writing-mode: sideways-lr; margin-inline-start: -0.0586em; }   /* the K's side bearing hung below, so its stem stands on the foot line */
+  .g-set--kozeni .g-no { right: 0; bottom: 0; writing-mode: sideways-lr; font-size: calc(var(--sv) * 0.86 / 1.12); margin: 0 -0.14em 0 0; }
+  /* The gloss's caps hang from the spine's head, where the name ends at the top (its box, 2.6736em long less the
+     K's hang, and the ı's 0.0058em of side bearing past its end): moved, not laid out anew, so the room's height
+     doesn't change. */
+  .g-set--kozeni .g-intro { grid-column: 4 / span 5; grid-row: 1; align-self: start; position: relative; top: max(0px, var(--avail) - 2.6092 * var(--koz)); }
+  .g-set--kozeni .g-piece { grid-column: 4 / span 4; grid-row: 3; align-self: end; }
+  .g-set--kozeni .g-icon { grid-column: 11 / -1; grid-row: 3; align-self: end; }
+  .g-set--kozeni .keypad { --display: min(6cqi, var(--avail) * 0.1); }
+  .g-set--kozeni .keypad__amount, .g-set--kozeni .keypad__keys { margin-top: clamp(8px, 1.8svh, 24px); }
+  .g-set--kozeni .key { height: clamp(44px, var(--avail) * 0.072, 54px); }
+  .g-set--kozeni .g-grid { grid-template-rows: auto minmax(calc(var(--beat) * 0.6), 1fr) auto; }
+}
+/* Sideways where the browser can't set a line on its side bottom to top: set top to bottom and turned round,
+   which reads the same. */
+@supports not (writing-mode: sideways-lr) {
+  @media (orientation: landscape) and (min-width: 900px) {
+    .g-set--kozeni .g-name .g-art, .g-set--kozeni .g-no { writing-mode: vertical-rl; rotate: 180deg; }
+    .g-set--kozeni .g-name .g-art { margin-inline: 0 -0.0586em; }   /* its foot, once turned round, is its inline end */
+    .g-set--kozeni .g-no { margin: 0 -0.14em 0 0; }
+  }
+}
+
+/* ---------------------------------------------------------------- Tall rooms: a screen held upright, or narrow */
+
+/* Stacked: the name across the top (Michi's from the left margin, Lark's against the right one, Kozeni's up the
+   left margin still where the screen is tall enough for it), then the words with the icon beside them, hung from
+   the name's foot by the same space, then the exhibit at the foot. Between them, whatever the screen leaves, and the
+   room's number in it, cut by the screen's edge: its figures as tall as the band (it's a box of that size, and
+   they're measured against it), or, where the band is too low for that (a phone's), never less than 0.28 of the
+   screen tall, centred on the band and running on behind the words and the exhibit around it, under every word of
+   the room, as a wide screen's number is: every room's number shows at every size (the owner, 22:11). (On a phone
+   the three are one size, as large as the space beside Kozeni's spine allows, each whole: below.) A name is a
+   whole number of columns (--U: on a phone, the screen's double columns, the six it draws), but where it runs to
+   the screen's edge. */
+@media (orientation: portrait), (max-width: 899px) {
+  .g-grid { grid-template-rows: auto auto minmax(var(--beat), 1fr) auto; --U: var(--P); }
+  .g-room .g-name { grid-column: 1 / -1; grid-row: 1; justify-self: start; align-self: start; }
+  .g-room .g-intro { grid-column: 1 / span 8; grid-row: 2; align-self: end; margin-top: clamp(16px, 3svh, 36px); }
+  .g-room .g-icon { grid-column: 10 / -1; grid-row: 2; align-self: end; margin-top: clamp(16px, 3svh, 36px); }
+  .g-room .g-piece { grid-column: 1 / -1; grid-row: 4; align-self: end; }
+  .g-room .g-no {
+    position: relative;
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin: clamp(8px, 1.6svh, 16px) calc(-1 * var(--m));
+    container-type: size;
+    overflow: clip visible;
+  }
+  /* As Lark's on a wide screen: the round tops (0.737em) to the band's top and the feet on its foot, set by the caps
+     (the trim) and lowered by what the rounds rise past them; clipped across only, so nothing is cut flat. Taller
+     than the band (its least size), the figures are centred on it, by the same measure. */
+  .g-room .g-no__digits { font-size: max(100cqh / 0.737, var(--sv) * 0.28 / 0.737); margin-top: calc((100cqh - 0.737em) / 2 + 0.0095em); }
+
+  /* Michi: margin to margin, or the whole columns nearest to caps a fifth of the room's height; its number against
+     the right edge, cut by it. */
+  .g-set--michi .g-name { font-size: calc((min(12 * var(--P), round(var(--avail) * 0.2 / 0.7275 * 2.072 + var(--g), var(--U))) - var(--g)) / 2.072); }
+  .g-set--michi .g-name .g-art { margin-left: -0.0586em; }
+  .g-set--michi .g-no__digits { text-align: right; margin-right: -0.05em; }
+
+  /* Lark: against the right margin, margin to margin, as Michi is, from its L's stem to the k's arm (a k that only
+     just reached the screen's edge read as a slip, on a screen with rounded corners most of all); or, where the
+     height won't allow that (its caps at most 0.21 of it), as many whole columns as it does, its k's arm on the
+     margin. (--lark-full is 1 for the one, 0 for the other.) Under it, all on the right as it is: its pitch and badge
+     set against the icon, the icon on the margin. Its number against the left edge, cut by it. */
+  .g-set--lark .g-grid {
+    --lark-cap: calc(var(--avail) * 0.21 / 0.7275);
+    --lark-w: calc(100cqi / 1.724);
+    --lark-c: calc((round(down, var(--lark-cap) * 1.724 + var(--g), var(--U)) - var(--g)) / 1.724);
+    --lark-full: calc((1 + sign(var(--lark-cap) - var(--lark-w))) / 2);
+  }
+  .g-set--lark .g-name { justify-self: end; font-size: calc(var(--lark-full) * var(--lark-w) + (1 - var(--lark-full)) * var(--lark-c)); }
+  .g-set--lark .g-name .g-art { margin-right: 0.056em; }
+  .g-set--lark .g-intro { grid-column: 1 / span 9; justify-self: end; text-align: right; }
+  .g-set--lark .g-intro .store { justify-items: end; }
+  .g-set--lark .turn { --display: min(7.4cqi, var(--avail) * 0.06); }
+  .g-set--lark .g-no__digits { margin-left: -0.2em; }
+  /* Its turn on the room's foot as it's seen at rest: the sentence, the meaning under it and the toggles last, on the
+     foot, as a wide screen has them; the rhythm, hidden at rest (below), first, so the places kept for what's hidden
+     are never a gap under the toggles (the owner, 09:33). */
+  .g-set--lark .turn { display: flex; flex-direction: column; }
+  .g-set--lark .covered + .rhythm { order: -1; margin: 0 0 var(--beat); }
+  .g-set--lark .covered__meaning { order: -1; }
+
+  /* Kozeni: its spine up the left margin from under the header, a third of the width at most and half the room's
+     height, or what the keypad leaves; beside it the gloss, the pitch and the badge; at the foot the keypad, and the
+     icon beside it; its number in the band between. */
+  .g-set--kozeni .g-grid { grid-template-rows: auto minmax(var(--beat), 1fr) auto; }
+  .g-set--kozeni .g-grid { --key-h: clamp(44px, var(--avail) * 0.068, 54px); }
+  .g-set--kozeni .g-name { grid-column: 1 / span 4; grid-row: 1; align-self: start; font-size: max(3rem, min((4 * var(--P) - var(--g)) / 0.75, var(--avail) * 0.52 / 2.68, (var(--avail) - 4 * var(--key-h) - var(--k-rest, 160px) - var(--beat)) / 2.68)); }   /* never under 3rem: on a short screen on its side the rooms stack, and may run past its foot */
+  .g-set--kozeni .g-name .g-art { writing-mode: sideways-lr; margin-inline-start: -0.0586em; }
+  .g-set--kozeni .g-intro { grid-column: 6 / -1; grid-row: 1; align-self: start; margin-top: 0; }
+  /* Its number against the right edge, cut by it (on a phone, whole, beside the spine: below). */
+  .g-set--kozeni .g-no { grid-row: 2; }
+  .g-set--kozeni .g-no__digits { text-align: right; margin-right: -0.2em; }
+  .g-set--kozeni .g-piece { grid-column: 1 / span 8; grid-row: 3; align-self: end; }
+  .g-set--kozeni .g-icon { grid-column: 10 / -1; grid-row: 3; align-self: end; }
+  .g-set--kozeni .keypad { --display: min(10cqi, var(--avail) * 0.07); }
+  .g-set--kozeni .keypad__keys { max-width: 392px; }
+}
+/* Lark, upright, where there's the height for it (a tablet or a tall window no wider than four fifths of its height,
+   which a tablet in a browser with its bars showing, 768x928, isn't; a phone at least 700px tall): it all hangs from
+   the right margin, as its name does. Under the name, the pitch and the badge set against the margin, and under
+   them the icon, on the margin too; then the band with its number, and the practice at the foot (owner, 00:05).
+   Elsewhere upright, the pitch and the badge against the icon, both on the right, above. */
+@media (orientation: portrait) and (min-width: 720px) and (max-aspect-ratio: 4/5),
+  (max-width: 719px) and (min-width: 355px) and (min-height: 700px) {
+  .g-set--lark .g-grid { grid-template-rows: auto auto auto minmax(var(--beat), 1fr) auto; }
+  .g-set--lark .g-intro { grid-column: 4 / -1; }
+  .g-set--lark .g-icon { grid-column: 10 / -1; grid-row: 3; align-self: start; margin-top: clamp(14px, 2.6svh, 24px); }
+  /* Its number beside the icon, against the left edge and cut by it, as tall as the icon's row and the band under it
+     together, no taller, so it crosses neither the icon nor the practice. */
+  .g-set--lark .g-no { grid-column: 1 / span 8; grid-row: 3 / 5; }
+  .g-set--lark .g-no__digits { font-size: calc(100cqh / 0.737); margin-top: 0.0095em; }
+  .g-set--lark .g-piece { grid-row: 5; }
+}
+/* A tablet held upright, in a browser with its bars showing (744x1033, 768x928): the keypad's spacing kept to what
+   the height leaves, as its keys are, and the spine set to what the room really takes besides the keys: the
+   keypad's two spaces, its amount (at most 0.0672 of the height), its title and the gaps between its keys (34px),
+   and the band under the spine, which is never less than the number's margins. So the room is never taller than
+   the screen. */
+@media (orientation: portrait) and (min-width: 720px), (min-width: 720px) and (max-width: 899px) {
+  .g-set--kozeni .g-grid { --k-rest: calc(2 * clamp(8px, 1.8svh, 24px) + 2 * clamp(8px, 1.6svh, 16px) + var(--avail) * 0.0672 + 34px); }
+  .g-set--kozeni .keypad__amount, .g-set--kozeni .keypad__keys { margin-top: clamp(8px, 1.8svh, 24px); }
+  /* Lark's runs with their labels over their squares (both shown while Practice runs), so the squares are next to
+     the sentence they time, under them. */
+  .g-set--lark .rhythm__run { flex-direction: column-reverse; }
+}
+@supports not (writing-mode: sideways-lr) {
+  @media (orientation: portrait), (max-width: 899px) {
+    .g-set--kozeni .g-name .g-art { writing-mode: vertical-rl; rotate: 180deg; margin-inline: 0 -0.0586em; }
+  }
+}
+
+/* Lark's rhythm, a turn's three runs of squares, is Practice's (lark.js). At rest, unlabelled, the runs read as a
+   barcode in the busiest room: so they're hidden, keeping their place, so nothing moves when Practice starts, and
+   come in with their labels while it runs, or is paused (lark.css shows the labels then). Where there's no Practice
+   (no script, or on paper) the rhythm isn't laid out at all, and keeps only its name, for a screen reader. */
+.g-set--lark .turn:not(.is-running) .rhythm__bits { visibility: hidden; opacity: 0; }
+html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media print {
+  .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+}
+
+/* ---------------------------------------------------------------- A very large screen */
+
+/* On a screen the size of a big desktop display, the small words and the exhibits' controls grow with it, so they
+   keep their proportion to the poster sizes around them: the text from 20px to 27px, mono to 18px, the badge, the
+   keys and the squares of a turn's rhythm. */
+@media (min-width: 1800px) and (min-height: 1000px) {
+  .proto-grid { --text: clamp(1.25rem, 0.25rem + 0.9vw, 1.75rem); --meta: clamp(0.875rem, 0.25rem + 0.5vw, 1.125rem); }
+  .proto-grid .store__badge img { height: clamp(44px, 2.3vw, 60px); }
+  .g-set--kozeni .keypad__keys { max-width: clamp(344px, 19vw, 480px); gap: clamp(8px, 0.5vw, 12px); }
+  .g-set--kozeni .key { height: clamp(54px, 3.6vw, 76px); border-radius: clamp(16px, 1vw, 22px); }
+  .proto-grid .rhythm__bits { width: calc(var(--n) * 19.5px - 6.5px); height: 13px; mask-size: 19.5px 13px; }
+  .proto-grid .rhythm__lit { clip-path: inset(0 calc((var(--n) - var(--k, 0)) * 19.5px) 0 0); }
+}
+
+/* Michi's album keeps its two shelves side by side down to the tablet, one row of stamps (michi.css stacks them
+   under 1080px, which would make the room taller than a screen). */
+@media (min-width: 720px) and (max-width: 1079px) {
+  .proto-grid .album { display: grid; }
+  .proto-grid .album__shelf + .album__shelf { margin-top: 0; }
+  .proto-grid .album__shelf, .proto-grid .album__stamps { grid-template-columns: subgrid; }
+  .proto-grid .album__shelf.is-empty .album__stamps { min-height: var(--stamp-height, 0); height: auto; margin-top: calc(var(--beat) * 1.25); }
+  .proto-grid .album__shelf.is-empty .album__stamps::before { content: attr(data-empty); }
+  .proto-grid .album__shelf.is-empty .album__name::after { content: none; }
+}
+
+/* A phone: everything a little closer, so a room fits even a short screen with the browser's bars showing (an
+   iPhone SE's, 375x548). Laid out on the six double columns it draws (--U), but for the icons, three of the twelve
+   in every room. The album three stamps across, a row to a shelf, the stamps as large as the height leaves (below);
+   Lark's rhythm a row to a run, its squares smaller and closer (6px, 2px apart), so that its labels, beside them,
+   keep to a line each on a 375px screen; Lark's two toggles closer, so they keep to a row down to 300px or so;
+   Kozeni's keys a little shorter, never under 44px, and its words from the third double column, beside the spine,
+   its spine as long as what the keypad leaves (--k-rest: the keypad's two spaces and the band's two, its amount, and
+   its title and the gaps between its keys, 28px). The rooms' numbers one size (below). */
+@media (max-width: 719px) {
+  .proto-grid { --room-top: clamp(8px, 2svh, 22px); --room-bottom: clamp(12px, 2.4svh, 24px); }
+  .g-grid { --U: calc(2 * var(--P)); }
+  .g-room .g-intro, .g-room .g-icon { margin-top: clamp(10px, 2svh, 22px); }
+  .g-set--kozeni .g-intro { grid-column: 5 / -1; margin-top: 0; }
+  .g-set--kozeni .g-grid { --k-rest: calc(4 * clamp(8px, 1.6svh, 16px) + min(10cqi, var(--avail) * 0.07) + 28px); }
+  .g-gloss + .g-pitch { margin-top: 4px; }
+  .g-store { margin-top: clamp(10px, 1.8svh, 18px); }
+
+  /* Michi's stamps as large as the room allows, three across, up to the measure: their two rows take what the
+     screen leaves under the words and the icon (--g-words, how far down the room they reach, measured by grid.js), less
+     the band's least (the beat, or the number's two margins, clamp(8px, 1.6svh, 16px), where they're more), the bottom
+     margin and the album's own lines: the shelves' names (their caps, 0.698 of the label size), the space under a name,
+     which is the space between a shelf's rows too (--album-line), and the space between the shelves (--album-shelf). A
+     stamp is 1.25 times as tall as it's wide. Two rows in every arrangement, so the album keeps its height and no stamp
+     changes size, whichever shelf it's on (michi.css): a row to a shelf; or five on one, three and two, and the other
+     just its name, nothing under it; or four on one, kept to its row, each laid over the one before by what the row is
+     short, as stamps dealt out by hand overlap, the value in each one's corner still showing (three columns of what the
+     last stamp leaves of the row, each stamp running on over the next column). Four is album.js's --count on the shelf:
+     a selector that counts the stamps themselves isn't always matched again in Safari when one is filed there. Never
+     under 0.155 of the room's height a stamp, which only a screen too short for the deck needs (320x568, or a phone on
+     its side); never wider than on the largest phone, the measure of a 440px screen, so a window between a phone's
+     width and a tablet's (a narrow window on a Mac, a tablet's split view) keeps a phone's stamps: its wider row would
+     want more stamps across, not larger. */
+  .proto-grid .album {
+    --album-line: 10px;
+    --album-shelf: clamp(10px, 2svh, 22px);
+    --album-stamp: max(var(--avail) * 0.155, (var(--sv) - var(--g-words, var(--sv)) - max(var(--beat), 2 * clamp(8px, 1.6svh, 16px)) - var(--room-bottom) - 2 * 0.698 * var(--meta) - var(--album-shelf) - 2 * var(--album-line)) / 2);
+    max-width: min(392px, 3 * var(--album-stamp) / 1.25 + 2 * var(--album-gap));
+  }
+  .proto-grid .album__shelf, .proto-grid .album__stamps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .proto-grid .album__stamp:nth-child(n) .album__print { rotate: calc(-1 * var(--lean, 2deg)); }
+  .proto-grid .album__stamp:nth-child(even) .album__print { rotate: var(--lean, 2deg); }
+  .proto-grid .album__stamps { margin-top: var(--album-line); row-gap: var(--album-line); }
+  .proto-grid .album__shelf.is-empty .album__stamps { margin-top: 0; }
+  .proto-grid .album__shelf + .album__shelf { margin-top: var(--album-shelf); }
+  .proto-grid .album__shelf[style*="--count: 4"] .album__stamps { grid-template-columns: repeat(3, minmax(0, 1fr)) calc((100% - 2 * var(--album-gap)) / 3); column-gap: 0; }
+  .proto-grid .album__shelf[style*="--count: 4"] .album__stamp:not(:last-child) { width: calc(150% - var(--album-gap)); }
+  .proto-grid .album__shelf[style*="--count: 4"] .album__stamp:focus-visible { z-index: 1; }
+  /* While a stamp is held, album.js keeps every shelf at the height it had, so nothing closes up under the finger.
+     A shelf of four, or an empty one, is a row shorter than the shelf it was: held at that height, the album would
+     run a row past the screen's foot, under the browser's bar, and jump back as the stamp is set down. Those two take
+     their own height at once, so the album is two rows whether a stamp is held or not. */
+  .proto-grid :is(.album__shelf[style*="--count: 4"], .album__shelf.is-empty) .album__stamps { min-height: 0 !important; }
+
+  .g-set--lark .turn { --display: min(9.4cqi, var(--avail) * 0.058); }
+  .proto-grid .covered__line, .proto-grid .covered__foot { margin-top: clamp(10px, 1.8svh, 20px); }
+  .g-set--lark .covered + .rhythm { margin-bottom: clamp(10px, 1.8svh, 20px); }
+  .proto-grid .covered__foot { gap: 6px 16px; }
+  .proto-grid .rhythm { gap: 8px; }
+  .proto-grid .rhythm__run { display: grid; grid-template-columns: 134px minmax(0, 1fr); align-items: center; column-gap: 10px; width: auto; }
+  .proto-grid .rhythm__bits {
+    width: calc(var(--n) * 8px - 2px);
+    height: 6px;
+    mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6'><rect width='6' height='6'/></svg>");
+    mask-size: 8px 6px;
+  }
+  .proto-grid .rhythm__run--turn .rhythm__bits {
+    mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='6'><rect x='0.5' y='0.5' width='5' height='5' fill='none' stroke='black' stroke-width='1'/></svg>");
+  }
+  .proto-grid .rhythm__lit { clip-path: inset(0 calc((var(--n) - var(--k, 0)) * 8px) 0 0); }
+
+  .g-set--kozeni .keypad__amount, .g-set--kozeni .keypad__keys { margin-top: clamp(8px, 1.6svh, 16px); }
+  .g-set--kozeni .key { height: var(--key-h, 44px); }
+  .g-set--kozeni .keypad__keys { gap: 6px; }
+
+  /* The rooms' numbers, here, are one figure in three rooms: the same size in each, the largest at which all three are
+     whole, which Kozeni's sets, its "03" running from the third of the drawn columns (a gutter clear of the spine, in
+     the first two) to the screen's right edge; and never past 0.28 of the screen, the least they are elsewhere. Each
+     stands on its band's foot, under the room's words and exhibit as ever, and runs to the screen's edge, its outline
+     whole along it (the outline's 2.5px outside the letters' ink): Michi's and Kozeni's to the right edge, Lark's from
+     the left, as on every screen. */
+  .g-room .g-no__digits {
+    --x5: calc(var(--m) + (100cqw - 2 * var(--m) + var(--g)) / 3);
+    font-size: min((100cqw - var(--x5) - 5px) / var(--no-ink), var(--sv) * 0.28 / 0.737);
+    margin: calc(100cqh - 0.7275em) 0 0;
+  }
+  .g-set--michi .g-no__digits { text-align: right; margin-right: calc(2.5px - var(--no-r1)); }
+  .g-set--kozeni .g-no__digits { text-align: right; margin-right: calc(2.5px - var(--no-r3)); }
+  .g-set--lark .g-no { grid-column: 1 / -1; }
+  .g-set--lark .g-no__digits { margin-left: calc(2.5px - var(--no-l)); }
+}
+
+/* ---------------------------------------------------------------- The Studio, with Contact */
+
+/* On the page's own canvas, as the first screen is (its ground is --canvas, in index.html), so its inks are the
+   page's: ink on the light canvas, the light ink on the dark one. It answers the first screen: that opens on the
+   tagline at its head and the lede at its foot; this ends on the motto at its head and the address at its foot, at
+   the tagline's scale, ranged against the right margin as "bıts rıght" is, its i's dots and its full stop square
+   bits as the tagline's are, and the paragraph beside it. Its words and Contact share one grid area, so Contact
+   starts where the screen does (and /#contact lands on it), and both keep the footer's height clear at their foot
+   (--foot-h), where the footer's line is laid. No labels: the Studio's heading and Contact's are for screen readers.
+   Every size here is the lesser of what the measure allows and what the screen's height leaves (--C, the room's
+   height less the footer's), and where it's the height, the line is set in from the margin by a whole number of
+   columns, as a room's name is, so both its ends stand on the grid. */
+.g-room--studio { position: relative; --room-ink: var(--ink); --room-ink-2: var(--ink-2); --room-ink-3: var(--ink-3); }   /* positioned, as every room is, so its z-index stacks it over the room before */
+.g-room--studio .g-content { display: grid; color: var(--room-ink); }
+.g-room--studio .g-content > .g-grid { grid-area: 1 / 1; }
+.g-room--studio .g-grid {
+  padding-bottom: calc(var(--room-bottom) + var(--foot-h, 0px));
+  --C: calc(var(--avail) - var(--foot-h, 0px));
+  /* The address (index.html): on a screen on its side two lines, "hello@" and "tınybıt.studıo", the second 5.0985em
+     from the t's box to the o's (the t's ink 0.007em into it, the o's 0.014em past it, as a round letter goes past a
+     margin), and 1.925em tall with the room for the descenders (two caps of 0.7275em, the 0.23em between them, as the
+     tagline's, and 0.24em); upright, three, "hello@", "tınybıt." and "studıo", the first the widest, 2.7129em from the
+     h's stem, and 2.8825em tall. It's the size the measure gives it unless the screen is too short for that and the
+     motto at three tenths of it (--mail-least), and then the size of a line set in from the left margin by the fewest
+     whole columns that are short enough. (On paper the full stop is the font's own, a little wider than the square one:
+     --mail-ms, print, below.) */
+  --mail-w: calc(5.0915 + var(--mail-ms, 0));
+  --mail-fit: 1.925;
+  --mail-hang: 0.007em;
+  --mail-least: calc(0.3 * 0.9675 * 100cqi / var(--mail-w));
+  --mail-hmax: max(3rem, (var(--C) - var(--beat) - var(--mail-least) - var(--mail-above, 0px)) / var(--mail-fit));
+  --mail-in: max(0px, round(up, 100cqi - var(--mail-w) * var(--mail-hmax), var(--P)));
+  --mail: calc((100cqi - var(--mail-in)) / var(--mail-w));
+  --mail-h: calc(var(--mail-fit) * var(--mail));
+  /* The motto on one line, "Let the space do the dıvıdıng.", 11.598em from the L's stem to the stop's right edge, and
+     0.9675em tall with the room for its descenders; set in from the margin by the fewest whole columns that keep it
+     to what the address leaves of the screen (--mmax), its stop on the right margin. */
+  --motto-w: 11.598;
+  --motto-fit: 0.9675;
+  --mmax: max(2.5rem, (var(--C) - var(--mail-h) - var(--beat) - var(--mail-above, 0px)) / var(--motto-fit));
+  --indent: max(0px, round(up, 100cqi - var(--motto-w) * var(--mmax), var(--P)));
+  --motto: calc((100cqi - var(--indent)) / var(--motto-w));
+}
+.g-studio { grid-template-rows: auto 1fr auto; }
+.g-contact { grid-template-rows: 1fr auto; pointer-events: none; }
+.g-contact > * { pointer-events: auto; }
+/* The Studio's heading is for screen readers only: the motto opens the screen, where a room's name would. */
+/* The motto ends the page as the tagline begins it: its i's dotless, with square bits for dots (they come out of their
+   stems as the Studio arrives), and its full stop the square bit, on the right margin. */
+.g-motto { grid-row: 1; grid-column: 1 / -1; font-size: var(--motto); }
+.g-art--motto { letter-spacing: var(--ls-motto); --ls: var(--ls-motto); line-height: 0.98; }
+.g-motto__a { margin-left: calc(var(--indent) - 0.0586em); }
+/* The paragraph beside the address's first line, in the five columns "hello@" leaves (it takes the rest), its caps
+   hung from the address's: it's as tall as the address, and stands where it does. */
+.g-studio__text { grid-row: 3; grid-column: 1 / span 5; align-self: end; height: var(--mail-h); color: var(--ink-2); max-width: 26em; text-wrap: pretty; text-box: trim-start cap alphabetic; }
+.g-mail {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  margin: 0 0 0.24em calc(var(--mail-in) - var(--mail-hang) - 0.01em);   /* its widest line from its first letter's stem, at the margin or a whole column in (and a hair to spare) */
+  font-size: var(--mail);
+  font-weight: var(--wt);
+  line-height: 0.9575;
+  letter-spacing: var(--ls-mail);
+  text-align: right;
+  text-box: trim-both cap alphabetic;
+}
+/* Its underline, on hover, under each of its lines: a rule 2px deep, a column's leading edge's, just under each line's
+   baseline, drawn in from the left, the descenders running through it as they run through the grid's lines. Set from
+   the foot of the line's box, which is the face's descent (0.242em) and the padding (0.08em) under the baseline, so
+   it's 0.072em under the baseline, clear of the next line's ascenders (0.2em under it). */
+.g-mail__link {
+  background: linear-gradient(currentColor, currentColor) left 0 bottom 0.25em / 0 2px no-repeat;
+  padding-bottom: 0.08em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.g-mail__link:hover { background-size: 100% 2px; }
+/* An i of the address, and its full stop. The text stays exactly the address, hello@tinybit.studio, with nothing in
+   it but the letters, for reading, copying, finding and a screen reader: an i is drawn as its own background, clipped
+   to its shape and clear above 0.588em (the gap between its stem's top, 0.546em, and its round dot's foot, 0.63em; an
+   inline box's background is as tall as the font, its top 0.969em over the baseline, in every engine, so the cut is
+   0.381em down), and its square bit, the width of its stem, by the box round it, where the round dot's middle was; the
+   full stop is a real one, unseen, drawn as the square stop (0.15em, 0.045em after the letter before it), and as wide
+   as that (its own 0.2598em, less 0.0648em). */
+.g-mi, .g-ms { position: relative; }
+.g-mi {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(transparent 0.381em, var(--ink) 0.381em);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.g-mi::after, .g-ms::after { content: ""; position: absolute; background: var(--ink); }
+.g-mi::after { left: var(--stem-l); bottom: calc(0.934em - var(--stem-w) / 2); width: var(--stem-w); height: var(--stem-w); }
+.g-ms { color: transparent; -webkit-text-fill-color: transparent; letter-spacing: -0.0648em; }
+.g-ms::after { left: 0.045em; bottom: 0.241em; width: 0.15em; height: 0.15em; }
+
+/* A wide screen that's too short for the motto and the address both at the full measure (most laptops' windows: the
+   one or the other would be set in from the margin, and the bookend lost; grid.js says so, .is-short, from the layout
+   above): the address keeps the measure, tınybıt.studıo margin to margin, and takes the height (less a beat over it);
+   the motto goes beside its first line, in two lines in the five columns "hello@" leaves, from the left margin, with
+   the paragraph under it, a beat apart, as large as those columns allow, or what the height there leaves (from the
+   room's head to the second line's caps). Should even that leave too little (a short laptop's), the address is set in
+   from the margin by whole columns, as above, so the motto there is never under 2.5rem. */
+@media (orientation: landscape) and (min-width: 900px) and (min-aspect-ratio: 25/18) {
+  .g-room--studio.is-short .g-grid {
+    --mail-least: 0px;
+    --mail-hmax: max(3rem, min((var(--C) - var(--beat)) / var(--mail-fit), (var(--C) - 2 * var(--beat) - var(--g-para, 7.5rem) - 1.9475 * 2.5rem) / 0.9675));
+    --mmax: max(2.5rem, (var(--C) - 0.9675 * var(--mail) - 2 * var(--beat) - var(--g-para, 7.5rem)) / 1.9475);
+    --motto: min(var(--mmax), (5 * var(--P) - var(--g)) / 6.0164);
+  }
+  .g-room--studio.is-short .g-studio { grid-template-rows: auto auto 1fr; }
+  .g-room--studio.is-short .g-motto { grid-column: 1 / span 5; }
+  .g-room--studio.is-short :is(.g-motto__a, .g-motto__b) { display: block; }
+  .g-room--studio.is-short .g-motto__a { margin-left: -0.0586em; }
+  .g-room--studio.is-short .g-motto__b { margin-left: -0.026em; }
+  .g-room--studio.is-short .g-studio__text { grid-row: 2; height: auto; align-self: start; margin-top: var(--beat); }
+}
+/* A screen on its side that's nearly square (an iPad's, a 5:4 display): the motto in two lines, as tall as the
+   address leaves, its second, "do the dıvıdıng" and the stop (6.0164em from the d's ink, hung 0.026em into its
+   column), set in by whole columns to end on the margin, its first from the left margin. */
+@media (orientation: landscape) and (max-aspect-ratio: 25/18) {
+  .g-room--studio .g-grid { --motto-w: 6.0164; --motto-fit: 1.9475; --indent: max(var(--P), round(up, 100cqi - var(--motto-w) * var(--mmax), var(--P))); }
+  .g-motto__a, .g-motto__b { display: block; }
+  .g-motto__a { margin-left: -0.0586em; }
+  .g-motto__b { padding-left: var(--indent); margin-left: -0.026em; }
+}
+/* Upright or narrow: the motto in two lines, at most a tenth of the room's height (as its two lines are on a nearly
+   square screen, but set in by a column at least), the paragraph under it across ten columns, and the address in
+   three lines, under them all (what they take, --mail-above, the paragraph measured by grid.js, --g-para).
+   The address is set flush left here, every line of it from one drawn line, the margin or the column it's set in to
+   (--mail-in), each line's first letter's ink on it: the h's stem (0.051em into its box), the t's (0.007em) and the
+   s's (0.026em) hung by as much. Its widest line ends on the right margin, the others short of it. Where the address
+   is set in further than the motto's second line, that line is set in to the address's column too (--hang), so both
+   hang from one line and end on the margin, the motto the smaller for it, but never under 2.5rem; the address is sized
+   against the motto as it would be without (--mail-above), so nothing goes round in a circle. */
+@media (orientation: portrait), (max-width: 899px) {
+  .g-room--studio .g-grid {
+    --motto-w: 6.0164;
+    --motto-fit: 1.9475;
+    --mmax: max(2.5rem, var(--avail) * 0.1);
+    --indent: max(var(--P), round(up, 100cqi - var(--motto-w) * var(--mmax), var(--P)));
+    --mail-w: 2.7129;
+    --mail-fit: 2.8825;
+    --mail-s: -0.026em;
+    --mail-least: 0px;
+    --mail-above: calc(var(--motto-fit) * (100cqi - var(--indent)) / var(--motto-w) + var(--g-para, 7.5rem) + var(--beat));
+    --hang: max(var(--indent), var(--mail-in) * (1 + sign(100cqi - var(--mail-in) - 2.5rem * var(--motto-w))) / 2);
+    --motto: calc((100cqi - var(--hang)) / var(--motto-w));
+  }
+  .g-studio { grid-template-rows: auto auto 1fr; }
+  .g-motto__a, .g-motto__b { display: block; }
+  .g-motto__a { margin-left: -0.0586em; }
+  .g-motto__b { padding-left: var(--hang); margin-left: -0.026em; }
+  .g-studio__text { grid-row: 2; grid-column: 1 / span 10; align-self: start; height: auto; margin-top: var(--beat); text-box: none; }
+  /* As wide as its widest line (and a hair, so that line still fits on its own), so it breaks only where it's meant
+     to, however much narrower than the measure the height has set it. */
+  .g-mail { justify-self: start; width: calc(var(--mail-w) * 1em + 0.01em); margin-left: var(--mail-in); text-align: left; text-indent: -0.051em; }
+  .g-mail .nowrap { margin-left: -0.007em; }
+  .g-mail .nowrap ~ .nowrap { margin-left: var(--mail-s); }   /* "studıo": a line of its own only in three lines */
+}
+/* A phone: every left edge on the screen is the margin, as the poster's are. The motto's second line from it too, a
+   whole number of the columns the screen draws long (--U, its double columns), so both its ends stand on a drawn line:
+   margin to margin, its stop on the right margin as the tagline's is, wherever the height allows (a phone held upright
+   that's tall), else the most columns it allows.
+   And the address from the margin, never set in by a column: as large as the measure allows, or what the motto and the
+   paragraph leave of the height, a beat under the paragraph (the motto's two lines are 1.7075em, its caps to its
+   second baseline), and never smaller than the motto. */
+@media (max-width: 719px) {
+  .g-room--studio .g-grid {
+    --mmax: max(2.5rem, var(--avail) * 0.09);
+    --indent: 0px;
+    --motto: calc(min(100cqi, round(down, var(--motto-w) * var(--mmax) + var(--g), var(--U)) - var(--g)) / var(--motto-w));
+    --mail-above: calc(1.7075 * var(--motto) + var(--g-para, 7.5rem) + var(--beat));
+    --mail-hmax: max(var(--motto), (var(--C) - var(--beat) - var(--mail-above)) / var(--mail-fit));
+    --mail-in: 0px;
+    --mail: min(100cqi / var(--mail-w), var(--mail-hmax));
+  }
+  .g-studio__text { grid-column: 1 / -1; }
+}
+/* On its side and narrow (a phone turned, where the screens stack): the address in two lines, the measure's. Never
+   under a size that reads as the poster's, wherever the height is too little (--mail-hmax, --mmax): the screen,
+   stacked, grows instead. */
+@media (orientation: landscape) and (max-width: 899px) {
+  .g-room--studio .g-grid { --mail-w: calc(5.0915 + var(--mail-ms, 0)); --mail-fit: 1.925; --mail-s: 0em; }
+}
+/* A short screen on its side (a phone turned): the screens stack and may run past the screen's foot, so everything is
+   sized by the measure alone, the motto as large as its second line allows a column in, and the Studio's words keep
+   the address's height clear under them. A phone turned has the motto flush left too, its second line margin to
+   margin. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .g-room--studio .g-grid { --C: 100vw; --mail-above: 0px; --mmax: calc((100cqi - var(--P)) / 6.0164); }
+  .g-room--studio .g-studio__text { margin-bottom: calc(var(--mail-h) + var(--beat)); }
+}
+@media (orientation: landscape) and (max-width: 899px) and (max-height: 560px) {
+  .g-room--studio .g-grid { --indent: 0px; --motto: calc(100cqi / var(--motto-w)); }
+}
+/* A phone that isn't tall (most, with the browser's bars showing): what the motto and the paragraph leave is too
+   little for three lines of the address, which two set larger; and on a short one (an iPhone SE's, its bars showing)
+   the motto smaller, so the address is still the larger. */
+@media (orientation: portrait) and (max-width: 719px) and (min-aspect-ratio: 11/20) {
+  .g-room--studio .g-grid { --mail-w: calc(5.0915 + var(--mail-ms, 0)); --mail-fit: 1.925; --mail-s: 0em; }
+}
+@media (orientation: portrait) and (max-width: 719px) and (max-height: 600px) {
+  .g-room--studio .g-grid { --mmax: max(2.5rem, var(--avail) * 0.075); }
+}
+
+/* Stacked, with the script (Reduce Motion, forced colors, a short screen): the Studio keeps the footer's height clear
+   at its foot (grid.js measures it, --foot-h), and the footer is laid in there, in its own inks (the Studio is on the
+   page's canvas), so the page ends on the Studio's screen as the deck does, with no last step of the scroll for the
+   footer alone. Without the script nothing is measured, and the footer simply follows. */
+@media screen {
+  html.js:not(.g-fx) body.proto-grid { position: relative; }
+  html.js:not(.g-fx) body.proto-grid > .site-foot {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  html.js:not(.g-fx).g-tall body.proto-grid > .site-foot { position: static; }
+}
+
+/* ---------------------------------------------------------------- The deck */
+
+/* grid.js turns the deck on (.g-fx) where motion is allowed and every room fits on a screen. It builds each screen's
+   columns, moves them on springs, uncovers its content (clip-path, a column at a time, as each column lands), and says
+   when the screen has arrived (.is-here) and come to rest (.is-done). */
+@media screen {
+  .g-fx .g-stage { height: calc(2 * var(--V)); }
+  .g-fx .g-stage > .g-snap { display: block; }
+  .g-fx .g-hero { position: sticky; top: 0; height: var(--V); --lead: 4vh; --over: 9vh; }
+  .g-fx .g-hero__main { min-height: var(--sv); padding-top: calc(var(--head-h) + var(--hero-top)); }
+  /* The poster's ground and its grid are its columns' (.g-ground). */
+  .g-fx .g-ground { display: block; position: absolute; z-index: 1; inset: 0; container-type: inline-size; pointer-events: none; }
+  .g-fx .g-hero > .g-lines { display: none; }
+
+  /* An article: track, screen, tail. It starts two screens up, on the screen before the one before it, and a jump
+     to it (/#lark) lands a screen further on, where its screen rests; so does Contact, which starts where the
+     Studio's screen does. */
+  .g-fx .g-room { z-index: var(--z); margin-top: calc(-2 * var(--V)); scroll-margin-top: calc(-1 * var(--V)); }
+  .g-fx #contact { scroll-margin-top: calc(-1 * var(--V)); }
+  .g-fx .g-track, .g-fx .g-tail { display: block; height: var(--V); }
+  .g-fx .g-room--last .g-tail { display: none; }
+  .g-fx .g-screen { position: sticky; top: 0; bottom: 0; height: var(--V); overflow: clip; background: none; }
+  /* An article lies over the screens before it (its track over the one it waits on, its screen held there): it is
+     clear, and the pointer goes through it to the screen that's showing. Its screen takes the pointer once it has
+     arrived. */
+  .g-fx .g-room { pointer-events: none; }
+  .g-fx .g-room:is(.is-here, .is-done) .g-screen { pointer-events: auto; }
+  /* Come to rest, a screen is its own ground under its columns. */
+  .g-fx .g-room.is-done .g-screen { background: var(--ground); }
+
+  /* The columns (grid.js lays them out, one to a column of the grid or two, meeting in the middle of its gutters a
+     pixel over, so no seam shows, the first and last running out to the screen's edges). Each is a little taller than
+     the screen on its trailing side, so that going a little past its place it never shows what's under its foot. Down,
+     each is its height below its place (or above, for the columns that drop); while they move, each is a layer of its
+     own, and its edges are drawn: the column's two sides and its leading edge, which fade as it lands. */
+  .g-fx .g-screen { --over: 9vh; --lead: 4vh; }
+  .g-fx .g-slabs { display: block; position: absolute; z-index: 0; inset: 0; }
+  .g-slab, .g-strip {
+    position: absolute;
+    top: calc(-1 * var(--lead));
+    height: calc(100% + var(--over) + var(--lead));
+    overflow: clip;
+    contain: layout paint style;
+    transform: translateY(100%);
+  }
+  .g-slab { z-index: 0; background: var(--ground); }
+  .g-slab--drop, .g-strip--drop { top: calc(-1 * var(--over)); transform: translateY(-100%); }
+  .g-room.is-moving :is(.g-slab, .g-strip) { will-change: transform; }
+  /* Michi's album, its postmarks blended onto their stamps, is drawn once, in a layer of its own: else Safari on a phone
+     paints it again in every frame of Lark's columns rising over it (Michi to Lark at 40 frames a second, not 60). */
+  .g-fx .album { will-change: transform; }
+  /* The column under a mouse in a room at rest (grid.js): its edges brightened, its number at the foot. */
+  .g-colhi {
+    position: absolute;
+    z-index: 1;   /* over the columns by its own z-index, not by coming after them */
+    top: var(--head-h);
+    bottom: 0;
+    border-inline: 1px solid color-mix(in srgb, var(--room-ink) 46%, transparent);
+    opacity: 0;
+    transition: opacity 200ms var(--ease);
+    pointer-events: none;
+  }
+  .g-colhi.is-on { opacity: 1; }
+  .g-colhi__no {
+    position: absolute;
+    left: 6px;
+    top: calc(var(--sv) - var(--head-h) - 22px);
+    color: var(--room-ink-3);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 14px;
+  }
+  /* The type the columns carry, each column's strip of it moving with its column, over all the grounds and under the
+     room's own words, and cut off under the header's band, which it never crosses. */
+  .g-fx .g-types { display: block; position: absolute; z-index: 1; inset: 0; clip-path: inset(var(--head-h) 0 0 0); pointer-events: none; }
+  /* A screen wholly covered by a room at rest over it paints nothing (grid.js), until that room moves. (Its own name
+     for it: lark.css's .is-covered is the covered sentence's, which a screen's would hide.) */
+  .g-fx :is(.g-screen, .g-hero).g-covered { clip-path: inset(0 0 100% 0); }
+  /* The grid in every room: each column's two edges, at a tenth of the room's ink, and at the foot of the screen a
+     tick on each, brighter, like a rule's. They come with their columns. */
+  .g-slab__col {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-inline: 1px solid color-mix(in srgb, var(--room-ink) 10%, transparent);
+  }
+  .g-slab__col::after {
+    content: "";
+    position: absolute;
+    top: calc(var(--y0, 0px) + var(--sv) - 8px);
+    left: -1px;
+    right: -1px;
+    height: 8px;
+    border-inline: 1px solid color-mix(in srgb, var(--room-ink) 42%, transparent);
+  }
+  .g-slab__lines {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--l0, 0px);
+    right: var(--r0, 0px);
+    border-inline: 1px solid color-mix(in srgb, var(--room-ink) 30%, transparent);
+    border-top: 1px solid var(--edge);
+    opacity: 0;
+    transition: opacity 260ms var(--ease);
+  }
+  .g-slab--drop .g-slab__lines { border-top: 0; border-bottom: 1px solid var(--edge); }
+  /* A column's leading edge is drawn in the page's own ink, which reads over both grounds it parts. */
+  .g-fx .g-slabs { --edge: color-mix(in srgb, #0D0E10 80%, transparent); }
+  @media (prefers-color-scheme: dark) { .g-fx .g-slabs { --edge: color-mix(in srgb, #EDEEF0 80%, transparent); } }
+  .g-slab.is-flying .g-slab__lines { opacity: 1; transition-duration: 60ms; }
+  /* Kozeni's coins carry its number: each column's strip of the 03 solid, in its line's color, while the column is in
+     flight, and thinning to the outline as it lands, so its count is read as the coins come in. */
+  .g-set--kozeni .g-slab .g-ride.g-no { transition: color 280ms var(--ease); }
+  .g-set--kozeni .g-slab.is-flying .g-ride.g-no { color: var(--hair); transition-duration: 0s; }
+  /* A column's copy of the room's big type, where the room has it; set by the script to the very pixel. */
+  /* Placed by the script to the pixel where the room has the original (its offsets, margins and translation all
+     measured into that), so nothing of the original's own placing may move a copy again. */
+  .g-ride { position: absolute !important; margin: 0 !important; translate: none !important; color: var(--room-ink); }
+  .g-ride.is-off { will-change: transform; }
+  /* The room's own big type keeps its place, and is read, but it's the columns' copies that are seen. */
+  .g-fx.g-built .g-content [data-g-ride] { visibility: hidden; }
+  /* The content over its columns, by its own z-index, not by coming after them. */
+  .g-fx .g-screen > .g-content { position: relative; z-index: 2; }
+  /* A room a jump goes past is left out until it has landed (grid.js): it paints nothing, as a covered screen doesn't
+     (by its own clip, which restyles the screen alone, where hiding it would restyle every part of it, in the very
+     frame of the press). */
+  .g-fx .g-room.is-skipped .g-screen { clip-path: inset(0 0 100% 0); }
+
+  /* The header and the footer, in the deck. The real ones, from the layout, lie over everything, clear, and take
+     the pointer and the keyboard; each screen draws its own copy (.g-head, .g-foot-copy) in its own ink, under them,
+     uncovered with the rest of the screen, so the header is always in the ink of the screen it's over. A link's
+     hover and focus show on the copies (below). */
+  .g-fx body > .site-head { position: fixed; top: 0; left: 0; right: 0; z-index: 40; scroll-snap-align: none; pointer-events: none; }
+  /* (Clear at once, as the deck is drawn: faded out, the header's links would show for a moment over the void.) */
+  .g-fx body > .site-head :is(a, .mark), .g-fx .g-runner--real :is(a, span) { color: transparent !important; fill: transparent !important; transition: none !important; }
+  .g-fx body > .site-head a { pointer-events: auto; }
+  .g-fx body > .site-head a:focus-visible, .g-fx .g-runner--real a:focus-visible { outline-color: var(--g-ink, var(--ink)); }
+  .g-fx .g-head { display: block; position: absolute; z-index: 3; top: 0; left: 0; right: 0; pointer-events: none; }
+  .g-fx .proto-grid > .skip { z-index: 50; }
+  .g-fx .g-hero > .g-head { z-index: 8; }
+  .g-fx body > .site-foot {
+    position: absolute;
+    z-index: 40;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--V) - var(--sv));
+    scroll-snap-align: none;
+    color: transparent;
+  }
+  .g-fx body > .site-foot :is(a, span, p) { color: transparent !important; text-decoration-color: transparent !important; transition: none !important; }
+  .g-fx body > .site-foot .mark { fill: transparent !important; }
+  .g-fx body.proto-grid { position: relative; }
+  /* The copy's foot where the real one's is, at the small viewport's foot: set from the top of the content it's in,
+     which is as tall as the small viewport (or a few pixels more), not the screen (set from its foot, the copy would
+     sit as much too high as the screen is taller than the small viewport: a phone's bars, 40px on an iPhone). */
+  .g-fx .g-foot-copy { display: block; position: absolute; left: 0; right: 0; bottom: calc(100% - var(--sv)); z-index: 2; }
+  .g-fx .g-foot-copy .site-foot { color: var(--ink-3); }
+  /* In the deck the header's mark is on every screen, the last one too, so the footer goes without its own: one mark
+     to a screen. (Stacked, the header is left at the top of the page, and the footer keeps its mark.) */
+  .g-fx :is(body > .site-foot, .g-foot-copy) .site-foot__mark { display: none; }
+}
+
+/* The running index, 01 Michi 02 Lark 03 Kozeni, in the header's row: each app on a column of the grid, two columns
+   apart, from the third, a column clear of the logo, where the privacy page's index starts too (from the fourth
+   under 1080px, as there, clear of the wordmark); its number, then its name, on the baseline of the header's Contact
+   (grid.js measures what that takes, --g-runner-dy). The screen's own app is in full ink after a filled bit; the others
+   are quiet. On a phone just the numbers, the screen's own underlined, each 44px wide to the finger. */
+.g-runner { display: none; }
+.g-fx .g-runner { display: block; position: absolute; top: 0; left: 0; right: 0; height: var(--head-h); padding-top: calc(var(--head-pad) + var(--g-runner-dy, 8px)); pointer-events: none; }
+.g-fx .g-runner--real { position: fixed; z-index: 41; }
+/* The first and last screens are the studio's: no index over them. But it's still the page's navigation, for the
+   keyboard and a screen reader, so there it's only out of sight (and out of the pointer's way), and shows while the
+   focus is in it, its words drawn by the real one, as there's no copy of it under it there. */
+.g-fx:is(.g-at-hero, .g-at-last) .g-runner--real:not(:focus-within) { opacity: 0; }
+.g-fx:is(.g-at-hero, .g-at-last) .g-runner--real:not(:focus-within) .g-runner__link { pointer-events: none; }
+.g-fx:is(.g-at-hero, .g-at-last) .g-runner--real:focus-within .g-runner__link { color: var(--ink-3) !important; }
+.g-fx:is(.g-at-hero, .g-at-last) .g-runner--real:focus-within .g-runner__link:focus-visible { color: var(--ink) !important; }
+.g-fx:is(.g-at-hero, .g-at-last) .g-runner--real:focus-within .g-runner__link span { color: inherit !important; }
+.g-runner__list { align-items: start; }
+.g-runner__item { grid-column: calc(3 + 2 * var(--n)) / span 2; }
+@media (max-width: 1079px) {
+  .g-runner__item { grid-column: calc(4 + 2 * var(--n)) / span 2; }
+}
+.g-runner__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  min-height: 44px;
+  padding-right: 8px;
+  color: var(--ink-3);
+  pointer-events: auto;
+  transition: color var(--t-hover) var(--ease);
+}
+.g-runner__link::before { content: ""; width: var(--bit); height: var(--bit); box-shadow: inset 0 0 0 1px currentColor; }
+.g-runner__item.is-current .g-runner__link { color: var(--ink); }
+.g-runner__item.is-current .g-runner__link::before { background: currentColor; }
+.g-runner__link:hover { color: var(--ink); }
+/* On the last screen, the Studio with Contact, the header's Contact is the current one: it's this screen's (and
+   the real one says so, aria-current, grid.js). */
+.g-room--studio .g-head .site-nav a[href$="#contact"] { color: var(--ink); }
+@media (max-width: 719px) {
+  .g-runner__item { grid-column: calc(3 + 2 * var(--n)) / span 2; }
+  .g-runner__link { gap: 0; justify-content: center; min-width: 44px; padding-inline: 0; margin-left: calc((2ch - 44px) / 2); }   /* its two figures (2ch) where they were, on the column, in the middle of the 44px */
+  .g-runner__link::before { display: none; }
+  .g-runner__name { display: none; }
+  .g-runner__item.is-current .g-runner__no { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.3em; }
+  /* Over a room the wordmark gives way to the index: the mark alone, in the copy and in the real header, whose link
+     is then the mark's 44px, so it doesn't lie over the index's first numbers. */
+  .g-room:not(.g-room--last) .g-head .brand__name { display: none; }
+  .g-fx:not(.g-at-hero):not(.g-at-last) body > .site-head .brand__name { display: none; }
+  .g-fx:not(.g-at-hero):not(.g-at-last) body > .site-head .brand { min-width: 44px; }
+}
+
+/* The footer's links 44px wide and more to the finger, however short their names (Lark, Michi): padded, and pulled
+   back by as much, so their words and the dots between them stay where they were. */
+.proto-grid .site-foot__nav a { padding-inline: 7px; margin-inline: -7px; }
+
+/* Pressed, on a touch screen: no grey box from the browser (over the clear real header and footer it would be drawn
+   where nothing is seen to be pressed); the link dims while it's held instead, and over a screen the copy under a
+   real link does. The App Store badge is never altered: a press on it is drawn round its corners, in the room's ink. */
+.proto-grid { -webkit-tap-highlight-color: transparent; }
+.proto-grid .store__badge { -webkit-tap-highlight-color: color-mix(in srgb, var(--room-ink, var(--ink)) 18%, transparent); }
+.proto-grid :is(.g-mail__link, .toggle):active { opacity: 0.55; }
+.g-fx:has(body > .site-head .brand:active) .g-head .brand,
+.g-fx:has(body > .site-head .site-nav li:nth-child(1) a:active) .g-head .site-nav li:nth-child(1) a,
+.g-fx:has(.g-runner--real .g-runner__item:nth-child(1) a:active) .g-head .g-runner__item:nth-child(1) a,
+.g-fx:has(.g-runner--real .g-runner__item:nth-child(2) a:active) .g-head .g-runner__item:nth-child(2) a,
+.g-fx:has(.g-runner--real .g-runner__item:nth-child(3) a:active) .g-head .g-runner__item:nth-child(3) a,
+.g-fx:has(body > .site-foot .site-foot__nav li:nth-child(1) a:active) .g-foot-copy .site-foot__nav li:nth-child(1) a,
+.g-fx:has(body > .site-foot .site-foot__nav li:nth-child(2) a:active) .g-foot-copy .site-foot__nav li:nth-child(2) a,
+.g-fx:has(body > .site-foot .site-foot__nav li:nth-child(3) a:active) .g-foot-copy .site-foot__nav li:nth-child(3) a,
+.g-fx:has(body > .site-foot .site-foot__nav li:nth-child(4) a:active) .g-foot-copy .site-foot__nav li:nth-child(4) a { opacity: 0.55; }
+
+/* A link's hover in the real header or footer, which is clear, shown on the copies. */
+@media (hover: hover) {
+  .g-fx:has(body > .site-head .site-nav li:nth-child(1) a:hover) .g-head .site-nav li:nth-child(1) a,
+  .g-fx:has(body > .site-head .site-nav li:nth-child(2) a:hover) .g-head .site-nav li:nth-child(2) a,
+  .g-fx:has(.g-runner--real .g-runner__item:nth-child(1) a:hover) .g-head .g-runner__item:nth-child(1) a,
+  .g-fx:has(.g-runner--real .g-runner__item:nth-child(2) a:hover) .g-head .g-runner__item:nth-child(2) a,
+  .g-fx:has(.g-runner--real .g-runner__item:nth-child(3) a:hover) .g-head .g-runner__item:nth-child(3) a { color: var(--ink); }
+  .g-fx:has(body > .site-foot .site-foot__nav li:nth-child(1) a:hover) .g-foot-copy .site-foot__nav li:nth-child(1) a,
+  .g-fx:has(body > .site-foot .site-foot__nav li:nth-child(2) a:hover) .g-foot-copy .site-foot__nav li:nth-child(2) a,
+  .g-fx:has(body > .site-foot .site-foot__nav li:nth-child(3) a:hover) .g-foot-copy .site-foot__nav li:nth-child(3) a,
+  .g-fx:has(body > .site-foot .site-foot__nav li:nth-child(4) a:hover) .g-foot-copy .site-foot__nav li:nth-child(4) a { color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.25em; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .g-fx:has(body > .site-head .brand:is(:hover, :focus-visible)) .g-head .mark__bit { animation: bit-home var(--t-sign) var(--ease); }
+}
+
+/* ---------------------------------------------------------------- Motion (on screen only, and none of it under Reduce Motion) */
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* The first screen's arrival (index.html tells it; grid.js strikes the columns up, on springs). While the void holds
+     the screen, its grid is ruled down it, a column after another, and the mark's bit comes out of its notch, as it
+     does at the very foot of the site. Then the beats that finish the poster, timed from the moment the columns begin
+     to strike up (.is-struck): the dots come out of their stems, one after another, as the last columns land (from
+     440ms, 72ms apart); the square stop slides in along the baseline from the screen's edge and clicks onto the right
+     margin (620ms), which lights for a moment; and the poster gives a pixel and a half the way the stop was going, and
+     rings back (780ms). They play on the heading and on the columns' copies of it alike, so whichever is showing shows
+     them. A poster laid out at once (no arrival, or one cut short) has none of them. */
+  .g-void .g-lines i { transform-origin: 50% 0; animation: g-rule 380ms var(--ease) backwards; animation-delay: calc(var(--c, 0) * 14ms); }
+  @keyframes g-rule { from { transform: scaleY(0); } }
+  .g-void .mark__bit { animation: g-bit-out 460ms var(--spring-pop) 40ms backwards; }
+  @keyframes g-bit-out { from { transform: translate(-6px, 6px); } }
+  /* A dot is a bit that comes out of the top of its stem, the way the mark's bit leaves its notch: it starts sunk
+     in the stem, the same ink, unseen, and pops up a little past its place and clicks back onto it. It never
+     crosses another line. */
+  .g-hero.is-struck .g-dot { animation: g-dot 420ms var(--spring-pop) backwards; animation-delay: calc(440ms + var(--d, 0) * 72ms); }
+  @keyframes g-dot { from { translate: var(--sunk, 0 0.2em); } }
+  .g-hero.is-struck .g-stop { animation: g-stop-in 520ms var(--spring-click) 620ms backwards; }
+  @keyframes g-stop-in { from { translate: calc(var(--m) + 0.3em) 0; } }
+  /* The give: at the stop's impact, the whole tagline is pushed a pixel and a half the way the stop was going, and
+     rings back; and the margin lights. */
+  .g-hero.is-struck .g-tagline__set { animation: g-give 520ms var(--spring-give) 780ms; }
+  @keyframes g-give { from { translate: -1.5px 0; } to { translate: 0 0; } }
+  .g-hero.is-struck .g-flash { animation: g-flash 700ms var(--ease) 770ms; }
+  @keyframes g-flash { 6% { opacity: 1; } }
+
+  /* The tease, once the poster has been left alone a moment (grid.js, .is-teased): Michi's ground lifts a few pixels in
+     the first column, once, and sinks back. */
+  .g-hero.is-teased .g-tease { animation: g-tease 1400ms linear; }
+  @keyframes g-tease {
+    0% { translate: 0 100%; animation-timing-function: var(--spring-click); }
+    40% { translate: 0 calc(100% - 14px); animation-timing-function: var(--ease-strike); }
+    70% { translate: 0 calc(100% - 14px); animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0); }
+    100% { translate: 0 100%; }
+  }
+
+  /* A room's dots come out of its name's i's once the columns have built it (.is-here), one after another, as the
+     tagline's did; a spine's along its line. Until then they're sunk in their stems. */
+  .g-live .g-ride .g-dot { translate: var(--sunk, 0 0.2em); }
+  .g-live .g-room.is-here .g-ride .g-dot { translate: none; }
+  .g-live .g-room.is-here .g-ride .g-dot { opacity: 1; animation: g-dot 420ms var(--spring-pop) backwards; animation-delay: 60ms; }
+  .g-live .g-room.is-here .g-ride .g-i ~ .g-i .g-dot { animation-delay: 145ms; }
+  /* On its side, a line's "down" is towards its baseline, to the right. */
+  .g-live .g-ride.g-art--side .g-dot { --sunk: 0.2em 0; }
+
+  /* The Studio ends as the first screen began: once its curtain is down, the motto's dots come out of their stems one
+     after another, its square stop slides in along the baseline and clicks onto the right margin, which lights for a
+     moment, and then the address's dots come out of its i's and its stop pops in. */
+  .g-live .g-room .g-ride .g-i ~ .g-i ~ .g-i .g-dot { animation-delay: 230ms; }
+  .g-live .g-ride .g-stop { translate: calc(var(--m) + 0.3em) 0; }
+  .g-live .g-room.is-here .g-ride .g-stop { translate: none; animation: g-stop-in 500ms var(--spring-click) 320ms backwards; }
+  .g-slab__col::before { content: ""; position: absolute; top: 0; bottom: 0; right: -1px; border-right: 1px solid var(--room-ink); opacity: 0; }
+  .g-live .g-room--studio.is-here .g-slab:last-child .g-slab__col::before { animation: g-flash 900ms var(--ease) 470ms; }
+  .g-live .g-mail .g-mi::after { translate: 0 0.2em; }
+  .g-live .g-mail .g-ms::after { scale: 0; transform-origin: 50% 100%; }
+  .g-live .g-room.is-here .g-mail .g-mi::after { translate: none; animation: g-dot 420ms var(--spring-pop) 300ms backwards; }
+  .g-live .g-room.is-here .g-mail .g-mi ~ .g-mi::after { animation-delay: 360ms; }
+  .g-live .g-room.is-here .g-mail .nowrap ~ .nowrap .g-mi::after { animation-delay: 420ms; }
+  .g-live .g-room.is-here .g-mail .g-ms::after { scale: none; animation: g-pop-in 380ms var(--spring-pop) 480ms backwards; }
+  @keyframes g-pop-in { from { scale: 0; } }
+
+  /* Arrived while laid out at once (on load, after a resize or a jump, .is-still), a room is simply there, its dots
+     already out. */
+  .is-still :is(.g-ride .g-dot, .g-ride .g-stop), .is-still .g-mail .g-mi::after, .is-still .g-mail .g-ms::after, .is-still .g-slab__col::before { animation: none !important; }
+  /* Kozeni's spine dropped into its slot: the room gives two pixels under it, and rings back. */
+  .g-room.is-give .g-content, .g-room.is-give .g-slab:not(.g-slab--drop) { animation: g-room-give 460ms var(--spring-give); }
+  @keyframes g-room-give { from { translate: 0 2.5px; } to { translate: 0 0; } }
+
+  /* Contact's address underlines itself on hover, as the home page's does. */
+  .g-mail__link { transition: background-size var(--t-tick) var(--ease); }
+
+  /* Lark's runs come in, and go, with their labels (lark.css). */
+  .g-set--lark .rhythm__bits { transition: opacity var(--t-hover) var(--ease), visibility var(--t-hover); }
+}
+
+/* ---------------------------------------------------------------- Forced colors, print */
+
+/* Forced colors take the grounds: no deck (the script that would draw it doesn't), no grid, no columns. */
+@media (forced-colors: active) {
+  .g-lines, .g-lens, .g-lens.is-built, .g-w::after, .g-no, .g-room .g-echo, .g-tease, .g-void, .g-ground, .g-hero.is-lensed .g-scrub { display: none; }
+  /* Forced colors set a plate behind each line of text, and each word of the tagline is a box of its own, whose
+     plate would cut off the descenders of the line above (the y of "tiny"): the big type goes without. */
+  .g-tagline, .g-name, .g-no, .g-motto, .g-mail { forced-color-adjust: none; color: CanvasText; }
+  .g-dot { forced-color-adjust: none; background: CanvasText; }
+  /* The address is a link: its letters, its i's bits and its stop all in the link's color. */
+  .g-mail__link { color: LinkText; }
+  .g-mi { background-image: linear-gradient(transparent 0.381em, LinkText 0.381em); }
+  .g-mi::after, .g-ms::after { background: LinkText; }
+}
+@media print {
+  .g-lines, .g-lens, .g-lens.is-built, .g-w::after, .g-room .g-echo, .g-tease, .g-void { display: none; }
+  .g-screen { background: none; }
+  /* The rooms' numbers on paper: their outlines alone, in grey (the ground isn't printed, and the room's words are
+     the ink). */
+  .g-room .g-no.g-no { color: var(--canvas); -webkit-text-stroke: 5px color-mix(in srgb, var(--ink) 38%, var(--canvas)); paint-order: stroke fill; }
+  /* What grid.js measured on the screen (a room's foot, Michi's words, the Studio's paragraph and footer, the first
+     screen's foot) means nothing on the page: the sheet's own sizes are taken, as they are without the script. */
+  :root, .g-room { --g-foot: initial !important; --g-piece: initial !important; --g-para: initial !important; --g-words: initial !important; }
+  /* The footer's line on the Studio's page, at its foot in the room kept for it, as in the deck, not on a page of its
+     own: the Studio's copy of it (its mark there, the one on the page), and not the real one. */
+  .g-room--studio { --foot-h: 4.5rem !important; }
+  .g-foot-copy { display: block; position: absolute; left: 0; right: 0; bottom: 0; }
+  body.proto-grid > .site-foot { display: none; }
+  /* Printed with the deck on (its classes, and what grid.js writes on the screens, still there): the page as it stacks,
+     every screen whole. What uncovers a room column by column, what holds a screen still, and the page's own
+     background, which the deck sets to the ground of the screen the reader is on, are let go; the running index is the
+     deck's, and isn't printed. */
+  .g-content, .g-hero__main { clip-path: none !important; }
+  .g-screen, .g-hero { clip-path: none !important; transform: none !important; }
+  html { background-color: transparent !important; }
+  .g-runner { display: none !important; }
+  /* On paper the address is simply the address, its i's and its full stop as the font draws them; set in two lines,
+     its second is the wider by that full stop's own advance (0.025em more, 0.03em at the dark weights' spacing), and
+     the address is sized for that. */
+  .g-mi, .g-ms { color: inherit; -webkit-text-fill-color: currentColor; background: none; letter-spacing: inherit; }
+  .g-mi::after, .g-ms::after { content: none; }
+  .g-room--studio .g-grid { --mail-ms: 0.03; }
+}

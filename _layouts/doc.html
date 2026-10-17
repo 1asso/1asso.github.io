@@ -2,22 +2,234 @@
 layout: default
 ---
 {%- comment -%}
-  Long-form prose (the privacy page). Front matter: title, description, updated (a date, shown as
-  "Last updated …"); optional heading (the display title, if it should differ from title) and
-  label (the mono margin label beside the title; default: the studio's name).
-  Markdown flows into the text column with no classes. A short line with {: .margin} under it is a
-  margin label ("### Label" makes it a heading too); {: #id} on the line after a heading fixes its
-  id; {: .display} on a ## heading sets it at display size; tables can take {: .wide}.
+  Long-form prose: the privacy page (privacy.md), in the home page's language (index.html). Front matter: title,
+  description, updated (a date, shown as "Last updated …"), optionally heading (the display title, if it should differ
+  from title), and body_class: proto-grid-doc, styles: [doc] and scripts: [doc], which bring this layout's look and its
+  script (doc.css, doc.js). In the markdown, a short line with {: .margin} under it is a margin label ("### Label" makes
+  it a heading as well), {: .display} on a ## heading opens a part, and {: #id} fixes an id. The layout changes no word
+  of it, only where its pieces stand.
+
+  The text is cut at its rules (---) into what they divide, and each piece is set on the grid in its own place,
+  in its own order, every word as it was:
+    - the first, "In short", is the foot of the first screen, a poster as the home page's is: the title set across
+      the columns, margin to margin. It arrives as the home page's first screen does: for a beat the void, its grid
+      ruled down it and only the mark lit; then the canvas strikes up over it a column at a time, carrying the
+      title, the header and the foot uncovered column by column as they land; then the i's dot, a square bit, pops
+      out of its stem, and the square stop clicks onto the right margin.
+    - a piece with a display heading is a part: its label and its heading open it on a band, the room of the app
+      whose key is its id (_data/apps.yml: its ground, and the ink that stands on it), or for anything else, the
+      studio's, the home page's void (the ink; true black in dark mode); its number stands behind, cut by the band's
+      edges. Then its text. The numbers are the site's, not this page's: an app's is its room's on the home page (its
+      place in apps.yml, so Michi is 01 there and here), and the studio's is 00, as the home page's poster is screen 0.
+      doc.js raises each band in columns as it comes up the screen, or as the index or a link to it is followed, or as
+      the page opens on it, each part in its app's own time, as the rooms come in on the home page.
+    - the rest (Changes, Contact, Credits) is the end, on the canvas.
+  The grid is ruled down the whole page, through the header and the footer, as on the home page and the not-found
+  page; each band rules its own in its ink. The header runs over all of it in the colors of what's under it, with
+  the running index of the parts (doc.css says how); a browser that tints its bar from the theme colour takes them too
+  (the script), Safari's bar on a Mac keeps to the canvas, and a phone's edges take the colors under them (.gd-chrome,
+  below). Without the script, under Reduce Motion, in forced colors and on paper it's the document, whole and still.
 {%- endcomment -%}
-<article class="doc" aria-labelledby="doc-title">
-  <header class="doc__head wrap grid">
-    <p class="doc__label meta">{{ page.label | default: site.title }}</p>
-    <h1 class="display doc__title" id="doc-title">{{ page.heading | default: page.title }}</h1>
-    {%- if page.updated %}
-    <p class="doc__updated meta">Last updated <time datetime="{{ page.updated | date: '%Y-%m-%d' }}">{{ page.updated | date: '%B %-d, %Y' }}</time></p>
-    {%- endif %}
-  </header>
-  <div class="doc__body prose wrap grid">
-{{ content }}
+{%- assign chunks = content | split: '<hr />' -%}
+{%- comment -%}
+  The parts, listed first, for the running index: each display heading's id, its words and its number (an app's
+  place in apps.yml, two digits; 00 for the studio's own).
+{%- endcomment -%}
+{%- assign gd_keys = '' -%}{%- assign gd_names = '' -%}{%- assign gd_nos = '' -%}
+{%- for chunk in chunks -%}
+  {%- if chunk contains 'class="display"' -%}
+    {%- assign head = chunk | split: '</h2>' | first -%}
+    {%- assign key = head | split: '<h2 id="' | last | split: '"' | first -%}
+    {%- assign name = head | split: '>' | last | strip -%}
+    {%- assign no = '00' -%}
+    {%- for pair in site.data.apps -%}{%- if pair[0] == key -%}{%- assign no = forloop.index | prepend: '0' | slice: -2, 2 -%}{%- endif -%}{%- endfor -%}
+    {%- assign gd_keys = gd_keys | append: key | append: '|' -%}
+    {%- assign gd_names = gd_names | append: name | append: '|' -%}
+    {%- assign gd_nos = gd_nos | append: no | append: '|' -%}
+  {%- endif -%}
+{%- endfor -%}
+{%- assign gd_keys = gd_keys | split: '|' -%}{%- assign gd_names = gd_names | split: '|' -%}{%- assign gd_nos = gd_nos | split: '|' -%}
+{%- assign title = page.heading | default: page.title -%}
+{% include doc-runner.html real=true %}
+{%- comment -%}
+  At night, the canvas the first screen's columns settle on as they land: the page's own, a column of it under each,
+  under everything on the page, the grid too, a step lighter till its column has landed and settled. There only while
+  the first screen arrives (doc.css, doc.js).
+{%- endcomment %}
+<div class="gd-lift" aria-hidden="true">{% for c in (0..11) %}<i style="--col: {{ c }}"></i>{% endfor %}</div>
+{%- comment -%} The grid, ruled down the whole page, through the header and the footer too (doc.css). {%- endcomment %}
+<div class="gd-lines" aria-hidden="true">{% for n in (1..12) %}<i></i>{% endfor %}</div>
+{%- comment -%} What Safari tints its bars from: a fixed strip along the top that paints nothing, and on a phone one along the foot, which the script adds (doc.css). {%- endcomment %}
+<i class="gd-chrome" aria-hidden="true"></i>
+{%- comment -%}
+  The header's copies, one for each region of the page, in the regions' order: the first screen's, then each part's
+  band's and its text's, then the end's. All in one layer under the real header, laid against the body, none in its
+  region: each copy is fixed to the screen in a box that stands where its region does, placed once the article is in
+  (the script after it), so each is seen just where its region is under the header (doc-head.html and doc.css say more).
+{%- endcomment %}
+<div class="gd-heads" aria-hidden="true" inert>
+  {% include doc-head.html of="start" index=false on=true %}
+  {%- for chunk in chunks offset: 1 %}
+  {%- if chunk contains 'class="display"' %}
+  {%- assign key = chunk | split: '</h2>' | first | split: '<h2 id="' | last | split: '"' | first %}
+  {%- assign app = site.data.apps[key] %}
+  {%- if app %}{% if app.room_text == 'dark' %}{% assign ink = 'dark' %}{% else %}{% assign ink = 'light' %}{% endif %}{% assign ground = 'var(--' | append: key | append: '-room)' %}{% else %}{% assign ink = 'void' %}{% assign ground = 'var(--void)' %}{% endif %}
+  {% include doc-head.html of="band" current=key ink=ink ground=ground %}
+  {% include doc-head.html of="text" current=key %}
+  {%- else %}
+  {% include doc-head.html of="end" index=false %}
+  {%- endif %}
+  {%- endfor %}
+</div>
+{%- comment -%}
+  The switches the page reads, set before the first frame is drawn.
+  .gd-fx, where the header can run over the page in its regions' colors (a screen, and clip): the header is fixed
+  from the first frame, so nothing moves under it when the script comes.
+  .gd-type, once the title's face has loaded (a face that failed, which Lockdown Mode or a content blocker makes
+  happen, doesn't count), so the square dots are measured against the letters they're drawn for, and never over
+  another face's round ones: the question is window.gdFace, asked once the article is in (below).
+  doc.js holds the first screen's arrival on the void until the type is in, or 600ms at most, so it plays in the face it
+  ends in; and it gives up on it should it come more than 2.4s after this (window.gdT0). It holds the void its beat from
+  the first frame the page draws, noted here (window.gdSeen), as the home and not-found pages do.
+  Where the page opens: the first screen, whose arrival plays (doc.js), unless the page opens further on, or at a
+  passage of text (:~:), when it's simply there (.gd-posted). A reload or a step back that the browser puts back below
+  the very top (the scroll kept for the tab, below) opens further on, on the first screen too: the arrival plays at the
+  top only, and there the browser would put the page back under it and cut it short, a flash of the void. Opened at a
+  part (/privacy/#michi, an index link opened anew), or reloaded at a part's band, kept for the tab (doc.js keeps it as
+  the page is left), the page lands on that part's band, and it arrives there: so it's drawn in its plan (outline,
+  .is-waiting) from the first frame, as its arrival begins, never finished first (data-gd-land tells the script). A step
+  back or forward, or a link to a passage, is shown as it is. Until the header's copies are placed (below, once the
+  article is in), the one shown is the one for where the page opens: the first screen's, the band's or the region's of
+  the part linked to, or the one the reader left. Where that is, as far as can be told now, is kept for the script
+  below (window.gdOpen).
+  The band and the part linked to are found as they're parsed (a mutation observer, which is always answered before
+  the next frame is drawn).
+{%- endcomment %}
+<script>(function () { var d = document.documentElement, m = window.matchMedia, s = window.CSS && CSS.supports, keys = {{ gd_keys | jsonify }}, store = 'gd-at:' + location.pathname, nav = null, kept = {}, at = -1, land = '', id = ''; if (m && s && !m('(forced-colors: active)').matches && s('overflow', 'clip')) d.classList.add('gd-fx'); window.gdT0 = window.performance ? performance.now() : 0; if (window.requestAnimationFrame) requestAnimationFrame(function (t) { window.gdSeen = t; }); window.gdFace = function () { if (!document.fonts || !document.fonts.load) return Promise.resolve(false); return document.fonts.load('500 1em "Inter Tight"', 'Pi').then(function (l) { for (var i = 0; i < l.length; i++) if (l[i].status === 'loaded') return true; return false; }, function () { return false; }); }; try { nav = performance.getEntriesByType('navigation')[0] || null; } catch (e) { nav = null; } try { kept = JSON.parse(sessionStorage.getItem(store)) || {}; } catch (e) { kept = {}; } var type = nav ? nav.type : window.performance && performance.navigation ? ['navigate', 'reload', 'back_forward'][performance.navigation.type] || 'navigate' : 'navigate', heads = document.querySelectorAll('.gd-heads > .gd-head'), frag = !!(nav && /:~:/.test(nav.name)); var band = function (key) { for (var i = 0; i < heads.length; i++) if (heads[i].getAttribute('data-gd-head') === 'band' && heads[i].getAttribute('data-gd-key') === key) return i; return -1; }; var show = function (k) { if (!heads[k]) return; for (var i = 0; i < heads.length; i++) heads[i].classList.toggle('is-on', i === k); if (k > 0) d.classList.add('gd-posted'); }; if (type === 'reload' || type === 'back_forward') { if (typeof kept.at === 'number') at = kept.at; if (type === 'reload' && typeof kept.land === 'string') land = kept.land; } else if (location.hash.length > 1 && !frag) { try { id = decodeURIComponent(location.hash.slice(1)); } catch (e) { id = ''; } if (keys.indexOf(id) > -1) { land = id; at = band(id); id = ''; } } if (keys.indexOf(land) < 0) land = ''; window.gdLine = 0.62; window.gdOpen = { y: type === 'reload' || type === 'back_forward' ? (typeof kept.y === 'number' ? kept.y : null) : frag || location.hash.length > 1 ? null : 0, to: id }; if (land || frag || window.gdOpen.y > 2) d.classList.add('gd-posted'); show(at); if (!m || m('(prefers-reduced-motion: reduce)').matches || !d.classList.contains('gd-fx')) land = ''; if (land) { d.setAttribute('data-gd-land', land); if (heads[band(land)]) heads[band(land)].classList.add('is-waiting'); } if ((!land && !id) || !window.MutationObserver) return; var watch = new MutationObserver(function () { if (land) { var b = document.querySelector('[data-gd-part="' + land + '"] > [data-gd-band]'); if (b) { b.classList.add('is-waiting'); land = ''; } } if (id) { var t = document.getElementById(id), r = t && t.closest ? t.closest('[data-gd-region]') : null; if (t) { if (r) { var all = document.querySelectorAll('[data-gd-region]'); for (var i = 0; i < all.length; i++) if (all[i] === r) show(i); } id = ''; } } if (!land && !id) watch.disconnect(); }); watch.observe(d, { childList: true, subtree: true }); document.addEventListener('DOMContentLoaded', function () { watch.disconnect(); }); })();</script>
+{%- comment -%}
+  The first screen's arrival (doc.css, doc.js), over the whole screen and gone in about a second, as the home page's
+  first screen arrives: the void in the grid's twelve columns, the first holding the mark, lit, where the header's is;
+  and over them, the canvas in the same twelve columns, which strikes up, each carrying its strip of the title (a copy
+  of the poster laid out as it is, with only the title in it, its i's round dot masked off as the heading's is, so the
+  two are drawn alike to the pixel, and its baseline, drawn by a decoration as the heading's is, so the line rises with
+  its letters) and clipping it to itself, so what moves is the column whole. It comes before the article, so whatever a
+  browser draws of the page first has the void over it, and nothing of the finished page is seen before the arrival.
+  Decorative copies, their words drawn by CSS; never there without the script, under Reduce Motion, in forced colors, or
+  where the page opens further on.
+{%- endcomment %}
+<div class="gd-arrive" aria-hidden="true" inert data-gd-arrive>
+  <div class="gd-arrive__voids">
+    {%- for c in (0..11) %}<div class="gd-void" style="--col: {{ c }}">{% if c == 0 %}<div class="gd-void__head"><div class="site-head wrap"><span class="brand">{%- include mark.html class="brand__mark" -%}<span class="brand__name gd-t" data-t="{{ site.title }}"></span></span></div></div>{% endif %}</div>{% endfor -%}
   </div>
+  <div class="gd-arrive__cols">
+    {%- for c in (0..11) %}
+    <div class="gd-a" style="--col: {{ c }}"><i class="gd-a__ground"></i><div class="gd-a__plate gd-poster__main wrap grid"><div class="gd-title gd-a__card"><span class="gd-t" data-t="{{ title }}"></span></div><span class="gd-title__decor"></span></div></div>
+    {%- endfor %}
+  </div>
+</div>
+<article class="gd" aria-labelledby="doc-title">
+  <header class="gd-poster gd-region" data-gd-region>
+    <div class="gd-poster__main wrap grid">
+      {%- comment -%}
+        The title is its own words, one text node, so it's read, found and copied as it is. Its i's round dot is
+        masked off and a square bit, the width of the stem, drawn over the stem beside it (.gd-decor, with the
+        square stop), once the font is in (doc.css has the measures). While the first screen arrives, the columns over
+        it carry copies of it, and the heading takes over from them as they go.
+      {%- endcomment %}
+      <h1 class="gd-title" id="doc-title">{{ title }}</h1>
+      <span class="gd-decor gd-title__decor" aria-hidden="true"><b class="gd-bit"></b><span class="stop gd-stop"></span></span>
+      {%- if page.updated %}
+      <p class="gd-updated meta">Last updated <time datetime="{{ page.updated | date: '%Y-%m-%d' }}">{{ page.updated | date: '%B %-d, %Y' }}</time></p>
+      {%- endif %}
+      <div class="gd-intro prose">
+{{ chunks[0] }}
+      </div>
+    </div>
+  </header>
+  {%- for chunk in chunks offset: 1 %}
+  {%- if chunk contains 'class="display"' %}
+  {%- assign bits = chunk | split: '</h2>' %}
+  {%- capture head %}{{ bits[0] }}</h2>{% endcapture %}
+  {%- assign tail = chunk | remove_first: head %}
+  {%- comment -%}
+    A part's summary, if its text opens with one (a margin label and the paragraph it labels: "In short"), is set on
+    its band, under its name, as a room on the home page carries its pitch beside its name: the band is where App
+    Store Connect's links land, so what the part says in short is the first thing read there. Its words and their
+    place in the order are as they were; it's only set on the band's ground.
+  {%- endcomment %}
+  {%- assign lead = '' %}
+  {%- assign opening = tail | strip %}
+  {%- assign starts = opening | slice: 0, 18 %}
+  {%- if starts == '<h3 class="margin"' %}
+  {%- assign lead_bits = opening | split: '</p>' %}
+  {%- capture lead %}{{ lead_bits[0] }}</p>{% endcapture %}
+  {%- assign tail = opening | remove_first: lead %}
+  {%- assign lead = lead | replace_first: '<h3 class="margin"', '<h3 class="margin gd-lead"' | replace_first: '<p>', '<p class="gd-lead">' %}
+  {%- endif %}
+  {%- assign key = bits[0] | split: '<h2 id="' | last | split: '"' | first %}
+  {%- assign app = site.data.apps[key] %}
+  {%- assign part_no = '00' %}
+  {%- for pair in site.data.apps %}{% if pair[0] == key %}{% assign part_no = forloop.index | prepend: '0' | slice: -2, 2 %}{% endif %}{% endfor %}
+  {%- comment -%}
+    Each app's band keeps its own time (doc.js), and its number its own way, as its room's does on the home page:
+    Michi's a tint, Lark's and Kozeni's in outline. The studio's band, the void, comes down as the home page's last
+    screen does, its number a tint.
+  {%- endcomment %}
+  {%- if key == 'michi' %}{% assign cascade = 'strike' %}{% elsif key == 'lark' %}{% assign cascade = 'echo' %}{% elsif key == 'kozeni' %}{% assign cascade = 'coins' %}{% elsif app %}{% assign cascade = 'strike' %}{% else %}{% assign cascade = 'curtain' %}{% endif %}
+  {%- if key == 'lark' or key == 'kozeni' %}{% assign figure = 'outline' %}{% else %}{% assign figure = 'tint' %}{% endif %}
+  <section class="gd-part{% if app %} is-{{ key }}{% endif %}" aria-labelledby="{{ key }}" style="--ground: {% if app %}var(--{{ key }}-room){% else %}var(--void){% endif %}" data-gd-part="{{ key }}">
+    <div class="gd-band gd-region gd-band--{% if app %}{% if app.room_text == 'dark' %}dark{% else %}light{% endif %}{% else %}void{% endif %} gd-band--{{ figure }}" data-gd-region data-gd-band data-gd-cascade="{{ cascade }}">
+      <div class="gd-band__lines" aria-hidden="true">{% for c in (1..12) %}<i></i>{% endfor %}</div>
+      <div class="gd-band__grid wrap grid">
+        <span class="gd-no" aria-hidden="true" data-t="{{ part_no }}"></span>
+        {{ head | strip }}
+        {{ lead }}
+      </div>
+    </div>
+    <div class="gd-text gd-region" data-gd-region>
+      <div class="prose wrap grid">
+{{ tail }}
+      </div>
+    </div>
+  </section>
+  {%- else %}
+  <div class="gd-end gd-region" data-gd-region>
+    <div class="prose wrap grid">
+{{ chunk }}
+    </div>
+  </div>
+  {%- endif %}
+  {%- endfor %}
 </article>
+{%- comment -%}
+  Once the page's text is in, and before the first frame is drawn:
+  The title's face asked for (.gd-type, above), here and not before, since Safari, asked for a face while the page's
+  only drawn content is the header's layer, goes on to scroll the page at a fraction of the wheel's speed; and the
+  page's styles read here and not before, for the same reason (read there, Safari scrolls it at a quarter of the
+  wheel's speed, and its engine on its own not at all, by the wheel or the keys).
+  Where the first screen's arrival plays, a browser that tints its bar from the theme colour is given the void's,
+  the color the page opens on, so it never goes from the canvas to the void and back; should the script never come,
+  it's put back as the void goes, at 3s.
+  How far each band's number reaches, measured, so a band the page opens on has its number at its size from the
+  first frame (doc.css, --below; doc.js measures it again when the fonts are in, and on every resize).
+  The first screen's foot. Held upright, the screen is taller than the poster needs, and the website's band comes up
+  under it; but where it would come up by less than the room under the policy in short (on a phone, the screen ends a
+  pixel or two into it, a line of its ground over the browser's bar), the poster runs on to the foot of the screen as
+  it is with the browser's bars at their smallest, so the first screen holds the poster whole and nothing of the band,
+  whatever the bars do (doc.css, .gd-poster--whole; window.gdFoot, which doc.js asks again whenever the page is laid out
+  anew). Where the screen's height leaves it that room or more, the band comes up as it is: by at least as much as the
+  space between it and the summary, so it's seen as the next part's ground.
+  The header's copies, each in its box where its region is (doc.css), so the header is in the colors of what's under it
+  from the first frame, with the script or without; and again whenever a region's size changes (the fonts in, a resize),
+  before that frame is drawn (window.gdPlace, which doc.js uses too).
+  The bands the page opens with on the screen, but whose names are below the line where a band arrives (the screen's
+  62%: window.gdLine, set above, which doc.js keeps to as well), as at the foot of a phone's first screen: each will
+  arrive as it comes up the screen, so each is drawn in its plan from the first frame, never finished first.
+  Where the page opens is where it will be put: the top of the page, the band it lands on, the passage linked to (as
+  its scroll padding puts it), or where a reload or a step back finds the reader (kept, above); a link to a passage
+  of text (:~:) is a place no script knows, and there nothing is drawn so. The bands at and before where it opens are
+  simply there.
+  Should doc.js never come (a blocked or failed load), what's drawn in its plan for an arrival is simply there after
+  three seconds.
+{%- endcomment %}
+<script>(function () { var d = document.documentElement, fx = d.classList.contains('gd-fx'); if (window.gdFace) window.gdFace().then(function (ok) { if (ok) d.classList.add('gd-type'); }); if (!window.getComputedStyle) return; if (fx && !d.classList.contains('gd-posted') && window.matchMedia && matchMedia('screen and (prefers-reduced-motion: no-preference)').matches) { var c = getComputedStyle(document.body).getPropertyValue('--void').trim(), metas = document.querySelectorAll('meta[name="theme-color"]'); if (c) { for (var i = 0; i < metas.length; i++) { metas[i].setAttribute('data-gd-was', metas[i].getAttribute('content')); metas[i].setAttribute('content', c); } setTimeout(function () { if (window.gdLive) return; for (var j = 0; j < metas.length; j++) metas[j].setAttribute('content', metas[j].getAttribute('data-gd-was')); }, 3000); } } var b = document.querySelectorAll('.gd > .gd-part > .gd-band'), below = []; for (var i = 0; i < b.length; i++) { var n = b[i].querySelector('.gd-no'); below[i] = n ? Math.max(0, b[i].offsetHeight - (parseFloat(getComputedStyle(n).top) || 0)) : -1; } for (var j = 0; j < b.length; j++) if (below[j] >= 0) b[j].style.setProperty('--below', below[j].toFixed(1) + 'px'); if (!fx) return; var poster = document.querySelector('.gd > .gd-poster'), main = poster && poster.querySelector('.gd-poster__main'), probe = document.createElement('i'); window.gdFoot = function () { if (!main || !window.matchMedia) return; probe.style.cssText = 'position:absolute;top:0;left:0;width:0;visibility:hidden;height:100svh'; document.body.appendChild(probe); var small = probe.getBoundingClientRect().height || window.innerHeight; probe.style.height = '100lvh'; var large = probe.getBoundingClientRect().height || small; probe.remove(); var foot = main.getBoundingClientRect().bottom + window.scrollY, room = parseFloat(getComputedStyle(main).paddingBottom) || 0; poster.classList.toggle('gd-poster--whole', matchMedia('(orientation: portrait)').matches && foot < large && small - foot < room); }; window.gdFoot(); var layer = document.querySelector('.gd-heads'), heads = document.querySelectorAll('.gd-heads > .gd-head'), regs = document.querySelectorAll('.gd [data-gd-region]'); window.gdPlace = function () { if (!layer) return; var o = layer.getBoundingClientRect().top, t = []; for (var i = 0; i < regs.length; i++) t[i] = regs[i].getBoundingClientRect().top - o; for (var k = 0; k < heads.length && k < regs.length; k++) { heads[k].style.setProperty('--t', t[k] + 'px'); if (k + 1 < regs.length) heads[k].style.setProperty('--h', (t[k + 1] - t[k]) + 'px'); heads[k].classList.remove('is-on'); } }; window.gdPlace(); if (window.ResizeObserver) { var ro = new ResizeObserver(function () { window.gdPlace(); }); for (var r = 0; r < regs.length; r++) ro.observe(regs[r]); } var at = window.gdOpen || {}, y = at.y, land = d.getAttribute('data-gd-land'), from = land ? document.querySelector('[data-gd-part="' + land + '"] > [data-gd-band]') : at.to ? document.getElementById(at.to) : null, sy = window.scrollY, vh = window.innerHeight, line = window.gdLine || 0.62, head = document.querySelector('body > .site-head'); if (from && typeof y !== 'number') y = Math.max(0, from.getBoundingClientRect().top + sy - (land ? 0 : (head ? head.getBoundingClientRect().height : 0) + 24)); if (typeof y === 'number' && window.IntersectionObserver && window.matchMedia && !matchMedia('(prefers-reduced-motion: reduce)').matches) { for (var k = 0; k < b.length; k++) { var part = b[k].parentNode, name = b[k].querySelector('h2'); if (!name || b[k].classList.contains('is-waiting') || (from && (part.contains(from) || (b[k].compareDocumentPosition(from) & 4)))) continue; if (b[k].getBoundingClientRect().top + sy < y + vh && name.getBoundingClientRect().top + sy >= y + vh * line) { b[k].classList.add('is-waiting'); var c = document.querySelector('.gd-heads > .gd-head[data-gd-head="band"][data-gd-key="' + part.getAttribute('data-gd-part') + '"]'); if (c) c.classList.add('is-waiting'); } } } if (document.querySelector('.gd [data-gd-band].is-waiting')) setTimeout(function () { if (window.gdLive) return; var w = document.querySelectorAll('.gd [data-gd-band].is-waiting, .gd-heads > .gd-head.is-waiting'); for (var i = 0; i < w.length; i++) w[i].classList.remove('is-waiting'); d.removeAttribute('data-gd-land'); window.gdLate = true; }, 3000); })();</script>

@@ -1,0 +1,11 @@
+{%- comment -%}
+  Lark's exhibit: a turn of Lark's drill. The covered sentence, with "Practice", and under it the rhythm of
+  the turn. Practice runs one turn, silently, on the times of a sentence of 2 seconds: Listen (the sentence
+  shown), Your turn (covered, 1.7 times as long), Listen again (lark.js). Its phases are said through the
+  turn's own status line, and while it runs the rhythm's labels say what each run is.
+{%- endcomment -%}
+<div class="turn is-lark" data-turn>
+  {% include covered.html practice=true %}
+  {% include rhythm.html %}
+  <p class="visually-hidden" role="status" data-turn-status></p>
+</div>

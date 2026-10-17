@@ -1,0 +1,7 @@
+{%- comment -%}
+  The email address from _config.yml, at display size in the Contact section, with every "." in its
+  domain drawn as the logo's bit. A visually hidden "." beside each keeps the address whole for screen
+  readers and for copying, and the domain never breaks across lines; the address may break before "@".
+{%- endcomment -%}
+{%- assign parts = site.email | split: '@' -%}{%- assign dom = parts[1] | split: '.' -%}
+{{ parts[0] }}<wbr>@<span class="nowrap">{% for d in dom %}{% unless forloop.first %}<span class="stop" aria-hidden="true"></span><span class="visually-hidden">.</span>{% endunless %}{{ d }}{% endfor %}</span>

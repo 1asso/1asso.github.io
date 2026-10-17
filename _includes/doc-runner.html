@@ -1,0 +1,30 @@
+{%- comment -%}
+  For the privacy page (_layouts/doc.html): the running index, 00 This website 01 Michi 02 Lark 03 Kozeni, in the
+  header's row. It's read from the page itself: the layout lists its parts (gd_keys, gd_names, gd_nos: each display
+  heading's id, its words and its number, in order) before this is included. The numbers are the site's: an app's is its
+  room's on the home page, so each entry stands on the column its number gives it (--n), and an app's stands where it
+  does in the home page's index. Each region's copy of the header (doc-head.html) draws its own in the region's ink, its
+  own part marked (current); the real one, which takes the pointer and the keyboard, lies over them all, its words
+  clear (doc.css).
+  Its words are drawn by CSS (data-t), the real one's too, so a find in the page finds the article's words only, and
+  never the index, seen or not; the real one's links are named for screen readers and voice control by aria-label,
+  number and name, at every width, also where only the number is drawn.
+  Params
+    current   optional  the key of the part this copy is drawn in (its entry is marked)
+    real      optional  true for the one that works: a nav, its links focusable
+{%- endcomment -%}
+<{% if include.real %}nav class="gd-runner gd-runner--real" aria-label="On this page" data-js-only{% else %}div class="gd-runner"{% endif %}>
+  <ol class="gd-runner__list wrap grid meta" role="list">
+    {%- for key in gd_keys %}
+    {%- assign name = gd_names[forloop.index0] %}
+    {%- assign entry_no = gd_nos[forloop.index0] %}
+    <li class="gd-runner__item{% if include.current == key %} is-current{% endif %}" style="--n: {{ entry_no | plus: 0 }}">
+      {%- if include.real -%}
+      <a class="gd-runner__link" href="#{{ key }}" data-gd-key="{{ key }}" aria-label="{{ entry_no }} {{ name }}"><span class="gd-runner__no gd-t" data-t="{{ entry_no }}"></span><span class="gd-runner__name gd-t" data-t="{{ name }}"></span></a>
+      {%- else -%}
+      <a class="gd-runner__link"><span class="gd-runner__no gd-t" data-t="{{ entry_no }}"></span><span class="gd-runner__name gd-t" data-t="{{ name }}"></span></a>
+      {%- endif -%}
+    </li>
+    {%- endfor %}
+  </ol>
+</{% if include.real %}nav{% else %}div{% endif %}>

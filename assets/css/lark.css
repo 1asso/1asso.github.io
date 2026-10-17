@@ -1,0 +1,118 @@
+/* Lark's exhibit (exhibits/lark.html), in its room's ink: the covered sentence (covered.html), the rhythm
+   of a turn (rhythm.html) and Practice (lark.js). Loaded on the home page (index.html's styles:). */
+
+/* ---------------------------------------------------------------- The covered sentence */
+
+/* The bars are a tint of the ink, not a block of it: a quiet exhibit of Lark's redacted lines. */
+.covered { --cover: color-mix(in srgb, var(--ink) 22%, transparent); }
+.covered__turn { color: var(--ink-2); text-box: trim-both cap alphabetic; }
+.covered__turn .bit { margin-right: 10px; }
+.covered__line { margin-top: var(--beat); hyphens: none; text-wrap: wrap; }
+.covered__unit { white-space: nowrap; }
+.covered__word { display: inline-block; position: relative; }
+.covered__word::after {
+  /* the bar: the word's width, punctuation and all, from the baseline to about the x-height, with the
+     soft corners of Lark's own placeholders */
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0.03em;
+  top: 0.32em;
+  bottom: 0.12em;
+  border-radius: 0.07em;
+  background: var(--cover);
+  opacity: 0;
+  pointer-events: none;
+}
+.is-covered .covered__line { color: var(--ink-3); cursor: pointer; }
+.is-covered .covered__word { visibility: hidden; }
+.is-covered .covered__word::after { visibility: visible; opacity: 1; }
+
+/* The toggles in a row, then the meaning on a line of its own, its place kept while it's hidden. */
+.covered__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 14px 36px;
+  margin-top: var(--beat);
+}
+.covered__meaning { flex: 1 0 100%; color: var(--ink-2); text-wrap: pretty; }
+.is-covered .covered__meaning, .is-running .covered__meaning { visibility: hidden; }
+/* Each toggle stands in a place as wide as its longest label (data-labels, from lark.js): a change of label
+   moves nothing and never rewraps the row, and the toggle's focus ring still fits what it says. */
+.covered__control { display: inline-grid; justify-items: start; }
+.covered__control > .toggle, .covered__control::after { grid-area: 1 / 1; }
+.covered__control::after {
+  content: attr(data-labels) / "";
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  padding-left: calc(var(--bit) + 10px);
+  font-weight: 500;
+  white-space: pre;
+}
+
+/* ---------------------------------------------------------------- The rhythm of a turn */
+
+/* Counted: a run is its count of squares (--n, in rhythm.html), 10px each and 15px apart, so the runs
+   are 145, 250 and 145px at every width, and a label wraps under its own run. The labels are there for
+   Practice: at rest they're hidden, keeping their place, so nothing moves when Practice starts. */
+.rhythm { display: flex; gap: var(--g); }
+.rhythm__run { display: flex; flex-direction: column; gap: 14px; width: calc(var(--n) * 15px - 5px); }
+.rhythm__bits {
+  position: relative;
+  width: calc(var(--n) * 15px - 5px);
+  height: 10px;
+  mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10'><rect width='10' height='10'/></svg>") left center / 15px 10px repeat-x;
+}
+.rhythm__run--turn .rhythm__bits {
+  mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='15' height='10'><rect x='0.75' y='0.75' width='8.5' height='8.5' fill='none' stroke='black' stroke-width='1.5'/></svg>");
+}
+/* The run's squares, and over them the first --k of them, lit by Practice (lark.js): whole squares, as
+   the run's mask cuts both. */
+.rhythm__bits::before, .rhythm__lit { position: absolute; inset: 0; background: var(--app, currentColor); }
+.rhythm__bits::before { content: ""; }
+.rhythm__lit { clip-path: inset(0 calc((var(--n) - var(--k, 0)) * 15px) 0 0); }
+.rhythm__label { color: var(--ink-2); text-wrap: balance; visibility: hidden; opacity: 0; }
+
+.covered + .rhythm { margin-top: var(--beat); }
+
+/* Practicing (.is-running): the labels show, the runs drop to 35% and light as their time passes, and the one
+   running has its label in ink. */
+.is-running .rhythm__bits::before { opacity: 0.35; }
+.is-running .rhythm__label { visibility: visible; opacity: 1; }
+.rhythm__run.is-active .rhythm__label { color: var(--ink); }
+
+/* ---------------------------------------------------------------- Motion, none of it under reduced motion */
+
+@media (prefers-reduced-motion: no-preference) {
+  .covered__line { transition: color var(--t-stop) var(--ease); }
+  .covered__word::after { transition: opacity var(--t-stop) var(--ease); }
+  .is-still .covered__line, .is-still .covered__word::after { transition: none; }   /* covered on load (lark.js) */
+  .rhythm__bits::before { transition: opacity var(--t-hover) var(--ease); }
+  .rhythm__label { transition: color var(--t-hover) var(--ease), opacity var(--t-hover) var(--ease), visibility var(--t-hover); }
+}
+
+/* ---------------------------------------------------------------- Under 1080px the row (588px) doesn't fit: stacked */
+
+@media (max-width: 1079px) {
+  .rhythm { flex-direction: column; gap: 18px; }
+  .rhythm__run { width: auto; gap: 10px; }
+}
+
+/* ---------------------------------------------------------------- Forced colors, print */
+
+/* Forced colors set a plate behind text, and each word here is a box of its own, whose plate would cut off
+   the descenders of the line above: the line goes without. */
+@media (forced-colors: active) {
+  .covered__line { forced-color-adjust: none; color: CanvasText; }
+  .covered__word::after { forced-color-adjust: none; background: CanvasText; }
+  .rhythm__bits::before, .rhythm__lit { background: CanvasText; }
+}
+
+/* On paper, nothing to press: the sentence and its meaning print, as without JavaScript. */
+@media print {
+  .is-covered .covered__line { color: var(--ink); }
+  .is-covered .covered__word, .covered .covered__meaning { visibility: visible; }
+  .covered__word::after { display: none; }
+}
