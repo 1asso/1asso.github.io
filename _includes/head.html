@@ -13,16 +13,13 @@
   The apps' colors, from _data/apps.yml, in each color scheme: --<key> (color, color_dark) for the app's bits,
   and --<key>-room (room, room_dark) for the ground of its room on the home page. .is-<key> makes the app's
   color --app for everything inside it. Inside a room even the bits are the room's ink, so there every app's
-  color is the room's ink, and an exhibit's own .is-<key> takes it too. The Studio is a room inverted (dark
-  in light mode, light in dark mode), so its bits take each app's color from the other scheme, which holds
-  3:1 on that ground, and on paper the page's own. An app added there brings its colors with it.
+  color is the room's ink, and an exhibit's own .is-<key> takes it too. An app added to apps.yml brings its
+  colors with it.
 {%- endcomment %}
 <style>:root{ {%- for p in site.data.apps -%}--{{ p[0] }}:{{ p[1].color }};--{{ p[0] }}-room:{{ p[1].room }};{%- endfor -%} }
 @media (prefers-color-scheme: dark){:root{ {%- for p in site.data.apps -%}--{{ p[0] }}:{{ p[1].color_dark }};--{{ p[0] }}-room:{{ p[1].room_dark }};{%- endfor -%} }}
 {%- for p in site.data.apps -%}.is-{{ p[0] }}{--app:var(--{{ p[0] }})}{%- endfor %}
-.room{ {%- for p in site.data.apps -%}--{{ p[0] }}:var(--room-ink);{%- endfor -%} }
-.studio{ {%- for p in site.data.apps -%}--{{ p[0] }}:{{ p[1].color_dark }};{%- endfor -%} }
-@media (prefers-color-scheme: dark),print{.studio{ {%- for p in site.data.apps -%}--{{ p[0] }}:{{ p[1].color }};{%- endfor -%} }}</style>
+.room{ {%- for p in site.data.apps -%}--{{ p[0] }}:var(--room-ink);{%- endfor -%} }</style>
 {%- comment -%} Stylesheets, in this order: the system, then the page's own (front matter styles: [name] loads assets/css/name.css). The ?v= makes a browser fetch them again after every build. {%- endcomment %}
 {%- assign version = site.time | date: '%s' %}
 <link rel="stylesheet" href="{{ '/assets/css/site.css' | relative_url }}?v={{ version }}">
@@ -34,7 +31,7 @@
 <link rel="icon" href="{{ '/favicon.svg' | relative_url }}?v=2" type="image/svg+xml">
 <link rel="apple-touch-icon" href="{{ '/apple-touch-icon.png' | relative_url }}?v=2">
 <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
-{%- comment -%} Scripts, all classic and deferred, so they run in this order once the page is parsed: site.js first (it sets up window.TB, which the others build on), then the page's own (front matter scripts: [name] loads assets/js/name.js). {%- endcomment %}
+{%- comment -%} Scripts, all classic and deferred, so they run in this order once the page is parsed: site.js first (window.TB: TB.reduce and TB.inView, which lark.js uses), then the page's own (front matter scripts: [name] loads assets/js/name.js). {%- endcomment %}
 <script src="{{ '/assets/js/site.js' | relative_url }}?v={{ version }}" defer></script>
 {%- for script in page.scripts %}
 <script src="{{ '/assets/js/' | append: script | append: '.js' | relative_url }}?v={{ version }}" defer></script>

@@ -31,11 +31,10 @@
 (function () {
   'use strict';
   var gl = document.querySelector('[data-gl]');
-  if (!gl || !window.matchMedia || !window.getComputedStyle) return;
 
   var root = document.documentElement;
   var list = function (nodes) { return Array.prototype.slice.call(nodes); };
-  var now = function () { return window.performance && performance.now ? performance.now() : Date.now(); };
+  var now = function () { return performance.now(); };
   var clamp = function (n, a, b) { return Math.max(a, Math.min(b, n)); };
   var still = window.matchMedia('(prefers-reduced-motion: reduce)');
   var forced = window.matchMedia('(forced-colors: active)');
@@ -51,7 +50,7 @@
   // What the foot takes, which sizes the title on a short screen (the page measured it before the first frame, with
   // whatever fonts it had then): again once the fonts are in, and after every resize.
   var measureFoot = function () {
-    if (foot) root.style.setProperty('--gl-foot', Math.ceil(foot.getBoundingClientRect().height) + 'px');
+    root.style.setProperty('--gl-foot', Math.ceil(foot.getBoundingClientRect().height) + 'px');
   };
 
   // ------------------------------------------------------------ The arrival
@@ -97,12 +96,11 @@
     // The site's ease, cubic-bezier(0.2, 0.7, 0.2, 1) (site.css, --ease), at u of the way through.
     var ease = function (u) {
       if (u <= 0) return 0;
-      if (u >= 1) return 1;
       var lo = 0, hi = 1, t = u;
       for (var k = 0; k < 24; k++) { t = (lo + hi) / 2; if (0.6 * (1 - t) * (1 - t) * t + 0.6 * (1 - t) * t * t + t * t * t < u) lo = t; else hi = t; }
       return 2.1 * (1 - t) * (1 - t) * t + 3 * (1 - t) * t * t + t * t * t;
     };
-    var cols = [], dots = [], stop = title && title.querySelector('.gl-stop');
+    var cols = [], dots = [], stop = title.querySelector('.gl-stop');
     var t0 = 0, H = 0, raf = 0, into = null, silled = false, tinted = false, here = false;
 
     // Safari's bars (lost.css, .gl-chrome). On the Mac its compact tabs follow the color of the strip along the top as
@@ -122,7 +120,6 @@
     var tint = function () {
       tinted = true;
       if (!silled) tintSill();
-      if (!strip) return;
       if (edges) strip = redo(strip);
       else strip.style.setProperty('--gl-chrome', 'var(--canvas)');
     };
@@ -133,7 +130,7 @@
       var all = list(arrive.querySelectorAll('.gl-a')), voids = list(arrive.querySelectorAll('.gl-void'));
       var lifts = list(document.querySelectorAll('.gl-lift > i'));
       var shown = all.filter(function (a) { return a.offsetWidth > 0; }), n = shown.length;
-      H = arrive.clientHeight || window.innerHeight;
+      H = arrive.clientHeight;
       // At rest once its strip is within a quarter of a pixel of its place, for good.
       var rest = Math.max(AT, Math.log(Math.max(2, GIVE * H / Math.sqrt(1 - Z * Z) / 0.25)) / DECAY);
       cols = shown.map(function (a, i) {
@@ -159,7 +156,7 @@
         if (!c.landed && y >= UP) {
           c.landed = true;
           c.ground.classList.add('is-landed');
-          if (c.voidEl) c.voidEl.style.visibility = 'hidden';
+          c.voidEl.style.visibility = 'hidden';
         }
         if (!c.home && s >= AT) { c.home = true; c.ground.classList.add('is-home'); }
         // Its edges come in from its first frame in flight (drawn at nothing in that frame, as a transition starts).
@@ -180,7 +177,7 @@
             else c.ground.style.setProperty('--gl-edges', o);
           }
         }
-        if (c.lands >= 0 && c.lift && c.settled !== 'gone') {
+        if (c.lands >= 0 && c.settled !== 'gone') {
           var q = (te - c.lands) / SETTLE;
           var l = q >= 1 ? 'gone' : (100 * (1 - ease(q))).toFixed(2) + '%';
           if (l !== c.settled) {
@@ -195,7 +192,7 @@
         if (sink !== d.drawn) { d.drawn = sink; d.els.forEach(function (e) { e.style.setProperty('--gl-sink', sink); }); }
       });
       var v = pop(te - STOP).toFixed(4);
-      if (stop && v !== into) { into = v; stop.style.setProperty('--gl-in', v); }
+      if (v !== into) { into = v; stop.style.setProperty('--gl-in', v); }
       if (!silled && te >= SILL && !scheme.matches) tintSill();
       if (!tinted && te >= TINT) tint();
       // The heading takes over from the copies in one frame (lost.css, html.gl-here).
@@ -204,27 +201,25 @@
     };
     var tick = function (t) {
       raf = 0;
-      if (state !== 'play') return;
       var more = false;
       try { more = draw(t); } catch (e) { done(); return; }
       if (more) raf = requestAnimationFrame(tick);
     };
     // Over: the arrival taken away (at once, if it was still going), and what waited for it let go.
     var done = function () {
-      if (state === 'done') return;
       state = 'done';
       timers.forEach(clearTimeout);
       timers = [];
       cancelAnimationFrame(raf);
       raf = 0;
-      if (stop) stop.style.removeProperty('--gl-in');
+      stop.style.removeProperty('--gl-in');
       root.classList.add('gl-done');
       root.classList.remove('gl-unvoid');
       then.splice(0).forEach(function (fn) { fn(); });
     };
     // No arrival after all, with the void already drawn: once the browser has painted it, it fades away over the poster
     // as the home page's does (lost.css, html.gl-unvoid), rather than going in a frame; else it simply goes.
-    var painted = function () { return !!(window.performance && performance.getEntriesByType && performance.getEntriesByType('paint').length); };
+    var painted = function () { return !!performance.getEntriesByType('paint').length; };
     var unvoid = function () {
       if (!painted()) { done(); return; }
       state = 'fade';
@@ -239,7 +234,7 @@
       if (window.scrollY > 2 || now() > 2600) { unvoid(); return; }
       state = 'play';
       lay();
-      t0 = typeof t === 'number' ? t : now();
+      t0 = t;
       // The first frame of the strike is drawn with the class that begins it, so no frame shows the columns anywhere
       // but under the screen's foot before they move.
       root.classList.add('gl-go');
@@ -259,20 +254,19 @@
     // Reduce Motion or forced colors turned on while it plays: lost.css takes it off the screen, and it's over, as the
     // home page's is (grid.js).
     [still, forced].forEach(function (q) {
-      if (q.addEventListener) q.addEventListener('change', cut); else if (q.addListener) q.addListener(cut);
+      q.addEventListener('change', cut);
     });
     return {
       // Whether it plays: the page's CSS drew the void (motion allowed, no forced colors, a screen that holds the
       // page), and the reader is at the top.
       start: function () {
-        if (state) return;
-        var drawn = arrive && getComputedStyle(arrive).display !== 'none';
-        if (!drawn || !window.requestAnimationFrame) { done(); return; }
+        var drawn = getComputedStyle(arrive).display !== 'none';
+        if (!drawn) { done(); return; }
         if (window.scrollY > 2) { unvoid(); return; }
         state = 'void';
         // On iOS, the strip along the foot too (above), in the void's color till the canvas comes.
-        if (strip && edges) { sill = strip.cloneNode(false); sill.classList.add('gl-chrome--foot'); strip.parentNode.insertBefore(sill, strip.nextSibling); }
-        var fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+        if (edges) { sill = strip.cloneNode(false); sill.classList.add('gl-chrome--foot'); strip.parentNode.insertBefore(sill, strip.nextSibling); }
+        var fonts = document.fonts.ready;
         var cap = new Promise(function (resolve) { setTimeout(resolve, 600); });
         Promise.race([fonts, cap]).then(function () {
           var hold = function () {
@@ -291,16 +285,13 @@
         });
       },
       // Something to do once it's over (at once, if it is).
-      after: function (fn) { if (state === 'done') fn(); else then.push(fn); }
+      after: function (fn) { then.push(fn); }
     };
   })();
 
   // ------------------------------------------------------------ The lens
 
   var lens = (function () {
-    var nothing = function () {};
-    var none = { reset: nothing, ready: nothing };
-    if (!el || !main || !title || !foot || !window.requestAnimationFrame) return none;
     var win = null, plate = null, edges = null, U = null, band = null;
     var x = 0, v = 0, aimed = 0, spring = 0, then = 0, at = -1, built = false, live = false;
     var hush = true, back = 0, drag = null;
@@ -314,7 +305,6 @@
     };
     // A note: its name, and under it its value, in mono, inside the column it's in (or against its right edge).
     var note = function (key, value, left, top, opts) {
-      opts = opts || {};
       var n = make('span', 'gl-lens__note' + (opts.quiet ? ' gl-lens__note--quiet' : '') + (opts.end ? ' gl-lens__note--end' : '') + (opts.mid ? ' gl-lens__note--mid' : ''));
       n.textContent = key;
       if (value) { var b = document.createElement('b'); b.textContent = value; n.appendChild(b); }
@@ -393,7 +383,6 @@
         if (!row) rows.push(row = { base: base, words: [] });
         row.words.push({ el: slot, box: b, item: rel(slot.parentNode.getBoundingClientRect()) });
       });
-      if (!rows.length) return;
       rows.sort(function (a, b) { return a.base - b.base; });
       rows.forEach(function (r) { r.cap = r.base - fs * 0.7275; r.x = r.base - fs * 0.546; r.words.sort(function (a, b) { return a.box.left - b.box.left; }); });
       var rowOf = function (b) { var mid = (b.top + b.bottom) / 2; return rows.filter(function (r) { return mid > r.cap - fs * 0.3 && mid < r.base + fs * 0.3; })[0] || rows[0]; };
@@ -503,15 +492,13 @@
       // caps to the last baseline; and before it, in the column the word ends in (where that's not the empty column's
       // unit too, whose one note is 404), its space.
       var stop = title.querySelector('.gl-stop');
-      if (stop) {
-        var sb = rel(stop.getBoundingClientRect());
-        span(sb.left - fs * 0.045, sb.left, last.x + fs * 0.27);
-        if (unitOf(sb.left - gap - 1) < U.count - 1) put('stop', fmt(0.045), sb.left - gap - 1, last);
-        var drawn = make('i', 'gl-lens__stop');
-        drawn.style.cssText = 'left:' + px(sb.left) + ';top:' + px(sb.top) + ';width:' + px(sb.width) + ';height:' + px(sb.height) + ';--sw:' + (fs * 0.0214).toFixed(2) + 'px';
-        plate.appendChild(drawn);
-        rule('v', rows[0].cap - fs * 0.05, m + (12 - per) * P, last.base - rows[0].cap + fs * 0.1);
-      }
+      var sb = rel(stop.getBoundingClientRect());
+      span(sb.left - fs * 0.045, sb.left, last.x + fs * 0.27);
+      if (unitOf(sb.left - gap - 1) < U.count - 1) put('stop', fmt(0.045), sb.left - gap - 1, last);
+      var drawn = make('i', 'gl-lens__stop');
+      drawn.style.cssText = 'left:' + px(sb.left) + ';top:' + px(sb.top) + ';width:' + px(sb.width) + ';height:' + px(sb.height) + ';--sw:' + (fs * 0.0214).toFixed(2) + 'px';
+      plate.appendChild(drawn);
+      rule('v', rows[0].cap - fs * 0.05, m + (12 - per) * P, last.base - rows[0].cap + fs * 0.1);
       // The lead, from one line's baseline to the next one's caps, in the unit nearest the middle with nothing else to
       // say: a dimension line down the middle of the unit, broken by its note.
       if (rows.length > 1) {
@@ -658,7 +645,7 @@
 
   arrival.after(function () { lens.ready(); });
   arrival.start();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measureFoot(); lens.reset(); });
+  document.fonts.ready.then(function () { measureFoot(); lens.reset(); });
   var resized = 0;
   window.addEventListener('resize', function () {
     cancelAnimationFrame(resized);

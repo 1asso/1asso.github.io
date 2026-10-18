@@ -34,7 +34,6 @@ html:has(> body.proto-grid-doc) {
   --head-pad: clamp(10px, 1.3vw, 20px);
   --head-h: calc(var(--head-pad) + 54px);
   /* The small viewport: a phone's bars never cover what's composed to a screen. */
-  --sv: 100vh;
   --sv: 100svh;
 }
 @media (max-width: 719px) {
@@ -226,7 +225,7 @@ html:not(.gd-type) .gd-decor .gd-bit { display: none; }
   .gd-updated { margin-top: calc(0.204 * var(--tag) + 24px); }
 }
 @media screen and (orientation: portrait) {
-  .gd-fx .gd-poster--whole { min-height: 100vh; min-height: 100lvh; }
+  .gd-fx .gd-poster--whole { min-height: 100lvh; }
 }
 
 /* The foot: the policy in short, on the grid as the text is, standing on the bottom margin. Its links to the parts
@@ -338,7 +337,7 @@ html:not(.gd-striking) .gd-a { transform: translateY(100%); }
   .gd-a__ground { background: var(--lift); }
   .gd-a__ground::after { border-top: 2px solid var(--ink); }
 }
-.gd-lift { position: absolute; z-index: -1; top: 0; left: 0; right: 0; height: 100vh; height: 100lvh; container-type: inline-size; pointer-events: none; }
+.gd-lift { position: absolute; z-index: -1; top: 0; left: 0; right: 0; height: 100lvh; container-type: inline-size; pointer-events: none; }
 .gd-lift > i { background: color-mix(in srgb, var(--lift) var(--gd-lift, 100%), var(--canvas)); }
 
 /* The right margin, lit for a moment as the stop clicks onto it (the motion, below): a hairline on the margin's own
@@ -371,7 +370,7 @@ html:not(.gd-striking) .gd-a { transform: translateY(100%); }
 .prose > h3 { margin-top: 2em; font-weight: 600; }
 .prose > :is(h2, h3, h4):where(:not(.margin)) + * { margin-top: 0.5em; }
 .prose > :first-child { margin-top: 0; }
-.prose :is(p, li, dd) { text-wrap: pretty; }
+.prose :is(p, li) { text-wrap: pretty; }
 .prose > .margin {
   grid-column: 1 / span 3;
   margin-top: 0;
@@ -408,17 +407,8 @@ html:not(.gd-striking) .gd-a { transform: translateY(100%); }
 }
 .prose li + li, .prose li > ul, .prose li > ol { margin-top: 0.4em; }
 .prose ol > li::marker { font-family: var(--mono); font-size: var(--meta); color: var(--ink-3); }
-.prose code, .prose kbd, .prose samp { font-family: var(--mono); font-size: 1em; }
-.prose pre { font-family: var(--mono); font-size: var(--meta); line-height: 1.6; overflow-x: auto; padding: 1.25em 1.5em; background: var(--field); }
 .prose blockquote { position: relative; padding-left: 1.4em; color: var(--ink-2); }
 .prose blockquote::before { content: ""; position: absolute; left: 0; top: 0.6em; width: var(--bit); height: var(--bit); background: var(--app, var(--ink-3)); }
-.prose hr { height: 0; margin-block: 1.5em; border: 0; }
-/* Tables, on the grid: from the text's column to the right margin, their heads in the meta. */
-.prose > table, .prose > .wide { grid-column: 4 / -1; max-width: none; }
-.prose table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
-.prose th { font-family: var(--mono); font-size: var(--meta); font-weight: 400; color: var(--ink-3); text-align: left; }
-.prose th, .prose td { padding: 0.55em 1.25em 0.55em 0; vertical-align: baseline; border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent); }
-.prose :is(th, td):last-child { padding-right: 0; }
 
 /* A part's text: a step under its band, a room before the next. */
 .gd-text > .prose { padding-block: var(--step) var(--room); }
@@ -765,7 +755,7 @@ html:not(.gd-striking) .gd-a { transform: translateY(100%); }
 /* On a phone, one column: the labels over what they label, the name across the band, "website" the widest word
    (3.14em), so "This website" goes on two lines and the others stand on one at its size. */
 @media (max-width: 719px) {
-  .prose > *, .prose > table, .prose > .wide { grid-column: 1 / -1; }
+  .prose > * { grid-column: 1 / -1; }
   .prose > .margin { grid-column: 1 / -1; padding-right: 0; }
   .prose > .margin + * { margin-top: 0.35em; }
   .prose > * + .margin + * { margin-top: 0.35em; }

@@ -60,7 +60,6 @@
 button.key { cursor: pointer; }
 .key svg { flex: none; pointer-events: none; }   /* the key is the target, never its glyph */
 .key.is-pressed { background: var(--key-pressed); transition-delay: 0s; }
-.key:focus-visible { border-radius: 16px; }   /* the ring follows the key's corner */
 
 /* On a phone the keys take the column's width, up to the widest phone's held upright (a 392px column). */
 @media (max-width: 719px) {

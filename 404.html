@@ -3,11 +3,9 @@ layout: default
 title: Not found
 description: There’s nothing at this address. The page may have moved, or it was never here.
 permalink: /404.html
-sitemap: false
 body_class: proto-grid-lost
 styles: [lost]
 scripts: [lost]
-bitless: true
 ---
 {%- comment -%}
   The not-found page, which GitHub Pages serves for any address that doesn't exist: the home page's first screen, with
@@ -33,11 +31,10 @@ bitless: true
   Without the script, under Reduce Motion, in forced colors and on paper, it's simply there: the poster, the empty
   column, the foot. The page is one screen (it runs on only on the shortest phones held sideways): the header, the
   poster and the footer at its foot, with the grid ruled down all of it. One mark to a screen, the header's, so the
-  footer goes without its own (lost.css), which has no bit either (bitless, above). Its every address is root-relative,
-  as GitHub Pages serves it at any depth.
+  footer goes without its own (lost.css). Its every address is root-relative, as GitHub Pages serves it at any depth.
 {%- endcomment %}
 {%- comment -%} The first frame the page draws, noted: the void is held its beat from then (lost.js), as the home page's and the privacy page's are. {%- endcomment %}
-<script>if (window.requestAnimationFrame) requestAnimationFrame(function (t) { window.glSeen = t; });</script>
+<script>requestAnimationFrame(function (t) { window.glSeen = t; });</script>
 {%- capture titleset -%}{% include lost-title.html %}{%- endcapture %}
 {%- comment -%} What Safari tints its bars from while the arrival plays: a fixed strip along the top that paints nothing (lost.css; on iOS, one along the foot too, lost.js). {%- endcomment %}
 <i class="gl-chrome" aria-hidden="true"></i>
@@ -84,7 +81,7 @@ bitless: true
     the foot leaves of the screen, if that's less than the columns allow (lost.css, --gl-foot; lost.js measures it again
     when the fonts are in, and on every resize).
   {%- endcomment %}
-  <script>(function () { var f = document.querySelector('[data-gl-foot]'); if (f && f.getBoundingClientRect) document.documentElement.style.setProperty('--gl-foot', Math.ceil(f.getBoundingClientRect().height) + 'px'); })();</script>
+  <script>(function () { var f = document.querySelector('[data-gl-foot]'); document.documentElement.style.setProperty('--gl-foot', Math.ceil(f.getBoundingClientRect().height) + 'px'); })();</script>
   {%- comment -%} The lens, built by lost.js when it's first moved. Decorative. {%- endcomment %}
   <div class="gl-lens" aria-hidden="true" inert data-gl-lens></div>
 </section>

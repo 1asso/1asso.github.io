@@ -8,15 +8,12 @@
   the caller.
   Params
     text      required  the word, with ı where an i is to take a square dot
-    from      optional  the first letter's place in the stagger (default 0)
     dot       optional  this word's dot's place in the order the dots come down (default 0)
   (Never name an include parameter size, first or last: Liquid reads those as properties of the list.)
 {%- endcomment -%}
 {%- assign chars = include.text | split: '' -%}
-{%- assign start = include.from | default: 0 -%}
 {%- assign prev = '' -%}
 {%- for ch in chars -%}
-  {%- assign order = forloop.index0 | plus: start -%}
   {%- assign pair = prev | append: ch -%}
   {%- assign kern = '' -%}
   {%- case pair -%}
@@ -25,9 +22,9 @@
     {%- when 'ts' -%}{%- assign kern = '-0.0089' -%}
   {%- endcase -%}
   {%- if ch == 'ı' -%}
-    <span class="g-l g-l--i" style="--i: {{ order }}"><span class="g-i">ı<b class="g-dot" style="--d: {{ include.dot | default: 0 }}"></b></span></span>
+    <span class="g-l"><span class="g-i">ı<b class="g-dot" style="--d: {{ include.dot | default: 0 }}"></b></span></span>
   {%- else -%}
-    <span class="g-l" style="--i: {{ order }}{% if kern != '' %}; --k: {{ kern }}em{% endif %}">{{ ch }}</span>
+    <span class="g-l"{% if kern != '' %} style="--k: {{ kern }}em"{% endif %}>{{ ch }}</span>
   {%- endif -%}
   {%- assign prev = ch -%}
 {%- endfor -%}

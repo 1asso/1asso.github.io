@@ -48,9 +48,7 @@
   'use strict';
   var root = document.documentElement;
   var deck = document.querySelector('[data-g-deck]');
-  if (!deck || !window.matchMedia || !window.requestAnimationFrame || !window.getComputedStyle) return;
 
-  var TB = window.TB || null;
   var still = window.matchMedia('(prefers-reduced-motion: reduce), (forced-colors: active)');
   var clamp = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
   var now = function () { return performance.now(); };
@@ -86,8 +84,8 @@
       head: el.querySelector('.g-screen > .g-head'),
       grid: el.querySelector('.g-grid'),
       album: el.querySelector('.g-piece .album'),
-      cascade: el.getAttribute('data-g-cascade') || 'strike',
-      slabs: [], last: 1, n: 0, h: 0, over: 0,
+      cascade: el.getAttribute('data-g-cascade'),
+      slabs: [], n: 0, h: 0, over: 0,
       p: 0, landed: '', here: false, done: false, moving: false,
       drive: null, frozen: false, skipped: false, hit: false
     };
@@ -180,7 +178,6 @@
   };
   var scrollAt = function (t) {
     var n = hist.length;
-    if (!n) return Y();
     if (t >= hist[n - 1][0]) return hist[n - 1][1];
     for (var i = n - 1; i > 0; i--) {
       var a = hist[i - 1], b = hist[i];
@@ -238,10 +235,10 @@
     // (Everything of each piece read here, before anything is written: its insides' lengths too, once, not once for
     // each column's copy, each of which would have the page's styles worked out again.)
     var rides = list(r.content.querySelectorAll('[data-g-ride]')).map(function (el) {
-      var b = el.getBoundingClientRect(), cs = getComputedStyle(el), wm = cs.writingMode || '';
+      var b = el.getBoundingClientRect(), cs = getComputedStyle(el), wm = cs.writingMode;
       return {
         el: el, left: b.left - box.left, top: b.top - box.top, width: b.width, height: b.height,
-        size: cs.fontSize, mode: wm, rotate: cs.rotate, side: wm !== 'horizontal-tb' && wm !== '',
+        size: cs.fontSize, mode: wm, rotate: cs.rotate, side: wm !== 'horizontal-tb',
         pad: parseFloat(cs.fontSize) * 0.12, name: el.classList.contains('g-art--name') && !el.classList.contains('g-echo'),
         echo: el.classList.contains('g-echo'), no: el.classList.contains('g-no'),
         inner: list(el.querySelectorAll('*')).map(function (x) { var xs = getComputedStyle(x); return [xs.paddingLeft, xs.paddingRight, xs.marginLeft, xs.marginRight]; })
@@ -257,7 +254,7 @@
       var over = parseFloat(d.size) * 0.04;
       bounds.forEach(function (b, i) { if (b[1] > d.left - over && b[0] < d.left + d.width + over) spine[i] = true; });
     });
-    var plan = (CASCADES[r.cascade] || CASCADES.strike)(n, spine);
+    var plan = CASCADES[r.cascade](n, spine);
     var most = Math.max.apply(null, plan.map(function (c) { return c.delay; })) || 1;
     var frag = document.createDocumentFragment(), tfrag = document.createDocumentFragment();
     r.slabs = plan.map(function (c, i) {
@@ -287,7 +284,7 @@
       tfrag.appendChild(strip);
       // y, how far up it is (0 at its foot, 1 home), and v, how fast it's going; under a finger its rise begins at
       // start in the track; played by time, at at, towards goal, on its spring (sf, sz), or for a spine, its drop.
-      return { el: el, strip: strip, lines: lines, rides: [], plan: c, from: c.from, delay: c.delay, start: (c.delay / most) * SPREAD, f: c.f, z: c.z, sf: c.f, sz: c.z, spine: !!c.spine, y: 0, v: 0, goal: 0, at: 0, busy: false, drop: null, drawn: null, rode: null, flying: false, push: 0, ey: 0, ev: 0, eg: 0 };
+      return { el: el, strip: strip, rides: [], from: c.from, delay: c.delay, start: (c.delay / most) * SPREAD, f: c.f, z: c.z, sf: c.f, sz: c.z, spine: !!c.spine, y: 0, v: 0, goal: 0, at: 0, busy: false, drop: null, drawn: null, flying: false, ey: 0, ev: 0, eg: 0 };
     });
     r.bed.appendChild(frag);
     r.types.appendChild(tfrag);
@@ -303,12 +300,11 @@
     // past their place they never show what's under their foot, and on their leading side, so that springing back
     // from past it they never show it either (grid.css). r.over is the one, r.lead the other.
     r.H = r.screen.offsetHeight;
-    var first = r.slabs[0] && r.slabs[0].el;
-    r.h = first ? first.offsetHeight : window.innerHeight;
+    var first = r.slabs[0].el;
+    r.h = first.offsetHeight;
     var rising = r.slabs.filter(function (s) { return s.from > 0; })[0], dropping = r.slabs.filter(function (s) { return s.from < 0; })[0];
     if (rising) { r.lead = -rising.el.offsetTop; r.over = Math.max(0, r.h - r.H - r.lead); }
     else if (dropping) { r.over = -dropping.el.offsetTop; r.lead = Math.max(0, r.h - r.H - r.over); }
-    else { r.lead = 0; r.over = 0; }
     r.slabs.forEach(function (sl, i) {
       var x0 = bounds[i][0] - 0.5, x1 = bounds[i][1] + 0.5, top = sl.from < 0 ? -r.over : -r.lead;
       sl.el.style.setProperty('--y0', (-top).toFixed(1) + 'px');
@@ -323,7 +319,7 @@
         copy.style.width = d.width + 'px';   // to the full fraction, so a line that just fits still fits
         copy.style.height = d.height.toFixed(2) + 'px';
         copy.style.fontSize = d.size;
-        if (d.mode) copy.style.writingMode = d.mode;
+        copy.style.writingMode = d.mode;
         if (d.rotate && d.rotate !== 'none') copy.style.rotate = d.rotate;
         // Its insides as they're laid out in the room: lengths measured against the room's columns (the motto's
         // indent) mean nothing in a column, so each is set in pixels.
@@ -341,14 +337,12 @@
       });
     });
     r.n = n;
-    r.last = most;
     r.bounds = bounds;
     r.width = W;
     r.landed = '';
     r.clip = null;
-    r.headH = r.head ? r.head.offsetHeight : 0;
+    r.headH = r.head.offsetHeight;
     r.covered = '';
-    r.headClip = null;
   };
 
   // ------------------------------------------------------------ Drawing
@@ -413,21 +407,19 @@
     // The header is the screen's as soon as a column is under it: its copy in this room's ink is uncovered over each
     // column whose leading edge has passed most of the header's band (rising, near its top; coming down, near its foot).
     // (How many are, capped: the browser's bar goes with most of them, atTop.)
-    if (r.head) {
-      var over = [], ck = '', capped = 0;
-      for (var c = 0; c < r.slabs.length; c++) {
-        var sl = r.slabs[c];
-        var under = sl.y <= 0 ? false : sl.from > 0 ? (1 - sl.y) * r.h - r.lead <= r.headH * 0.35 : (r.h - r.over) - (1 - sl.y) * r.h >= r.headH * 0.65;
-        over.push(under);
-        ck += under ? '1' : '0';
-        if (under) capped++;
-      }
-      r.capped = capped;
-      if (ck !== r.covered) {
-        r.covered = ck;
-        var hc = clipFor(r, over);
-        if (hc !== r.headClip) { r.headClip = hc; r.head.style.clipPath = hc === 'none' ? '' : hc; }
-      }
+    var over = [], ck = '', capped = 0;
+    for (var c = 0; c < r.slabs.length; c++) {
+      var sl = r.slabs[c];
+      var under = sl.y <= 0 ? false : sl.from > 0 ? (1 - sl.y) * r.h - r.lead <= r.headH * 0.35 : (r.h - r.over) - (1 - sl.y) * r.h >= r.headH * 0.65;
+      over.push(under);
+      ck += under ? '1' : '0';
+      if (under) capped++;
+    }
+    r.capped = capped;
+    if (ck !== r.covered) {
+      r.covered = ck;
+      var hc = clipFor(r, over);
+      r.head.style.clipPath = hc === 'none' ? '' : hc;
     }
     // How far the room has come: by the scroll, or, played home by time ahead of the browser's snap, by its columns
     // (its screen is held where it rests the while).
@@ -587,7 +579,6 @@
 
   var tick = function (t) {
     raf = 0;
-    if (!on) return;
     // (A phone turned, its resize still to come: nothing the scroll does now is the reader's. onScroll, below.)
     if (turning && now() - turning < 1000) { lastY = Y(); return; }
     if (wheel.pin >= 0) keep();   // (a gesture the browser scrolls itself: the page back on its screen first)
@@ -733,7 +724,7 @@
       var between = instantly ? (fwd ? k > a && k < b : k < a && k > b) : (fwd ? k > a : k < a);
       if (between) { r.skipped = true; r.drive = null; r.el.classList.add('is-skipped'); }
     });
-    jump = { a: a, b: b, fwd: fwd, held: held, playing: false, at: t };
+    jump = { a: a, b: b, fwd: fwd, held: held, playing: false };
     // Held from this very frame: the browser runs the frame's callbacks (tick) after the scroll's events and before it
     // paints, so the jump is never seen without its hold. (Not here, in the scroll's own event: a scroll handler that
     // moves things is what browsers warn of as a scroll-linked effect.)
@@ -743,7 +734,6 @@
   // The scroll has come to rest at b after a jump: forward, b's columns rise over what's held; back, what's held
   // drops away from over b.
   var land = function (t, b) {
-    if (!jump) return;
     jump.b = b;
     jump.playing = true;
     jump.landed = t;
@@ -768,7 +758,6 @@
   // way, if it comes to rest somewhere else after all, the deck is put where it is once the move has played. A step
   // still queued (a key's, the wheel's) is dropped: the reader has gone on without it.
   var race = function (t, a, dir, free) {
-    if (jump) return;
     pending = null;
     if (dir < 0 && free && a === 1) { play(rooms[0], 0, t); return; }
     if (dir < 0 && free && a > 1) { leap(t, a, 0, true); if (jump) jump.held[0] = true; return; }
@@ -799,7 +788,7 @@
     if (jump) { holding = null; return; }
     while (anchor < stops.length - 1 && y >= stops[anchor + 1] - 1 && !rooms[anchor].skipped && !rooms[anchor].frozen) setAnchor(anchor + 1, true);
     while (anchor > 0 && y <= stops[anchor - 1] + 1 && !rooms[anchor - 1].skipped && !rooms[anchor - 1].frozen) setAnchor(anchor - 1, true);
-    var H = stops[1] || window.innerHeight, v = (y - scrollAt(t - 50)) / 50, off = y - stops[anchor];
+    var H = stops[1], v = (y - scrollAt(t - 50)) / 50, off = y - stops[anchor];
     if (Math.abs(off) <= 2) { leftAt = -1; unhold(); } else if (leftAt < 0) leftAt = t;
     if (touching || pressing || t - ownAt < 120) { unhold(); return; }
     var dir = off > 0 ? 1 : -1, r = dir > 0 ? rooms[anchor] : rooms[anchor - 1], way;
@@ -1150,7 +1139,7 @@
   var edges = navigator.maxTouchPoints > 0 && /AppleWebKit/.test(ua) && !/Android|Chrome\//.test(ua);
   var phone = edges && /iPhone|iPod/.test(ua);   // (an iPad's Safari says it's a Mac's)
   var sill = null;
-  if (strip && phone) { sill = strip.cloneNode(false); sill.classList.add('g-chrome--foot'); strip.parentNode.insertBefore(sill, strip.nextSibling); }
+  if (phone) { sill = strip.cloneNode(false); sill.classList.add('g-chrome--foot'); strip.parentNode.insertBefore(sill, strip.nextSibling); }
   var redo = function (el, c) { var n = el.cloneNode(false); n.style.setProperty('--g-chrome', c); el.parentNode.replaceChild(n, el); return n; };
   var tint = '', band = '';
   // The colours it takes, read once (and again when the scheme changes), so that a change of the bar's in the middle of
@@ -1165,7 +1154,7 @@
   };
   // The void's while it's at the top of the screen (the opening, or a room arriving over it), else screen k's.
   var chrome = function (k) {
-    var c = colours(), dark = arrival && arrival.dark(), canvas = c.canvas;
+    var c = colours(), dark = arrival.dark(), canvas = c.canvas;
     var g = dark ? c.dark : k > 0 ? c.grounds[k - 1] : canvas;
     var b = dark || phone ? g : canvas;
     if (g && g !== tint) {
@@ -1173,7 +1162,7 @@
       themes.forEach(function (t) { t.m.setAttribute('content', g); });
       root.style.backgroundColor = g;
     }
-    if (strip && b && b !== band) {
+    if (b && b !== band) {
       band = b;
       if (edges) { strip = redo(strip, b); if (sill) sill = redo(sill, b); }
       else strip.style.setProperty('--g-chrome', b);
@@ -1183,7 +1172,7 @@
     tint = band = '';
     themes.forEach(function (t) { t.m.setAttribute('content', t.was); });
     root.style.removeProperty('background-color');
-    if (strip) strip.style.removeProperty('--g-chrome');
+    strip.style.removeProperty('--g-chrome');
     if (sill) sill.style.removeProperty('--g-chrome');
   };
   var scheme = window.matchMedia('(prefers-color-scheme: dark)');
@@ -1206,13 +1195,13 @@
     var k = atTop(), key = k + (arrival.dark() ? 'v' : '');
     if (key !== barAt) { barAt = key; chrome(k); }
   };
-  if (scheme.addEventListener) scheme.addEventListener('change', onScheme); else if (scheme.addListener) scheme.addListener(onScheme);
+  scheme.addEventListener('change', onScheme);
   // The reader is on screen k. Quietly, while the deck moves (the scroll has got to k's stop, or the deck has moved
   // there): only what the deck itself goes by. At rest, all of it: the header's ink, the bar's color, the running
   // index, the classes on the page (each of which restyles all of it, which is never done while anything moves).
   var setAnchor = function (k, quiet) {
     var moved = k !== anchor;
-    if (moved && typeof pointer !== 'undefined') pointer.off();
+    if (moved) pointer.off();
     anchor = k;
     var key = k === 0 ? '' : rooms[k - 1].key;
     if (moved) {
@@ -1225,9 +1214,8 @@
       // Kept for this tab, so that a reload, or a step back to the page, puts the reader back on this screen, whatever
       // the address says (start, below), and doesn't open on the void (index.html reads it).
       try { sessionStorage.setItem('g-screen', String(k)); } catch (e) { /* no storage: nothing kept */ }
-      if (TB) TB.emit('screen', { key: key || 'top', index: k });
     }
-    if (typeof lens !== 'undefined') lens.follow(lensable());
+    lens.follow(lensable());
     if (quiet) return;
     var el = k === 0 ? hero : rooms[k - 1].screen;
     var c = getComputedStyle(el).color;
@@ -1307,11 +1295,11 @@
   var resnap = function () {
     if (!on || !snapping()) return;   // snapping is off (a short screen, or someone turned it off): rest is anywhere
     if (touching || pressing || now() - moved < RESNAP - 20) return;
-    var y = Y(), k = nearest(y), going = lastWay(y), H = stops[1] || window.innerHeight;
+    var y = Y(), k = nearest(y), going = lastWay(y), H = stops[1];
     if (!jump && !timed() && Math.abs(y - stops[anchor]) <= H / 4) k = anchor;
     else if (going > 0) { k = 0; while (k < stops.length - 1 && stops[k] < y) k++; }
     else if (going < 0) { k = stops.length - 1; while (k > 0 && stops[k] > y) k--; }
-    if (!touching && !pressing && Math.abs(y - stops[k]) > 1.5) jumpTo(k);
+    if (Math.abs(y - stops[k]) > 1.5) jumpTo(k);
   };
 
   // Stacked, the page scrolls as any other, and the screen the reader is on is kept as it comes to rest, so that when
@@ -1328,7 +1316,7 @@
   var seen = function (t, y0, y) {
     var dy = y - y0;
     if (!dy) return;
-    var dir = dy > 0 ? 1 : -1, running = t - natAt < RUN && dir === natDir, H = stops[1] || window.innerHeight;
+    var dir = dy > 0 ? 1 : -1, running = t - natAt < RUN && dir === natDir, H = stops[1];
     if (!running) { natFrom = anchor; natJumped = false; }
     natAt = t;
     natDir = dir;
@@ -1395,7 +1383,7 @@
   // The screen something is on (0 the first), or -1.
   var screenOf = function (node) {
     var el = node && (node.nodeType === 1 ? node : node.parentElement);
-    var s = el && el.closest && el.closest('[data-g-screen]');
+    var s = el && el.closest('[data-g-screen]');
     return s ? parseInt(s.getAttribute('data-g-screen'), 10) : -1;
   };
   // The keyboard's focus moving into a screen that isn't showing (Tab from one room into the next), or into one
@@ -1406,9 +1394,7 @@
     if (!on) return;
     var k = screenOf(event.target);
     if (k < 0) return;
-    var keyboard = true;
-    try { keyboard = event.target.matches(':focus-visible'); } catch (e) { /* an engine without it: go */ }
-    if (!keyboard) return;
+    if (!event.target.matches(':focus-visible')) return;
     var y = Y(), r = k > 0 ? rooms[k - 1] : null;
     if (!jump && !timed() && Math.abs(y - stops[k]) <= 1 && (!r || r.done)) return;
     pending = null;
@@ -1437,8 +1423,8 @@
   };
   document.addEventListener('selectionchange', function () {
     if (!on || pressing || touching) return;
-    var sel = window.getSelection && window.getSelection();
-    if (!sel || sel.isCollapsed || !sel.anchorNode || String(sel).length > 200) return;
+    var sel = window.getSelection();
+    if (sel.isCollapsed || !sel.anchorNode || String(sel).length > 200) return;
     var k = screenOf(sel.anchorNode);
     if (k >= 0 && k !== where()) findTo(k);
   });
@@ -1447,7 +1433,7 @@
   // and the big type, which are aria-hidden), or -1. The browser's own move there would stop a screen short, as a
   // find's does.
   var passage = function () {
-    var n = window.performance && performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+    var n = performance.getEntriesByType('navigation')[0];
     var m = n && /:~:(?:.*&)?text=([^&]+)/.exec(n.name || '');
     if (!m) return -1;
     var parts = m[1].split(',').filter(function (p) { return !/-$/.test(p) && !/^-/.test(p); });
@@ -1531,12 +1517,12 @@
 
   // A screen of the small viewport, in pixels: what a room's content has to fit in.
   var probe = document.createElement('div');
-  probe.style.cssText = 'position:absolute;top:0;left:0;width:0;height:100vh;height:100svh;visibility:hidden;pointer-events:none';
+  probe.style.cssText = 'position:absolute;top:0;left:0;width:0;height:100svh;visibility:hidden;pointer-events:none';
   var small = function () {
     document.body.appendChild(probe);
     var h = probe.offsetHeight;
     probe.remove();
-    return h || window.innerHeight;
+    return h;
   };
   // Every room, and the first screen, fit on a screen: their content is no taller than it, or runs at most a few
   // pixels (SLACK) into the bottom margin, which is never less than 14px: rounding, a font's metrics a hair apart from
@@ -1547,7 +1533,7 @@
     footing();
     var h = small() + SLACK;
     var head = document.querySelector('body > .site-head');
-    if (main && main.offsetHeight + (on || !head ? 0 : head.offsetHeight) > h) return false;
+    if (main.offsetHeight + (on || !head ? 0 : head.offsetHeight) > h) return false;
     return rooms.every(function (r) { return list(r.el.querySelectorAll('.g-grid')).every(function (g) { return g.offsetHeight <= h; }); });
   };
   // What the feet take, measured. A room's exhibit (--g-piece), and what Michi's words leave its album (--g-words). The
@@ -1557,16 +1543,16 @@
   // leaves of the screen (--g-foot, grid.css). Each is written only when it changes.
   var foot = document.querySelector('body > .site-foot');
   var studio = deck.querySelector('.g-room--studio');
-  var para = studio && studio.querySelector('.g-studio__text');
-  var heroFoot = main && main.querySelector(':scope > .g-foot');
+  var lark = deck.querySelector('.g-set--lark .g-grid');
+  var para = studio.querySelector('.g-studio__text');
+  var heroFoot = main.querySelector(':scope > .g-foot');
   var setPx = function (el, name, px) { var v = px + 'px'; if (el.style.getPropertyValue(name) !== v) el.style.setProperty(name, v); };
   // The Studio, on a wide screen: its motto and its address both at the full measure where the screen holds them, and
   // where either of them would have to be set in from the margin, the address keeps the measure and the motto goes
   // beside its first line (.is-short, grid.css). Decided on the layout with both at the measure.
   var wideStudio = window.matchMedia('(orientation: landscape) and (min-width: 900px) and (min-aspect-ratio: 25/18)');
-  var mottoA = studio && studio.querySelector('.g-motto__a'), mailP = studio && studio.querySelector('.g-mail');
+  var mottoA = studio.querySelector('.g-motto__a'), mailP = studio.querySelector('.g-mail');
   var shorten = function () {
-    if (!mottoA || !mailP) return;
     studio.classList.remove('is-short');
     if (wideStudio.matches && (parseFloat(getComputedStyle(mottoA).marginLeft) > 0.5 || parseFloat(getComputedStyle(mailP).marginLeft) > 0.5)) studio.classList.add('is-short');
   };
@@ -1585,17 +1571,22 @@
         setPx(r.el, '--g-words', Math.ceil(w));
       }
     });
-    if (foot && studio) setPx(studio, '--foot-h', foot.offsetHeight);
+    // Lark, upright on a phone, hangs its icon under its pitch wherever the room fits on the screen so (grid.css), and
+    // puts it beside the pitch where it doesn't (.g-lark-side): a phone's own size doesn't say which, as an app's own
+    // browser, under bars taller than Safari's, leaves the page less of the screen.
+    if (lark) {
+      root.classList.remove('g-lark-side');
+      if (lark.offsetHeight > small() + SLACK) root.classList.add('g-lark-side');
+    }
+    setPx(studio, '--foot-h', foot.offsetHeight);
     shorten();
-    if (para) setPx(studio, '--g-para', Math.ceil(para.getBoundingClientRect().height));
-    if (heroFoot) setPx(root, '--g-foot', Math.ceil(heroFoot.getBoundingClientRect().height));
+    setPx(studio, '--g-para', Math.ceil(para.getBoundingClientRect().height));
+    setPx(root, '--g-foot', Math.ceil(heroFoot.getBoundingClientRect().height));
   };
   var wanted = function () { return !still.matches && window.innerHeight >= 460 && fits(); };
 
-  // The screen the reader is on: in the deck, the stop nearest the scroll; stacked, the last whose top the scroll
-  // has reached.
+  // The screen the reader is on while the screens stack: the last whose top the scroll has reached.
   var current = function () {
-    if (on) return nearest(Y());
     var k = 0;
     screens.forEach(function (el, i) { if (el.getBoundingClientRect().top <= 2) k = i; });
     return k;
@@ -1613,11 +1604,11 @@
     arrival.finish();
     rooms.forEach(function (r) {
       r.bed.textContent = '';
-      if (r.types) r.types.textContent = '';
+      r.types.textContent = '';
       r.slabs = [];
       r.screen.classList.remove('g-covered');
       r.content.style.clipPath = '';
-      if (r.head) r.head.style.clipPath = '';
+      r.head.style.clipPath = '';
       r.screen.style.transform = '';
       r.el.classList.remove('is-done', 'is-here', 'is-moving', 'is-skipped', 'is-give');
       r.here = r.done = r.moving = r.layered = false;
@@ -1635,7 +1626,7 @@
   var signed = '';
   var signature = function () {
     var px = function (el) { return el.offsetWidth + 'x' + el.offsetHeight; };
-    return rooms.map(function (r) { return list(r.content.querySelectorAll('[data-g-ride], .g-piece, .g-icon, .g-studio__text')).map(px).join(',') + '/' + r.grid.offsetHeight; }).join(';') + '|' + (main ? px(main) : '') + (heroFoot ? px(heroFoot) : '');
+    return rooms.map(function (r) { return list(r.content.querySelectorAll('[data-g-ride], .g-piece, .g-icon, .g-studio__text')).map(px).join(',') + '/' + r.grid.offsetHeight; }).join(';') + '|' + px(main) + px(heroFoot);
   };
   var buildAll = function () {
     // The feet again, as the deck has them (its footer is shorter than the stacked page's: no mark, and nothing under
@@ -1663,7 +1654,6 @@
       build: function () {
         cuts = []; shown = false;
         hero.classList.remove('is-pushed');
-        if (!set) return;
         var h = hero.getBoundingClientRect(), b = set.getBoundingClientRect();
         var fs = parseFloat(getComputedStyle(set).fontSize) || 100;
         top = b.top - h.top - fs * 0.06;
@@ -1727,7 +1717,6 @@
     if (root.style.getPropertyValue('--g-runner-dy') !== dy) root.style.setProperty('--g-runner-dy', dy);
   };
   var set = function (want, k) {
-    if (want === on) return;
     on = want;
     cancelAnimationFrame(raf);
     raf = 0;
@@ -1762,7 +1751,7 @@
   // rest on, stacked (where() says which), never the one the new layout happens to have under the old scroll. One
   // that doesn't change it leaves everything as it is.
   var laid = '';
-  var layout = function () { return window.innerWidth + 'x' + (on ? Math.round(stops[1] || 0) : window.innerHeight); };
+  var layout = function () { return window.innerWidth + 'x' + (on ? Math.round(stops[1]) : window.innerHeight); };
   var resizing = 0, wide = root.clientWidth, turning = 0;   // the width it's laid out on (the layout's: a pinch doesn't change it)
   window.addEventListener('resize', function () {
     resizedAt = now();
@@ -1797,8 +1786,7 @@
     });
   });
   var change = function () { decide(where()); lens.reset(); };
-  if (still.addEventListener) still.addEventListener('change', change);
-  else if (still.addListener) still.addListener(change);
+  still.addEventListener('change', change);
   // Back from the back/forward cache, the page is as it was left: on the screen the reader was on, at rest, as the
   // browser has already shown it (its picture of the page, before any of this runs), so it's not played again. Safari
   // on an iPhone has the scroll at the top for a moment first, putting it back only 50ms later, which the deck would
@@ -1833,9 +1821,6 @@
     var scrub = hero.querySelector('[data-g-scrub]');
     var main = hero.querySelector('[data-g-hero-main]');
     var tagline = hero.querySelector('[data-g-tagline]');
-    var nothing = function () {};
-    var none = { follow: nothing, reset: nothing, rest: nothing, sweep: nothing, prepare: nothing, busy: function () { return false; } };
-    if (!el || !scrub || !main || !tagline) return none;
     var win = null, plate = null, U = null;
     var x = 0, v = 0, aimed = 0, spring = 0, then = 0, at = -1, built = false, wanted = false, shown = true;
     var sweeping = 0, hush = true, back = 0, drag = null;
@@ -1895,10 +1880,10 @@
     // Measured at rest: whatever of the tagline is still on its way (the dots, the stop, the give, if the lens is
     // wanted before they're home) taken to its end for the moment of measuring, and put back, in the same frame.
     var steady = function (fn) {
-      var anims = tagline.getAnimations ? tagline.getAnimations({ subtree: true }) : [];
+      var anims = tagline.getAnimations({ subtree: true });
       var times = anims.map(function (a) {
-        var t = a.currentTime, end = a.effect && a.effect.getComputedTiming ? a.effect.getComputedTiming().endTime : null;
-        if (t != null && end != null && isFinite(end)) a.currentTime = end + 1;
+        var t = a.currentTime, end = a.effect.getComputedTiming().endTime;
+        if (t != null && isFinite(end)) a.currentTime = end + 1;
         return t;
       });
       try { fn(); } finally { anims.forEach(function (a, i) { if (times[i] != null) a.currentTime = times[i]; }); }
@@ -1920,8 +1905,8 @@
       var fs = parseFloat(getComputedStyle(tagline).fontSize) || 100;
       var tb = rel(tagline.getBoundingClientRect());
       // The window starts under the header.
-      var head = document.querySelector('.g-hero > .g-head .site-head') || document.querySelector('body > .site-head');
-      var top = head ? Math.max(0, head.getBoundingClientRect().bottom - h.top) : 0;
+      var head = document.querySelector('.g-hero > .g-head .site-head');
+      var top = Math.max(0, head.getBoundingClientRect().bottom - h.top);
       if (!on) top = 0;
       win = document.createElement('div');
       win.className = 'g-lens__win';
@@ -1940,9 +1925,8 @@
         var b = rel(slot.getBoundingClientRect()), base = baseOf(slot, h.top);
         var row = rows.filter(function (r) { return Math.abs(r.base - base) < 2; })[0];
         if (!row) rows.push(row = { base: base, words: [] });
-        row.words.push({ el: slot, box: b });
+        row.words.push({ box: b });
       });
-      if (!rows.length) return;
       rows.sort(function (a, b) { return a.base - b.base; });
       rows.forEach(function (r) { r.cap = r.base - fs * 0.7275; r.x = r.base - fs * 0.546; r.words.sort(function (a, b) { return a.box.left - b.box.left; }); });
       var rowOf = function (b) { var mid = (b.top + b.bottom) / 2; return rows.filter(function (r) { return mid > r.cap - fs * 0.3 && mid < r.base + fs * 0.3; })[0] || rows[0]; };
@@ -1996,7 +1980,7 @@
       // Under the last line, the foot (the lede) bounds what's written: the window never lies over it, and stops 8px
       // over it at the most, as the not-found page's does.
       var foot = main.querySelector('.g-foot');
-      var floor = foot ? rel(foot.getBoundingClientRect()).top - 8 : Infinity;
+      var floor = rel(foot.getBoundingClientRect()).top - 8;
       // A note's width, in the mono's 0.6em figures, 10px, padded 3px a side.
       var wide = function (key, value) { return 6 + 6 * Math.max(key.length, (value || '').length); };
       var taken = {}, used = {}, firsts = {};
@@ -2032,19 +2016,17 @@
       };
       // The G, hung 0.06em into the left margin so its curve sits on it.
       var G = tagline.querySelector('.g-w--get .g-l');
-      if (G) {
-        var g = rel(G.getBoundingClientRect());
-        rule('v', rows[0].cap - fs * 0.05, m, fs * 0.83);
-        span(g.left, m, rows[0].x + fs * 0.12);
-        put('G hangs', fmt(-0.06), m, rows[0]);
-      }
+      var g = rel(G.getBoundingClientRect());
+      rule('v', rows[0].cap - fs * 0.05, m, fs * 0.83);
+      span(g.left, m, rows[0].x + fs * 0.12);
+      put('G hangs', fmt(-0.06), m, rows[0]);
       // The kerning put back as a margin, where letters set apart would lose it.
       list(tagline.querySelectorAll('.g-l')).forEach(function (l) {
         var kv = l.style.getPropertyValue('--k');
         if (!kv) return;
         var b = rel(l.getBoundingClientRect()), row = rowOf(b), prev = l.previousElementSibling;
         rule('v', row.cap - fs * 0.05, b.left, fs * 0.83);
-        put((prev ? prev.textContent : '') + l.textContent, fmt(parseFloat(kv)), b.left + 1, row);
+        put(prev.textContent + l.textContent, fmt(parseFloat(kv)), b.left + 1, row);
       });
       // The word spaces.
       rows.forEach(function (r) {
@@ -2063,13 +2045,11 @@
       });
       // The stop, on the margin: its box, the margin, and what it measured.
       var stop = tagline.querySelector('.g-stop');
-      if (stop) {
-        var sb = rel(stop.getBoundingClientRect());
-        var edge = W - m;
-        boxAround(sb);
-        rule('v', rows[0].cap - fs * 0.05, edge, last.base - rows[0].cap + fs * 0.1);
-        put('stop 0.15em', Math.round(Math.abs(sb.right - edge)) + 'px off', sb.left, rowOf(sb));
-      }
+      var sb = rel(stop.getBoundingClientRect());
+      var edge = W - m;
+      boxAround(sb);
+      rule('v', rows[0].cap - fs * 0.05, edge, last.base - rows[0].cap + fs * 0.1);
+      put('stop 0.15em', Math.round(Math.abs(sb.right - edge)) + 'px off', sb.left, rowOf(sb));
       // The lead, from one line's baseline to the next one's caps, in the unit nearest the middle with nothing else
       // to say.
       if (rows.length > 1) {
@@ -2281,20 +2261,20 @@
   // Motion.
   var arrival = (function () {
     var voidEl = hero.querySelector('[data-g-void]');
-    var home = voidEl && voidEl.parentNode, after = voidEl && voidEl.nextSibling;
+    var home = voidEl.parentNode, after = voidEl.nextSibling;
     var paper = hero.querySelector('[data-g-hero-main]');
     var headCopy = hero.querySelector(':scope > .g-head');
     var grounds = list(hero.querySelectorAll('.g-ground > i'));
     var casts = list(hero.querySelectorAll('.g-cast__col'));
     var state = '';   // '' not yet decided, 'void' held, 'strike' playing, 'done'
     var room = null;  // the room it's playing, landed on; null for the poster
-    var t0 = 0, cols = [], A = null, timers = [], keyUp = '', keyHead = '', tinted = false, waited = null, shown = null;
+    var t0 = 0, cols = [], A = null, timers = [], keyUp = '', keyHead = '', tinted = false, waited = null, voidDrawn = null;
     // How long the void holds the screen before the columns strike up, from the first frame the page drew (start).
     var BEAT = 300;
     var later = function (ms, fn) { timers.push(setTimeout(fn, ms)); };
-    var painted = function () { return !!(performance.getEntriesByType && performance.getEntriesByType('paint').length); };
+    var painted = function () { return !!performance.getEntriesByType('paint').length; };
     // Whether the void is drawn (grid.css decides, from the first frame), as the page opened.
-    var drawn = function () { if (shown === null) shown = !!voidEl && getComputedStyle(voidEl).display !== 'none'; return shown; };
+    var drawn = function () { if (voidDrawn === null) voidDrawn = getComputedStyle(voidEl).display !== 'none'; return voidDrawn; };
     // A damped spring's response to a step, s seconds after it (f, its frequency in Hz; z, its damping ratio).
     var stepAt = function (s, f, z) {
       if (s <= 0) return 0;
@@ -2314,15 +2294,15 @@
         bounds: shown.map(function (g, i) { var b = g.getBoundingClientRect(); return [i === 0 ? 0 : b.left - h.left + 0.5, i === n - 1 ? h.width : b.right - h.left - 0.5]; }),
         h: first ? first.offsetHeight : window.innerHeight,
         lead: first ? -first.offsetTop : 0,
-        headH: headCopy ? headCopy.offsetHeight : 0
+        headH: headCopy.offsetHeight
       };
       var was = cols;
       cols = shown.map(function (g, i) {
         var c = plan[i], w = 2 * Math.PI * c.f;
         // Settled: once the spring is within a quarter of a pixel of its place, for good.
         var settle = Math.log(Math.max(2, A.h / Math.sqrt(1 - c.z * c.z) / 0.25)) / (c.z * w);
-        var cast = casts[parseInt(g.style.getPropertyValue('--col'), 10)] || casts[i];
-        return { ground: g, cast: cast, card: cast && cast.querySelector('.g-cast__card'), delay: c.delay, f: c.f, z: c.z, settle: settle, y: was[i] ? was[i].y : 0, drawn: null, gave: null, flying: false };
+        var cast = casts[parseInt(g.style.getPropertyValue('--col'), 10)];
+        return { ground: g, cast: cast, card: cast.querySelector('.g-cast__card'), delay: c.delay, f: c.f, z: c.z, settle: settle, y: was[i] ? was[i].y : 0, drawn: null, gave: null, flying: false };
       });
       keyUp = keyHead = '';
     };
@@ -2335,7 +2315,7 @@
         c.y = y;
         var off = y <= 0 ? A.h + 2 : (1 - y) * A.h;
         var tr = y === 1 ? '' : 'translateY(' + off.toFixed(2) + 'px)';
-        if (tr !== c.drawn) { c.drawn = tr; c.ground.style.transform = tr; if (c.cast) c.cast.style.transform = tr; }
+        if (tr !== c.drawn) { c.drawn = tr; c.ground.style.transform = tr; c.cast.style.transform = tr; }
         // Past its place, the column takes the type only GIVE as far: the rest is the type's give within it.
         var give = y > 1 ? (1 - GIVE) * (y - 1) * A.h : 0;
         var gt = Math.abs(give) < 0.05 ? '' : 'translateY(' + give.toFixed(2) + 'px)';
@@ -2352,14 +2332,14 @@
         if (lead <= 0) passed++;
       }
       if (ku !== keyUp) { keyUp = ku; var cu = clipFor(A, up); paper.style.clipPath = cu === 'none' ? '' : cu; }
-      if (kh !== keyHead && headCopy) { keyHead = kh; var ch = clipFor(A, under); headCopy.style.clipPath = ch === 'none' ? '' : ch; }
+      if (kh !== keyHead) { keyHead = kh; var ch = clipFor(A, under); headCopy.style.clipPath = ch === 'none' ? '' : ch; }
       if (!tinted && passed * 2 >= cols.length) { tinted = true; chrome(anchor); }
       if (!alive) land();
     };
     // Arrived: the void is let go (and put back in the first screen, if it was laid in a room's).
     var letGo = function () {
       state = 'done';
-      if (room && voidEl && home) home.insertBefore(voidEl, after);
+      if (room) home.insertBefore(voidEl, after);
       hero.classList.remove('is-arriving', 'is-striking');
       root.classList.remove('g-arriving');
       root.classList.add('g-arrived');
@@ -2372,17 +2352,17 @@
         c.y = 1;
         c.ground.style.transform = '';
         c.ground.classList.remove('is-flying');
-        if (c.cast) c.cast.style.transform = '';
-        if (c.card) c.card.style.transform = '';
+        c.cast.style.transform = '';
+        c.card.style.transform = '';
         c.drawn = c.gave = '';
       });
       paper.style.clipPath = '';
-      if (headCopy) headCopy.style.clipPath = '';
+      headCopy.style.clipPath = '';
       letGo();
     };
     // The room landed on: its columns down and held there, the void under them in its screen, until the type is in.
     var hush = function (r) {
-      if (voidEl) r.screen.insertBefore(voidEl, r.screen.firstChild);
+      r.screen.insertBefore(voidEl, r.screen.firstChild);
       r.frozen = true;
       r.drive = null;
       r.slabs.forEach(function (s) { s.y = s.goal = s.ey = s.eg = 0; s.v = s.ev = 0; s.busy = false; s.at = 0; s.drop = null; });
@@ -2468,7 +2448,6 @@
       // landed on), and the void was there for them from the first frame (grid.css decides that, before this has run:
       // motion allowed, a screen tall enough).
       start: function () {
-        if (state) return;
         var k = anchor;
         var wanted = on && drawn() && Math.abs(Y() - (k > 0 ? stops[k] : 0)) <= 2;
         if (!wanted) { finish(); return; }
@@ -2483,7 +2462,7 @@
         // as the privacy and not-found pages hold theirs. The fonts are the site's own and the tagline's is preloaded;
         // were they still loading, the deck would be laid out again on them (below, Setting it going), which is
         // better done before the columns move than while they do. So the void waits for them, but never more than 0.6s.
-        var fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+        var fonts = document.fonts.ready;
         var cap = new Promise(function (resolve) { setTimeout(resolve, 600); });
         Promise.race([fonts, cap]).then(function () {
           var hold = function () {
@@ -2567,7 +2546,7 @@
     document.addEventListener('pointermove', function (event) {
       if (!on || !mouse.matches || (event.pointerType !== 'mouse' && event.pointerType !== 'pen')) return;
       var r = anchor > 0 ? rooms[anchor - 1] : null;
-      if (!r || !r.done || !r.hi || jump) { off(); return; }
+      if (!r || !r.done || jump) { off(); return; }
       var g = r.grid12, box = r.screen.getBoundingClientRect();
       var px = event.clientX - box.left, py = event.clientY - box.top;
       if (py < r.headH || px < 0 || px > r.width) { off(); return; }
@@ -2601,7 +2580,7 @@
     return target ? screenOf(target) : -1;
   };
   var start = function () {
-    var n = window.performance && performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+    var n = performance.getEntriesByType('navigation')[0];
     var kept = -1, k = named();
     plainly = !n || n.type === 'navigate';
     try { kept = parseInt(sessionStorage.getItem('g-screen'), 10); } catch (e) { /* no storage: nothing kept */ }
@@ -2609,7 +2588,7 @@
       // The address may still name the screen they first came to (/#lark): it's made to name the one they're on, so
       // that the browser's own move to the screen it names, which Safari makes once the page is in, takes them
       // nowhere else.
-      if (k >= 0 && k !== kept && window.history && history.replaceState) {
+      if (k >= 0 && k !== kept) {
         try { history.replaceState(history.state, '', location.pathname + location.search + (kept > 0 ? '#' + screens[kept].id : '')); } catch (e) { /* left as it was */ }
       }
       return kept;
@@ -2629,7 +2608,7 @@
   // out, then once they're in, check again that every room fits, and lay the columns out again on the type as it is
   // now, keeping the reader where they are. (In already, as they nearly always are, or changing nothing the deck was
   // laid out on, there's nothing to do: on a slow phone, a quarter of a second's work saved before anything moves.)
-  if (document.fonts && document.fonts.ready && document.fonts.status !== 'loaded') {
+  if (document.fonts.status !== 'loaded') {
     document.fonts.ready.then(function () {
       if (on && signed && signature() === signed) return;
       var k = where();

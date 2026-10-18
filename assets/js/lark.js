@@ -6,7 +6,7 @@
 
   // Shows a toggle now that it works, in a place as wide as its longest label (lark.css).
   var ready = function (button, labels) {
-    var place = button.closest('.covered__control') || button;
+    var place = button.closest('.covered__control');
     place.setAttribute('data-labels', labels.join('\n'));
     place.classList.add('is-ready');
   };
@@ -18,8 +18,7 @@
   document.querySelectorAll('[data-covered]').forEach(function (figure) {
     var button = figure.querySelector('.covered__toggle');
     var line = figure.querySelector('.covered__line');
-    if (!button || !line) return;
-    var labels = { show: button.textContent, cover: button.getAttribute('data-shown-label') || button.textContent };
+    var labels = { show: button.textContent, cover: button.getAttribute('data-shown-label') };
     var cover = {
       figure: figure,
       shown: false,
@@ -64,7 +63,7 @@
   var SQUARE = 200;   // ms
   var phases = runs.map(function (run) {
     var yours = run.classList.contains('rhythm__run--turn');
-    var n = parseInt(run.style.getPropertyValue('--n'), 10) || 0;
+    var n = parseInt(run.style.getPropertyValue('--n'), 10);
     return { n: n, ms: n * SQUARE, shown: !yours, words: yours ? 'Your turn' : 'Listen' };
   });
   var restWords = word.textContent;
@@ -138,7 +137,7 @@
     unwatch();
     unwatch = TB.inView(turn, function (entry) {
       var box = entry.boundingClientRect, seen = entry.intersectionRect;
-      var ratio = box && seen ? seen.height / Math.max(1, Math.min(box.height, window.innerHeight)) : entry.intersectionRatio;
+      var ratio = seen.height / Math.max(1, Math.min(box.height, window.innerHeight));
       if (ratio < 0.3) pause();
     }, { threshold: thresholds });
   };

@@ -6,11 +6,9 @@
   the run's squares (.rhythm__lit) as they pass. Under each run its label says what it is, shown only while
   Practice runs (lark.css): at rest the runs stand alone. It is one image to assistive tech (role="img"), named
   in words.
-  Params
-    class   optional  extra classes
 {%- endcomment -%}
-<div class="rhythm is-lark{% if include.class %} {{ include.class }}{% endif %}" role="img" aria-label="A turn in Lark: Lark plays a sentence, you say it back, and it plays again, until you move on.">
-  <div class="rhythm__run rhythm__run--play" style="--n: 10"><span class="rhythm__bits"><span class="rhythm__lit"></span></span><span class="rhythm__label meta">Lark plays a sentence</span></div>
+<div class="rhythm is-lark" role="img" aria-label="A turn in Lark: Lark plays a sentence, you say it back, and it plays again, until you move on.">
+  <div class="rhythm__run" style="--n: 10"><span class="rhythm__bits"><span class="rhythm__lit"></span></span><span class="rhythm__label meta">Lark plays a sentence</span></div>
   <div class="rhythm__run rhythm__run--turn" style="--n: 17"><span class="rhythm__bits"><span class="rhythm__lit"></span></span><span class="rhythm__label meta">You say it back</span></div>
-  <div class="rhythm__run rhythm__run--again" style="--n: 10"><span class="rhythm__bits"><span class="rhythm__lit"></span></span><span class="rhythm__label meta">Again, until you move on</span></div>
+  <div class="rhythm__run" style="--n: 10"><span class="rhythm__bits"><span class="rhythm__lit"></span></span><span class="rhythm__label meta">Again, until you move on</span></div>
 </div>

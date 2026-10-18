@@ -44,12 +44,11 @@
   'use strict';
   var root = document.documentElement;
   var doc = document.querySelector('.gd');
-  if (!doc) return;
   var list = function (nodes) { return Array.prototype.slice.call(nodes); };
   var fx = root.classList.contains('gd-fx');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   var forced = window.matchMedia('(forced-colors: active)');
-  var on = function (mq, fn) { if (mq.addEventListener) mq.addEventListener('change', fn); else if (mq.addListener) mq.addListener(fn); };
+  var on = function (mq, fn) { mq.addEventListener('change', fn); };
   // How the page was opened: anew, reloaded, or by a step back or forward (where the browser has no navigation
   // entries, its older word for it).
   var nav = null;
@@ -65,11 +64,9 @@
   // The real one goes in the header, between the wordmark and Contact, so the keys take it in the order it's seen.
   var head = document.querySelector('body > .site-head');
   var runner = document.querySelector('.gd-runner--real');
-  if (runner && head) {
-    var nav0 = head.querySelector('.site-nav');
-    head.insertBefore(runner, nav0);
-    runner.classList.add('is-ready');
-  }
+  var nav0 = head.querySelector('.site-nav');
+  head.insertBefore(runner, nav0);
+  runner.classList.add('is-ready');
   var runLinks = list(document.querySelectorAll('.gd-runner--real .gd-runner__link'));
 
   // The first screen's links to the parts take each part's color for their underline on hover: an app's own color
@@ -84,8 +81,8 @@
   // the same links would (they're set on the wordmark's baseline), so the index is moved by what that is. Both are
   // links 44px tall with their words in the meta centred in them, so it's their tops that are lined up.
   var lineUp = function () {
-    var a = head && head.querySelector('.site-nav a'), r = runner && runner.querySelector('.gd-runner__link');
-    if (!a || !r || !fx) return;
+    var a = head.querySelector('.site-nav a'), r = runner.querySelector('.gd-runner__link');
+    if (!fx) return;
     var was = parseFloat(root.style.getPropertyValue('--gd-runner-dy')) || 4;
     var d = a.getBoundingClientRect().top - r.getBoundingClientRect().top;
     if (Math.abs(d) > 0.01) root.style.setProperty('--gd-runner-dy', (was + d).toFixed(2) + 'px');
@@ -103,21 +100,21 @@
   var heads = list(document.querySelectorAll('.gd-heads > .gd-head'));
   var regions = list(doc.querySelectorAll('[data-gd-region]')).map(function (el, i) {
     var part = el.closest('[data-gd-part]');
-    return { el: el, head: heads[i] || null, key: part ? part.getAttribute('data-gd-part') : '', band: el.hasAttribute('data-gd-band'), start: el.classList.contains('gd-poster'), end: el.classList.contains('gd-end') };
+    return { el: el, head: heads[i], key: part ? part.getAttribute('data-gd-part') : '', band: el.hasAttribute('data-gd-band'), start: el.classList.contains('gd-poster'), end: el.classList.contains('gd-end') };
   });
   var tops = [];
   var hh = 0;
   var measure = function () {
     var y = window.scrollY;
     tops = regions.map(function (r) { return r.el.getBoundingClientRect().top + y; });
-    hh = head ? head.getBoundingClientRect().height : 0;
+    hh = head.getBoundingClientRect().height;
   };
   var themes = list(document.querySelectorAll('meta[name="theme-color"]'));
   var inked = list(document.querySelectorAll('body > .site-head, .gd-runner--real'));
   var under = function (y) { var k = 0; for (var i = 0; i < tops.length; i++) if (tops[i] <= y) k = i; return k; };
   var place = function () { if (fx && window.gdPlace) window.gdPlace(); };
   // A length on the screen's pixels.
-  var snap = function (v) { var d = window.devicePixelRatio || 1; return Math.round(v * d) / d; };
+  var snap = function (v) { var d = window.devicePixelRatio; return Math.round(v * d) / d; };
 
   // Until the browser has put the page where it opens (at a part linked to, or back where a reload or a step back
   // found it; some browsers do that only once the page has loaded), what the header says (below) stays as it is for
@@ -136,17 +133,17 @@
     if (opening()) return;
     edgesPaint();
     var y = window.scrollY;
-    var rk = under(y + 1), hk = under(y + (hh ? hh / 2 : 1));
+    var rk = under(y + 1), hk = under(y + hh / 2);
     var r = regions[rk], h = regions[hk];
-    if (!r || !h || (rk === bar && hk === at && !force)) return;
+    if (rk === bar && hk === at && !force) return;
     bar = rk;
     at = hk;
     var g = getComputedStyle(r.el).backgroundColor;
     // A band arriving is the canvas under its columns; it's the band's ground for the bar once that's at the top.
     var rb = r.band ? byEl.get(r.el) : null;
     if (rb && rb.state === 'arriving' && rb.topped && rb.ground) g = rb.ground;
-    if (!g || g === 'transparent' || g === 'rgba(0, 0, 0, 0)') g = canvas();
-    if (fx && g !== tint && !(arrival && arrival.holds())) {
+    if (g === 'rgba(0, 0, 0, 0)') g = canvas();
+    if (fx && g !== tint && !arrival.holds()) {
       tint = g;
       themes.forEach(function (m) { m.setAttribute('content', g); });
     }
@@ -174,20 +171,20 @@
   var ua = navigator.userAgent;
   var edges = navigator.maxTouchPoints > 0 && /AppleWebKit/.test(ua) && !/Android|Chrome\//.test(ua);
   var strip = document.querySelector('.gd-chrome'), sill = null;
-  if (strip && edges) { sill = strip.cloneNode(false); sill.classList.add('gd-chrome--foot'); strip.parentNode.insertBefore(sill, strip.nextSibling); }
+  if (edges) { sill = strip.cloneNode(false); sill.classList.add('gd-chrome--foot'); strip.parentNode.insertBefore(sill, strip.nextSibling); }
   var redo = function (el, c) { var n = el.cloneNode(false); n.style.setProperty('--gd-chrome', c); el.parentNode.replaceChild(n, el); return n; };
   var edgeTop = '', edgeFoot = '';
   // What's under the screen's line y (from its top): a band's ground, or the canvas. The lines read are 2px in from
   // the screen's edges, so a band landed a fraction of a pixel short of the top is the band's.
   var groundAt = function (y, foot) {
     var k = under(window.scrollY + y), r = regions[k];
-    var b = r && r.band ? byEl.get(r.el) : null;
+    var b = r.band ? byEl.get(r.el) : null;
     if (!b || b.state === 'waiting') return canvas();
     if (b.state === 'arriving') return (foot ? b.atFoot : b.atTop) && b.ground ? b.ground : canvas();
     return getComputedStyle(b.el).backgroundColor;
   };
   var edgesPaint = function () {
-    if (!sill || !tops.length || (arrival && arrival.holds())) return;
+    if (!sill || !tops.length || arrival.holds()) return;
     var t = groundAt(2, false), f = groundAt(window.innerHeight - 2, true);
     if (t !== edgeTop) { edgeTop = t; strip = redo(strip, t); }
     if (f !== edgeFoot) { edgeFoot = f; sill = redo(sill, f); }
@@ -241,7 +238,7 @@
     var img = holes.map(function () { return 'linear-gradient(#000 0 0)'; }).concat('linear-gradient(#000 0 0)').join(', ');
     var pos = holes.map(function (o) { return o.x + ' ' + o.y; }).concat('0 0').join(', ');
     var size = holes.map(function () { return '0.146em 0.139em'; }).concat('100% 100%').join(', ');
-    [['-webkit-mask-image', img], ['mask-image', img], ['-webkit-mask-position', pos], ['mask-position', pos], ['-webkit-mask-size', size], ['mask-size', size]].forEach(function (p) { h.style.setProperty(p[0], p[1]); });
+    [['mask-image', img], ['mask-position', pos], ['mask-size', size]].forEach(function (p) { h.style.setProperty(p[0], p[1]); });
     // The bits kept and moved, not made again, so a dot that has popped out of its stem doesn't pop again.
     var bits = list(decor.children);
     while (bits.length > spots.length) bits.pop().remove();
@@ -273,8 +270,7 @@
   // the word, short of the right margin, and the margin doesn't light as it lands (.gd-short).
   var title = doc.querySelector('h1.gd-title'), poster = doc.querySelector('.gd-poster__main');
   var shortness = function () {
-    if (!title || !poster) return;
-    var pc = getComputedStyle(poster), D = parseFloat(pc.getPropertyValue('--tag-d')) || 2.996;
+    var pc = getComputedStyle(poster), D = parseFloat(pc.getPropertyValue('--tag-d'));
     var width = poster.clientWidth - parseFloat(pc.paddingLeft) - parseFloat(pc.paddingRight);
     root.classList.toggle('gd-short', parseFloat(getComputedStyle(title).fontSize) < width / D - 0.5);
   };
@@ -290,7 +286,7 @@
     return 1 - Math.exp(-z * w * t) * (Math.cos(wd * t) + (z * w / wd) * Math.sin(wd * t));
   };
   var settles = function (f, z) { return Math.log(2000) / (z * 2 * Math.PI * f); };
-  var peak = function (z) { return z >= 1 ? 0 : Math.exp(-z * Math.PI / Math.sqrt(1 - z * z)); };
+  var peak = function (z) { return Math.exp(-z * Math.PI / Math.sqrt(1 - z * z)); };
 
   // ------------------------------------------------------------ The first screen's arrival
 
@@ -338,7 +334,6 @@
     // The site's ease, cubic-bezier(0.2, 0.7, 0.2, 1) (site.css, --ease), at u of the way through.
     var ease = function (u) {
       if (u <= 0) return 0;
-      if (u >= 1) return 1;
       var lo = 0, hi = 1, t = u;
       for (var k = 0; k < 24; k++) { t = (lo + hi) / 2; if (0.6 * (1 - t) * (1 - t) * t + 0.6 * (1 - t) * t * t + t * t * t < u) lo = t; else hi = t; }
       return 2.1 * (1 - t) * (1 - t) * t + 3 * (1 - t) * t * t + t * t * t;
@@ -361,10 +356,8 @@
     var topped = function () {
       tinted = true;
       if (!silled) footed();
-      if (strip) {
-        if (sill) { edgeTop = canvas(); strip = redo(strip, edgeTop); }
-        else strip.style.setProperty('--gd-chrome', 'var(--canvas)');
-      }
+      if (sill) { edgeTop = canvas(); strip = redo(strip, edgeTop); }
+      else strip.style.setProperty('--gd-chrome', 'var(--canvas)');
       paint(true);
     };
 
@@ -373,7 +366,7 @@
       var all = list(layer.querySelectorAll('.gd-a')), voids = list(layer.querySelectorAll('.gd-void'));
       var lifts = list(document.querySelectorAll('.gd-lift > i'));
       var shown = all.filter(function (a) { return a.offsetWidth > 0; }), n = shown.length;
-      H = layer.clientHeight || window.innerHeight;
+      H = layer.clientHeight;
       // At rest once its strip is within a quarter of a pixel of its place, for good.
       var rest = Math.max(AT, Math.log(Math.max(2, GIVE * H / Math.sqrt(1 - Z * Z) / 0.25)) / DECAY);
       cols = shown.map(function (a, i) {
@@ -384,8 +377,8 @@
       // drawn once, by the one over it, as the page's line is (doc.css, --gd-to); the last runs on to the
       // screen's edge.
       var lines = shown.map(function (a) { return a.querySelector('.gd-a__plate > .gd-title__decor'); });
-      var ends = lines.map(function (l, i) { return l && i < n - 1 ? l.getBoundingClientRect().right - shown[i + 1].getBoundingClientRect().left : null; });
-      lines.forEach(function (l, i) { if (l && ends[i] !== null) l.style.setProperty('--gd-to', ends[i].toFixed(2) + 'px'); });
+      var ends = lines.map(function (l, i) { return i < n - 1 ? l.getBoundingClientRect().right - shown[i + 1].getBoundingClientRect().left : null; });
+      lines.forEach(function (l, i) { if (ends[i] !== null) l.style.setProperty('--gd-to', ends[i].toFixed(2) + 'px'); });
     };
     // A frame, te ms into the strike: every column where its spring has it, written only where it has moved, and its
     // edges as bright as they are by then, and the canvas under it as light; the strips, and the heading, when their
@@ -402,7 +395,7 @@
         if (!c.landed && y >= UP) {
           c.landed = true;
           c.ground.classList.add('is-landed');
-          if (c.voidEl) c.voidEl.style.visibility = 'hidden';
+          c.voidEl.style.visibility = 'hidden';
         }
         // Its edges come in from its first frame in flight (drawn at nothing in that frame, as a transition starts).
         if (c.lands < 0 && s > 0) {
@@ -422,7 +415,7 @@
             else c.ground.style.setProperty('--gd-edges', o);
           }
         }
-        if (c.lands >= 0 && c.lift && c.settled !== 'gone') {
+        if (c.lands >= 0 && c.settled !== 'gone') {
           var q = (te - c.lands) / SETTLE;
           var l = q >= 1 ? 'gone' : (100 * (1 - ease(q))).toFixed(2) + '%';
           if (l !== c.settled) {
@@ -431,7 +424,7 @@
             else c.lift.style.setProperty('--gd-lift', l);
           }
         }
-        if (c.faded !== 'gone' || (c.lift && c.settled !== 'gone')) busy = true;
+        if (c.faded !== 'gone' || c.settled !== 'gone') busy = true;
       }
       if (!silled && te >= SILL && !scheme.matches) footed();
       if (!tinted && te >= TINT) topped();
@@ -441,7 +434,6 @@
     };
     var tick = function (t) {
       raf = 0;
-      if (state !== 'play') return;
       var more = false;
       try { more = draw(t); } catch (e) { done(); return; }
       if (more) raf = requestAnimationFrame(tick);
@@ -449,7 +441,6 @@
     // Over: the arrival taken away (at once, if it was still going), the poster simply there, and the bars and the
     // theme colour given back to what's under them.
     var done = function () {
-      if (state === 'done') return;
       state = 'done';
       timers.forEach(clearTimeout);
       timers = [];
@@ -462,7 +453,7 @@
     };
     // No arrival after all, with the void already drawn: once the browser has painted it, it fades away over the poster
     // as the home page's does (doc.css, html.gd-unvoid), rather than going in a frame; else it simply goes.
-    var painted = function () { return !!(window.performance && performance.getEntriesByType && performance.getEntriesByType('paint').length); };
+    var painted = function () { return !!performance.getEntriesByType('paint').length; };
     var unvoid = function () {
       if (!painted()) { done(); return; }
       state = 'fade';
@@ -476,7 +467,7 @@
       if (window.scrollY > 2 || performance.now() - (window.gdT0 || 0) > 2400) { unvoid(); return; }
       state = 'play';
       lay();
-      t0 = typeof t === 'number' ? t : performance.now();
+      t0 = t;
       // The first frame of the strike is drawn with the class that begins it, so no frame shows the columns anywhere
       // but under the screen's foot before they move.
       root.classList.add('gd-striking');
@@ -497,14 +488,13 @@
       // Whether it plays: the page's CSS drew the void (motion allowed, no forced colors, the page opening on its first
       // screen), and the reader is at the top.
       start: function () {
-        if (state) return;
-        var drawn = layer && getComputedStyle(layer).display !== 'none';
-        if (!drawn || !window.requestAnimationFrame) { done(); return; }
+        var drawn = getComputedStyle(layer).display !== 'none';
+        if (!drawn) { done(); return; }
         if (window.scrollY > 2) { unvoid(); return; }
         state = 'void';
         edgeTop = edgeFoot = 'void';
         requestAnimationFrame(function (t) { seen = t; });
-        var fonts = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+        var fonts = document.fonts.ready;
         var cap = new Promise(function (resolve) { setTimeout(resolve, 600); });
         Promise.race([fonts, cap]).then(function () {
           var go = function () {
@@ -597,10 +587,10 @@
   var bands = list(doc.querySelectorAll('[data-gd-band]')).map(function (el) {
     var r = regions.filter(function (g) { return g.el === el; })[0];
     var part = el.closest('[data-gd-part]');
-    return { el: el, h: el.querySelector('h2'), key: part ? part.getAttribute('data-gd-part') : '', head: r ? r.head : null, how: el.getAttribute('data-gd-cascade') || 'strike', state: el.classList.contains('is-waiting') ? 'waiting' : 'here', cols: null };
+    return { el: el, h: el.querySelector('h2'), key: part.getAttribute('data-gd-part'), head: r.head, how: el.getAttribute('data-gd-cascade'), state: el.classList.contains('is-waiting') ? 'waiting' : 'here', cols: null };
   });
   var shown = function (b) {
-    if (b.head) b.head.classList.toggle('is-waiting', b.state === 'waiting');
+    b.head.classList.toggle('is-waiting', b.state === 'waiting');
   };
   var live = function () { return fx && !reduce.matches; };
 
@@ -650,7 +640,7 @@
     var P = (W - 2 * m + gap) / 12;
     // The columns meet in the middle of the gutters a pixel over, their edges on the screen's own pixels, so what a
     // column carries is drawn on the pixels the band draws it on.
-    var dpr = window.devicePixelRatio || 1;
+    var dpr = window.devicePixelRatio;
     var edge = function (j) { return m + j * P - gap / 2; };
     var bounds = range(n, function (i) { return [i === 0 ? 0 : snap(edge(i * per) - 0.5), i === n - 1 ? W : snap(edge((i + 1) * per) + 0.5)]; });
     // Its pieces: what the columns carry (the label, the name and its dots, the number), and what they hold still,
@@ -668,7 +658,7 @@
     rg.selectNodeContents(b.h);
     var nr = rg.getBoundingClientRect();
     var spine = bounds.map(function (c) { return c[1] > nr.left - br.left + 2 && c[0] < nr.right - br.left - 2; });
-    var plan = (CASCADES[b.how] || CASCADES.strike)(n, spine);
+    var plan = CASCADES[b.how](n, spine);
     // How far the springs go past their place, and back: the band's pane has that much more of its ground on its
     // trailing side (over), and on its leading side (lip), so a column ringing never shows the plan or the page.
     var o = 0;
@@ -689,7 +679,7 @@
     b.xs = bounds.map(function (c, i) { return i === 0 ? -2 : c[0]; }).concat(W + 2);
     b.cols = plan.map(function (c, i) {
       var x0 = bounds[i][0], x1 = bounds[i][1];
-      var col = el('gd-col' + (c.spine ? ' is-spine' : ''), 'left:' + px(x0) + ';width:' + px(x1 - x0));
+      var col = el('gd-col', 'left:' + px(x0) + ';width:' + px(x1 - x0));
       var belt = el('gd-belt');
       var lines = function (top) { return el('gd-pane__lines', 'top:' + px(top) + ';left:' + px(m + i * per * P - x0) + ';width:' + px(per * P - gap) + ';--h:' + px(H)); };
       var mine = pieces.filter(function (d) { return d.left < x1 && d.left + d.width > x0; });
@@ -734,13 +724,11 @@
     // plan's, in the same box (.gd-head__plan), which draw() cuts back, a frame at a time, to what of each column the
     // band hasn't brought in yet. Both lie fixed to the screen in the band's box, as the page scrolls; only the cut
     // follows the columns.
-    if (fx && b.head) {
-      var cover = el('gd-head__plan');
-      cover.appendChild(b.head.querySelector('.gd-head__bar').cloneNode(true));
-      b.head.appendChild(cover);
-      b.plan = cover;
-      b.cut = null;
-    }
+    var cover = el('gd-head__plan');
+    cover.appendChild(b.head.querySelector('.gd-head__bar').cloneNode(true));
+    b.head.appendChild(cover);
+    b.plan = cover;
+    b.cut = null;
   };
   var unbuild = function (b) {
     if (b.wrap) b.wrap.remove();
@@ -761,7 +749,6 @@
   var raf = 0;
   var loop = function () { if (!raf) raf = requestAnimationFrame(step); };
   var arrive = function (b) {
-    if (b.state !== 'waiting') return;
     b.el.classList.remove('is-waiting');
     build(b);
     b.el.classList.add('is-arriving', 'is-moving');
@@ -838,7 +825,6 @@
   // column that drops), all as one polygon on the band's box, the copy's box. It runs a little past the box, which
   // clips it, so nothing is left at the box's own edges.
   var cut = function (b) {
-    if (!b.plan) return;
     var H = b.H, e = 0.5 / b.dpr, upper = [], lower = [], any = false, all = true;
     b.cols.forEach(function (c, i) {
       var top = -2, bot = H + 2;
@@ -899,7 +885,7 @@
   var followed = { hash: '', at: -1e9 };
   document.addEventListener('click', function (e) {
     if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    var a = e.target.closest('a[href^="#"]');
     if (!a) return;
     var hash = a.getAttribute('href'), to = target(hash);
     if (!to) return;
@@ -932,7 +918,7 @@
   // the screen. A reload puts the page back where it was, which some browsers do only once the page has loaded, so
   // until the scroll is back there (or a second after the load, at most) the band waits in its plan. The bands before
   // it are simply there. If the page never gets there, it's as any other band.
-  var landing = null, loadedAt = document.readyState === 'complete' ? performance.now() : 0;
+  var landing = null, loadedAt = 0;
   var keyed = root.getAttribute('data-gd-land');
   bands.forEach(function (b) { if (b.state === 'waiting') { if (b.key === keyed) landing = b; shown(b); } });
   var landed = function (b) {
@@ -969,7 +955,7 @@
   var start = function () {
     started = true;
     // (Come so late that the layout's script has given up on it and shown every band as it is: they stay so.)
-    if (!live() || !('IntersectionObserver' in window) || window.gdLate) { bands.forEach(still); landing = null; return; }
+    if (!live() || window.gdLate) { bands.forEach(still); landing = null; return; }
     var to = target(location.hash);
     bands.forEach(function (b) {
       if (b.state !== 'here') return;
@@ -1008,7 +994,7 @@
   // frame, since the browser would put it back under the arrival).
   window.addEventListener('pagehide', function () {
     var y = window.scrollY, b = y >= 1 ? bands.filter(function (o) { return landed(o); })[0] : null;
-    try { sessionStorage.setItem(store, JSON.stringify({ at: under(y + (hh ? hh / 2 : 1)), land: b ? b.key : '', y: y })); } catch (e) { /* no storage: nothing kept */ }
+    try { sessionStorage.setItem(store, JSON.stringify({ at: under(y + hh / 2), land: b ? b.key : '', y: y })); } catch (e) { /* no storage: nothing kept */ }
   });
 
   // ------------------------------------------------------------ Setting it going
@@ -1049,18 +1035,18 @@
   arrival.start();
   // The title's face, loaded (the layout's script asks first, and sets .gd-type; a face that failed doesn't count).
   var face = window.gdFace ? window.gdFace() : Promise.resolve(false);
-  var ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+  var ready = document.fonts.ready;
   Promise.all([face, ready]).then(function (r) {
     if (r[0]) root.classList.add('gd-type');
     relayout();
     land();
     start();
-  }, function () { relayout(); land(); start(); });
+  });
   window.addEventListener('load', function () { measure(); land(); paint(true); });
   // The page laid out again without the window changing (the fonts in, a larger text size): measured again, a frame
   // later, once.
   var settling = 0;
-  if (window.ResizeObserver) new ResizeObserver(function () { cancelAnimationFrame(settling); settling = requestAnimationFrame(relayout); }).observe(doc);
+  new ResizeObserver(function () { cancelAnimationFrame(settling); settling = requestAnimationFrame(relayout); }).observe(doc);
   // Here, and set going: the layout's script, which draws a band to be landed on or to arrive in its plan before this
   // comes, needn't show it as it is after all.
   window.gdLive = true;

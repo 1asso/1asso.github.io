@@ -1,10 +1,9 @@
-/* Tiny Bit Studio: “Color rooms”
-   Every room begins as a bit. The home page is a run of rooms painted edge to edge, each in its app's
-   color, and you enter each through its bit, which grows until its color is everything (doors.css).
-   One 12-column grid, three text sizes (display, text, meta) and the rooms' names at poster size, no
-   rules or dividers: space and color do the dividing. Color comes from the apps (head.html writes it
-   from apps.yml): their bits on the page and the grounds of their rooms, never text. README.md says
-   where things live and how to change them. */
+/* Tiny Bit Studio: the system under every page's own sheet (grid.css, doc.css, lost.css).
+   One 12-column grid, ruled on every page in hairlines; three text sizes (display, text, meta), and the big
+   type (the tagline, the rooms' names and numbers, the address) set to the grid as posters; no rules or
+   dividers at rest: space and the rooms' grounds do the dividing. Color comes only from the apps (head.html
+   writes it from apps.yml): their bits on the page and the grounds of their rooms, never text. README.md
+   says where things live and how to change them. */
 
 /* ---------------------------------------------------------------- Fonts */
 
@@ -44,15 +43,15 @@
 /* ---------------------------------------------------------------- Tokens */
 
 :root {
-  /* Light: a bright, faintly cool white page; a field (the 404's) is a shade deeper. */
+  /* Light: a bright, faintly cool white page. */
   --canvas: #F8F9FA;
-  --field: #E9EBEE;
-  --ink: #0D0E10;            /* 18.3:1 on canvas, 16.2:1 on the field */
-  --ink-2: #53575E;          /* 6.9:1 on canvas, 6.1:1 on the field */
-  --ink-3: #62666D;          /* 5.5:1 on canvas, 4.8:1 on the field */
+  --ink: #0D0E10;            /* 18.3:1 on canvas */
+  --ink-2: #53575E;          /* 6.9:1 on canvas */
+  --ink-3: #62666D;          /* 5.5:1 on canvas */
+  /* An app's icon's shadow (grid.css, .g-icon__img): a box-shadow on its 26% corner, which follows the icons' own
+     within about a pixel, not a drop-shadow on its pixels: Safari repaints only the icon's square when its image
+     arrives after the first paint, and that cuts a drop-shadow off square (WebKit bug 236758). */
   --icon-shadow: 0 1px 1.5px rgb(13 14 16 / 0.07), 0 10px 16px rgb(13 14 16 / 0.13);
-  /* The Studio's ground: a room inverted, the ink in light mode and the light page in dark. */
-  --studio-room: #0D0E10;
 
   /* Color belongs to the apps: their bits and marks on the page, and the grounds of their rooms; never
      text. Their colors (--michi, --lark, --kozeni, and --app inside an .is-<key> block) and their rooms'
@@ -70,7 +69,6 @@
   /* Grid */
   --m: clamp(24px, 3.75vw, 72px);    /* outer margin */
   --g: clamp(16px, 1.667vw, 24px);   /* gutter */
-  --max: 1680px;
 
   /* The header's height, exactly, so the home page's first screen can be composed under it: its padding,
      then the 44px brand and the 44px nav links standing on the wordmark's baseline, which lies 8 to 9.5px
@@ -81,8 +79,6 @@
 
   /* Space: it does the dividing. */
   --room: clamp(7rem, 12vw, 13rem);         /* between sections on a page */
-  --room-pad: clamp(5rem, 9vw, 9rem);       /* a room's ground above its content, after its door */
-  --room-end: clamp(7rem, 12vw, 13rem);     /* and below it, before the next door */
   --step: clamp(3.5rem, 6vw, 6rem);         /* between the parts of a room */
   --beat: clamp(1.5rem, 2.4vw, 2.5rem);
 
@@ -94,7 +90,6 @@
   --t-press: 120ms;   /* a key's press, a bit filling */
   --t-hover: 200ms;   /* colors and underlines */
   --t-line: 240ms;    /* an arrow's nudge */
-  --t-slide: 320ms;   /* a stamp sliding into its place */
   --t-stop: 360ms;    /* a sentence's bars */
   --t-tick: 400ms;    /* the email's underline */
   --t-sign: 900ms;    /* the logo's bit going home and back */
@@ -102,28 +97,13 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Dark: a deep neutral page, a field slightly raised. */
+    /* Dark: a deep neutral page. */
     --canvas: #121315;
-    --field: #1A1B1E;
-    --ink: #EDEEF0;          /* 16.0:1 on canvas, 14.8:1 on the field */
-    --ink-2: #A7ABB2;        /* 8.1:1 on canvas, 7.5:1 on the field */
-    --ink-3: #979BA2;        /* 6.7:1 on canvas, 6.2:1 on the field */
+    --ink: #EDEEF0;          /* 16.0:1 on canvas */
+    --ink-2: #A7ABB2;        /* 8.1:1 on canvas */
+    --ink-3: #979BA2;        /* 6.7:1 on canvas */
     --icon-shadow: 0 13px 22px rgb(0 0 0 / 0.5);
-    --studio-room: #F8F9FA;
   }
-}
-
-/* The doors (doors.css) are drawn on screen, with motion allowed and without forced colors: by CSS where
-   scroll-driven animations run, or else by doors.js (.doors-js, which hero.html sets before the page
-   paints). There, each is --door-h tall, and a jump to a room skips its door (Rooms, below). Elsewhere
-   there are no doors, and the rooms meet edge to edge. */
-@supports (animation-timeline: view()) {
-  @media screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
-    :root { --door-h: 90svh; }
-  }
-}
-@media screen and (forced-colors: none) {
-  :root.doors-js { --door-h: 90svh; }
 }
 
 /* ---------------------------------------------------------------- Base */
@@ -153,15 +133,15 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* A door's bit grows to hundreds of times its size, past every edge of the page; clipped here, it adds
-   nothing to the page's width or height. Clip, not hidden, so nothing inside becomes a scroller and
-   sticky things still stick to the screen. */
+/* What runs past the page's sides (the big numbers of the home page's rooms and of the privacy page's parts, set
+   off the margins) is clipped here, so it adds nothing to the page's width. Clip, not hidden, so nothing inside
+   becomes a scroller and sticky things still stick to the screen. */
 main { overflow: clip; }
 
-img, svg, video { display: block; max-width: 100%; }
+img, svg { display: block; max-width: 100%; }
 img { height: auto; }
-p, h1, h2, h3, h4, h5, h6, ul, ol, dl, dd, figure, blockquote { margin: 0; padding: 0; }
-h1, h2, h3, h4, h5, h6 { font-size: inherit; font-weight: inherit; }
+p, h1, h2, h3, h4, ul, ol, figure, blockquote { margin: 0; padding: 0; }
+h1, h2, h3, h4 { font-size: inherit; font-weight: inherit; }
 ul[role="list"], ol[role="list"] { list-style: none; }
 strong, b { font-weight: 600; }
 button { font: inherit; color: inherit; }
@@ -169,14 +149,14 @@ button { font: inherit; color: inherit; }
 
 a { color: inherit; text-decoration: none; }
 /* Links in running text: a quiet underline that takes the app's color on hover. */
-:where(p, dd, li, td, th, figcaption) a:where(:not([class])) {
+:where(p, li, figcaption) a:where(:not([class])) {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
   text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
   transition: text-decoration-color var(--t-hover) var(--ease);
 }
-:where(p, dd, li, td, th, figcaption) a:where(:not([class])):hover { text-decoration-color: var(--app, currentColor); }
+:where(p, li, figcaption) a:where(:not([class])):hover { text-decoration-color: var(--app, currentColor); }
 :where(.site-nav, .site-foot__nav) a { text-decoration: none; }
 
 :focus-visible {
@@ -233,16 +213,10 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0;
 }
 
-.only-dark { display: none; }
-@media (prefers-color-scheme: dark) {
-  .only-light { display: none; }
-  .only-dark { display: inline; }
-}
-
 /* ---------------------------------------------------------------- Stops, bits and toggles */
 
 /* The square full stop: the logo's bit at display size, on the baseline. Hollow, it's the mark for
-   "not here" (the 404 page's title), drawn at the status bits' stroke: a seventh of its side. */
+   "not here" (the 404 page's title), drawn at a seventh of its side. */
 .stop {
   display: inline-block;
   width: 0.15em;
@@ -270,9 +244,6 @@ a { color: inherit; text-decoration: none; }
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--app, currentColor);
 }
-
-.status { color: var(--ink-3); }
-.status .bit { margin-right: 10px; }
 
 /* Inline lists joined by dots. The dots are silent to screen readers. */
 .dots { display: flex; flex-wrap: wrap; }
@@ -303,7 +274,7 @@ a { color: inherit; text-decoration: none; }
 /* A toggle: the site's one button. Its text at the size around it (text or meta), underlined like a
    link, after a bit that fills while it's on (.is-on). Its label always says what a press will do, so
    there is no aria-pressed to contradict it. 44px tall to the finger (--hit above and below), no
-   taller to the eye. A plain toggle (.toggle--plain) has no bit. */
+   taller to the eye. */
 .toggle {
   --hit: 12px;
   display: inline-block;
@@ -320,7 +291,6 @@ a { color: inherit; text-decoration: none; }
   text-decoration-color: color-mix(in srgb, currentColor 42%, transparent);
   transition: text-decoration-color var(--t-hover) var(--ease);
 }
-.toggle.meta { font-weight: 400; }
 .toggle:hover { text-decoration-color: var(--app, currentColor); }
 .toggle.is-on { text-decoration-color: currentColor; }
 .toggle::before {
@@ -333,7 +303,6 @@ a { color: inherit; text-decoration: none; }
   box-shadow: inset 0 0 0 1px var(--app, currentColor);
 }
 .toggle.is-on::before { background: var(--app, currentColor); }
-.toggle--plain::before { content: none; }
 
 /* A control only a script can work: gone without JavaScript; with it, its place is kept from the first
    paint, so nothing shifts, and it shows once the script that works it is ready (.is-ready). One whose
@@ -345,7 +314,6 @@ html:not(.js) [data-js-only] { display: none !important; }
 
 .wrap {
   width: 100%;
-  max-width: var(--max);
   margin-inline: auto;
   padding-inline: var(--m);
 }
@@ -413,7 +381,6 @@ html:not(.js) [data-js-only] { display: none !important; }
   justify-content: space-between;
   gap: 8px 32px;
 }
-.site-foot__row + .site-foot__row { margin-top: 24px; }
 .site-foot__sign { display: flex; align-items: baseline; gap: 14px; }
 .site-foot__mark { position: relative; top: 5px; fill: var(--ink); }
 /* The footer's links are 44px tall to the finger. */
@@ -432,7 +399,7 @@ html:not(.js) [data-js-only] { display: none !important; }
 .site-foot__nav .dots { margin-bottom: calc(var(--head-pad) + 35px - 0.698em - 22px + 0.375em); }
 /* Over the last 80px of the page the footer mark's bit slides home into its notch, following the scroll
    both ways, so at the very bottom the mark is one square. Where scroll timelines aren't supported, the
-   mark simply stays as it is. A bitless page (the 404) has no bit to bring home. */
+   mark simply stays as it is. */
 @supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
     .site-foot__mark .mark__bit { animation: foot-bit-home linear both; animation-timeline: scroll(root block); animation-range: calc(100% - 80px) 100%; }
@@ -442,144 +409,39 @@ html:not(.js) [data-js-only] { display: none !important; }
 
 /* ---------------------------------------------------------------- Rooms */
 
-/* A room (room.html), one for each app, painted edge to edge in its ground (--ground: room and room_dark
-   in apps.yml), its text in the room's ink: white or ink (room_text), the second ink at 86% and the third
-   at 84%, which hold 4.85:1 or more on every room's ground by day and on the white rooms' at night; the ink
-   room's ground at night (Kozeni's deeper coral) takes 94% and 92%, which hold 4.5:1. Inside, the inks are the
-   room's, so everything there (toggles, bits, focus rings, an exhibit's
-   labels) takes them with no rule of its own, and head.html makes the apps' colors the room's ink there
-   too. The Studio (index.html) is a room inverted: the ink's ground in light mode, the light page's in
-   dark, its text the other way about. Contact is back on the page's canvas.
-   Rooms, the Studio and Contact are positioned, with no z-index, and so are their contents, so that they
-   paint in the order they come: a door's bit (doors.css) paints over the end of the room before it as it
-   grows, and its own room's content paints over the bit. Give nothing in them a z-index that changes
-   that order. */
-.room, .room--studio, .contact { position: relative; background: var(--ground); }
-.room, .room--studio {
+/* A room on the home page (index.html), one for each app, on its ground (--ground: room and room_dark in apps.yml,
+   which grid.css paints), its text in the room's ink: white or ink (room_text), the second ink at 86% and the third
+   at 84%, which hold 4.85:1 or more on every room's ground by day and on the white rooms' at night; the ink room's
+   ground at night (Kozeni's deeper coral) takes 94% and 92%, which hold 4.5:1. Inside, the inks are the room's, so
+   everything there (toggles, bits, focus rings, an exhibit's labels) takes them with no rule of its own, and
+   head.html makes the apps' colors the room's ink there too. A room is positioned, so the home page's deck stacks
+   it over the screens before it by its z-index (grid.css). */
+.room {
+  position: relative;
   color: var(--room-ink);
   --ink: var(--room-ink);
   --ink-2: var(--room-ink-2);
   --ink-3: var(--room-ink-3);
+  --app: var(--room-ink);
 }
-.room { --app: var(--room-ink); padding-bottom: var(--room-end); }
-.room--text-light, .room--studio { --room-ink: #FFFFFF; --room-ink-2: rgb(255 255 255 / 0.86); --room-ink-3: rgb(255 255 255 / 0.84); }
+.room--text-light { --room-ink: #FFFFFF; --room-ink-2: rgb(255 255 255 / 0.86); --room-ink-3: rgb(255 255 255 / 0.84); }
 .room--text-dark { --room-ink: #0D0E10; --room-ink-2: rgb(13 14 16 / 0.86); --room-ink-3: rgb(13 14 16 / 0.84); }
 @media (prefers-color-scheme: dark) {
   .room--text-dark { --room-ink-2: rgb(13 14 16 / 0.94); --room-ink-3: rgb(13 14 16 / 0.92); }
-  .room--studio { --room-ink: #0D0E10; --room-ink-2: rgb(13 14 16 / 0.86); --room-ink-3: rgb(13 14 16 / 0.84); }
 }
 /* A selection in a room is its ink, the selected words its ground. */
-:is(.room, .room--studio) ::selection { background: var(--room-ink); color: var(--ground); }
-
-/* In-page jumps (/#lark, /#contact) land on the content, past the door and the ground above it (html's
-   scroll-padding adds 24px); where there are no doors, --door-h isn't set and there's nothing to skip. */
-.rooms, .room, .room--studio, .contact { scroll-margin-top: calc(-1 * var(--room-pad)); }
-:is(.room, .room--studio, .contact):has(> .door) { scroll-margin-top: calc(-1 * (var(--door-h, 0px) + var(--room-pad))); }
-
-/* The room's name is its poster, on one line in the first eight columns, its caps trimmed to the line so
-   it stands exactly on its baseline. Beside it, on that baseline, the gloss, the pitch and the badge,
-   the badge's foot on the name's baseline. */
-.room__main { position: relative; align-items: start; container-type: inline-size; padding-top: var(--room-pad); }   /* the grid its icon is measured against */
-.room__head { grid-column: 1 / span 8; align-self: end; align-self: last baseline; }
-.room__intro { grid-column: 9 / -1; align-self: end; align-self: last baseline; }
-.room__name {
-  font-size: clamp(5.5rem, 20vw, 21rem);
-  letter-spacing: -0.045em;
-  line-height: 0.8;
-  margin-left: -0.06em;
-  white-space: nowrap;
-}
-.status + .room__name { margin-top: 28px; }   /* an app not out yet: its status over its name */
-.room__gloss { color: var(--ink-3); }
-.room__gloss + .room__pitch { margin-top: 12px; }
-.room__pitch { max-width: 22em; text-wrap: pretty; }
-.room__store { margin-top: 24px; }
-
-/* A field: flat ground a shade off the page, for something to stand on (the 404's mark). */
-.field { background: var(--field); }
-.field picture { display: contents; }
-/* With the picture unwrapped, its <source> would become an empty grid item and take a row of its
-   own, pushing the icon out of place. Sources never render, so take them out of the layout. */
-.field source { display: none; }
-/* In a room the room's own color is the field: the exhibit row has no panel. The icon stands in the
-   first four columns, the app's piece in the other eight, the page grid running through both. */
-.room__field {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: subgrid;
-  align-items: start;
-  margin-top: var(--step);
-  background: none;
-}
-.field__object { grid-column: 1 / span 4; }
-.field__piece { grid-column: 5 / -1; }
-/* An app's icon is one size in every room: under a fifth of the room's grid, never wider than 16rem.
-   Its shadow is a box-shadow on a 26% corner, which follows the icons' own within about a pixel, not a
-   drop-shadow on its pixels: Safari repaints only the icon's square when its image arrives after the
-   first paint, and that cuts a drop-shadow off square (WebKit bug 236758). */
-.field__icon {
-  width: min(18cqi, 16rem);
-  height: auto;
-  border-radius: 26%;
-  box-shadow: var(--icon-shadow);
-}
+.room ::selection { background: var(--room-ink); color: var(--ground); }
 
 /* Apple's badge, scaled but unaltered. */
 .store { display: grid; justify-items: start; gap: 14px; }
 .store__badge { display: block; border-radius: 8px; }
 .store__badge img { width: auto; height: 44px; }
 
-/* ---------------------------------------------------------------- Studio */
-
-.studio__main { position: relative; align-items: start; padding-block: var(--room-pad) var(--room-end); }
-.studio__title { color: var(--ink-3); text-box: trim-both cap alphabetic; }
-.motto { margin-top: 40px; }
-.motto__quote { margin-left: -0.06em; }
-.motto__cite { margin-top: 30px; color: var(--ink-3); }
-.studio__text {
-  grid-column: 1 / span 5;
-  display: grid;
-  gap: 1em;
-  margin-top: var(--step);
-  max-width: 29em;
-  color: var(--ink-2);
-  text-wrap: pretty;
-}
-
-/* ---------------------------------------------------------------- Contact */
-
-.contact__main { position: relative; align-items: start; padding-block: var(--room-pad) var(--room-end); }
-.contact__title { color: var(--ink-3); text-box: trim-both cap alphabetic; }
-.contact__mail { margin-top: 40px; margin-left: -0.06em; }
-.contact__link {
-  background: linear-gradient(currentColor, currentColor) 0 100% / 0 0.05em no-repeat;
-  padding-bottom: 0.08em;
-}
-.contact__link:hover { background-size: 100% 0.05em; }
-.contact__note { grid-column: 7 / span 5; margin-top: 48px; color: var(--ink-2); }
-.contact__note p { max-width: 29em; text-wrap: pretty; }
-
 /* ---------------------------------------------------------------- Motion (all of it off under reduced motion) */
 
 @media (prefers-reduced-motion: no-preference) {
   .more__arrow { transition: transform var(--t-line) var(--ease); }
   .more:hover .more__arrow { transform: translateX(3px); }
-
-  /* The email's underline draws itself in on hover. */
-  .contact__link { transition: background-size var(--t-tick) var(--ease); }
-}
-
-/* ---------------------------------------------------------------- Tablet: 720 to 1079 */
-
-@media (max-width: 1079px) {
-  /* The name across the room, still a fifth of the screen; the gloss, the pitch and the badge under it. */
-  .room__name { font-size: 20vw; }
-  .room__head { grid-column: 1 / -1; }
-  .room__intro { grid-column: 1 / span 8; align-self: auto; margin-top: 36px; }
-  .field__icon { width: 13cqi; }
-
-  .studio__text { grid-column: 1 / -1; max-width: 40em; }
-  .contact__note { grid-column: 1 / -1; }
 }
 
 /* ---------------------------------------------------------------- Phone: under 720 */
@@ -591,18 +453,6 @@ html:not(.js) [data-js-only] { display: none !important; }
 
   /* The footer stacks. */
   .site-foot__row { flex-direction: column; align-items: flex-start; }
-
-  /* Stacked: the name, the gloss, the pitch and the badge, then the exhibit row (the icon on top, then
-     the exhibit). */
-  .room__main { row-gap: 0; }
-  .room__name { font-size: clamp(4rem, 24vw, 8rem); }   /* Kozeni, the longest, fits at 320px */
-  .room__head, .room__intro { grid-column: 1 / -1; align-self: auto; }
-  .room__intro { margin-top: 28px; }
-  .room__field { row-gap: 32px; }
-  .field__object, .field__piece { grid-column: 1 / -1; }
-  .field__icon { width: 38cqi; }
-
-  .contact__mail { margin-top: 32px; }
 }
 
 @media (max-width: 400px) {
@@ -628,28 +478,25 @@ html:not(.js) [data-js-only] { display: none !important; }
    page and in every room. */
 @media (prefers-contrast: more) {
   :root { --ink-2: #0D0E10; --ink-3: #53575E; }
-  .room--text-light, .room--studio { --room-ink-2: #FFFFFF; --room-ink-3: rgb(255 255 255 / 0.86); }
+  .room--text-light { --room-ink-2: #FFFFFF; --room-ink-3: rgb(255 255 255 / 0.86); }
   .room--text-dark { --room-ink-2: #0D0E10; --room-ink-3: rgb(13 14 16 / 0.86); }
 }
 @media (prefers-contrast: more) and (prefers-color-scheme: dark) {
   :root { --ink-2: #EDEEF0; --ink-3: #A7ABB2; }
   .room--text-dark { --room-ink-2: #0D0E10; --room-ink-3: rgb(13 14 16 / 0.94); }
-  .room--studio { --room-ink-2: #0D0E10; --room-ink-3: rgb(13 14 16 / 0.86); }
 }
 
-/* Printed: the light scheme on white paper, without the controls, which paper can't press, and without
-   the rooms' grounds: they print in the page's inks. */
+/* Printed: the light scheme on white paper, without the controls, which paper can't press; the rooms print
+   in the page's inks, without their grounds (grid.css). */
 @media print {
   :root {
     color-scheme: light;
     --canvas: #FFF;
-    --field: #E9EBEE;
     --ink: #000;
     --ink-2: #53575E;
     --ink-3: #62666D;
     --icon-shadow: none;
   }
-  .room, .room--studio, .contact { background: none; }
-  .room--text-light, .room--text-dark, .room--studio { --room-ink: #000; --room-ink-2: #53575E; --room-ink-3: #62666D; }
+  .room--text-light, .room--text-dark { --room-ink: #000; --room-ink-2: #53575E; --room-ink-3: #62666D; }
   .skip, .toggle, [data-js-only] { display: none !important; }
 }

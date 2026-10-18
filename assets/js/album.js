@@ -4,7 +4,7 @@
   'use strict';
   if (!TB) return;
 
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // Michi's album, two shelves of it, Upcoming and Postmarked. A press on a stamp postmarks it and files
   // it first on Postmarked, or takes its postmark off and files it back on Upcoming. A stamp dragged
@@ -23,7 +23,7 @@
     var postmarking = function (shelf) { return shelf.getAttribute('data-shelf') === 'postmarked'; };
     var stampsIn = function (list) { return Array.prototype.slice.call(list.querySelectorAll('.album__stamp')); };
     var everyStamp = function () { return Array.prototype.slice.call(album.querySelectorAll('.album__stamp')); };
-    var say = function (text) { if (status) status.textContent = text; };
+    var say = function (text) { status.textContent = text; };
     var name = function (stamp) { return stamp.getAttribute('data-name'); };
     var place = function (stamp) {
       var all = stampsIn(stamp.parentNode);
@@ -42,7 +42,7 @@
       });
       album.style.setProperty('--slots', everyStamp().length + 1);
       var first = album.querySelector('.album__stamp');
-      if (first) album.style.setProperty('--stamp-height', first.offsetHeight + 'px');
+      album.style.setProperty('--stamp-height', first.offsetHeight + 'px');
     };
     var restart = function (stamp, kind) {
       stamp.classList.remove('is-lifted', 'is-pressed', 'is-striking');
@@ -205,7 +205,7 @@
 
     everyStamp().forEach(function (stamp) {
       stamp.tabIndex = 0;
-      if (keys) stamp.setAttribute('aria-describedby', keys.id);
+      stamp.setAttribute('aria-describedby', keys.id);
       describe(stamp);
       stamp.addEventListener('pointerdown', function (event) {
         if (drag || (event.pointerType === 'mouse' && event.button !== 0)) return;
@@ -247,6 +247,6 @@
     album.addEventListener('touchmove', function (event) { if (drag) event.preventDefault(); }, { passive: false });
     tidy();
     // A stamp's height, which an empty shelf keeps, changes with the window's width.
-    if ('ResizeObserver' in window) new ResizeObserver(function () { if (!drag) tidy(); }).observe(album);
+    new ResizeObserver(function () { if (!drag) tidy(); }).observe(album);
   });
 })(window.TB);

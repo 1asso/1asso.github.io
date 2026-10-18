@@ -128,7 +128,7 @@ Gemfile              for previewing the site on your Mac (GitHub Pages ignores i
 ```
 
 App icons are named `assets/images/icons/<app>-light-<size>.webp` and `<app>-dark-<size>.webp`,
-in sizes 96, 192, 256, 384, 512 and 768.
+in sizes 256, 384, 512 and 768.
 
 Each page brings its own stylesheet and script in its front matter (`styles:` and `scripts:`), and a class for its
 `<body>` (`body_class:`): `proto-grid` on the home page, `proto-grid-doc` on the privacy page, `proto-grid-lost`

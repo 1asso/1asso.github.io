@@ -9,7 +9,7 @@
 <{% if include.real %}nav class="g-runner g-runner--real" aria-label="Apps"{% else %}div class="g-runner"{% endif %}>
   <ol class="g-runner__list wrap grid meta" role="list">
     {%- for pair in site.data.apps %}
-    <li class="g-runner__item{% if include.current == pair.first %} is-current{% endif %}" style="--n: {{ forloop.index0 }}"><a class="g-runner__link" href="#{{ pair.first }}" data-g-key="{{ pair.first }}"{% unless include.real %} tabindex="-1"{% endunless %}><span class="g-runner__no">0{{ forloop.index }}</span><span class="g-runner__name">{{ pair.last.name }}</span></a></li>
+    <li class="g-runner__item{% if include.current == pair.first %} is-current{% endif %}" style="--n: {{ forloop.index0 }}"><a class="g-runner__link" href="#{{ pair.first }}" data-g-key="{{ pair.first }}"><span class="g-runner__no">0{{ forloop.index }}</span><span class="g-runner__name">{{ pair.last.name }}</span></a></li>
     {%- endfor %}
   </ol>
 </{% if include.real %}nav{% else %}div{% endif %}>

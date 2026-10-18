@@ -38,9 +38,7 @@
 .proto-grid {
   /* A screen of the deck is the large viewport, so a ground always covers what's on screen; the content keeps to
      the small one, so a phone's bars never cover it. */
-  --V: 100vh;
   --V: 100lvh;
-  --sv: 100vh;
   --sv: 100svh;
   /* The header a little closer than the site's, so the rooms have the height; its height is still exact. */
   --head-pad: clamp(10px, 1.3vw, 20px);
@@ -852,20 +850,21 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
   .g-set--kozeni .keypad__keys { max-width: 392px; }
 }
 /* Lark, upright, where there's the height for it (a tablet or a tall window no wider than four fifths of its height,
-   which a tablet in a browser with its bars showing, 768x928, isn't; a phone at least 700px tall): it all hangs from
-   the right margin, as its name does. Under the name, the pitch and the badge set against the margin, and under
-   them the icon, on the margin too; then the band with its number, and the practice at the foot (owner, 00:05).
-   Elsewhere upright, the pitch and the badge against the icon, both on the right, above. */
+   which a tablet in a browser with its bars showing, 768x928, isn't; a phone wherever the room fits on its screen so,
+   as grid.js measures it, .g-lark-side where it doesn't: an app's own browser, its bars taller than Safari's, can leave
+   it less than 700px): it all hangs from the right margin, as its name does. Under the name, the pitch and the badge
+   set against the margin, and under them the icon, on the margin too; then the band with its number, and the practice
+   at the foot (owner, 00:05). Elsewhere upright, the pitch and the badge against the icon, both on the right, above. */
 @media (orientation: portrait) and (min-width: 720px) and (max-aspect-ratio: 4/5),
-  (max-width: 719px) and (min-width: 355px) and (min-height: 700px) {
-  .g-set--lark .g-grid { grid-template-rows: auto auto auto minmax(var(--beat), 1fr) auto; }
-  .g-set--lark .g-intro { grid-column: 4 / -1; }
-  .g-set--lark .g-icon { grid-column: 10 / -1; grid-row: 3; align-self: start; margin-top: clamp(14px, 2.6svh, 24px); }
+  (max-width: 719px) and (min-width: 355px) {
+  :where(:root:not(.g-lark-side)) .g-set--lark .g-grid { grid-template-rows: auto auto auto minmax(var(--beat), 1fr) auto; }
+  :where(:root:not(.g-lark-side)) .g-set--lark .g-intro { grid-column: 4 / -1; }
+  :where(:root:not(.g-lark-side)) .g-set--lark .g-icon { grid-column: 10 / -1; grid-row: 3; align-self: start; margin-top: clamp(14px, 2.6svh, 24px); }
   /* Its number beside the icon, against the left edge and cut by it, as tall as the icon's row and the band under it
      together, no taller, so it crosses neither the icon nor the practice. */
-  .g-set--lark .g-no { grid-column: 1 / span 8; grid-row: 3 / 5; }
-  .g-set--lark .g-no__digits { font-size: calc(100cqh / 0.737); margin-top: 0.0095em; }
-  .g-set--lark .g-piece { grid-row: 5; }
+  :where(:root:not(.g-lark-side)) .g-set--lark .g-no { grid-column: 1 / span 8; grid-row: 3 / 5; }
+  :where(:root:not(.g-lark-side)) .g-set--lark .g-no__digits { font-size: calc(100cqh / 0.737); margin-top: 0.0095em; }
+  :where(:root:not(.g-lark-side)) .g-set--lark .g-piece { grid-row: 5; }
 }
 /* A tablet held upright, in a browser with its bars showing (744x1033, 768x928): the keypad's spacing kept to what
    the height leaves, as its keys are, and the spine set to what the room really takes besides the keys: the
@@ -1472,7 +1471,6 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
 /* A link's hover in the real header or footer, which is clear, shown on the copies. */
 @media (hover: hover) {
   .g-fx:has(body > .site-head .site-nav li:nth-child(1) a:hover) .g-head .site-nav li:nth-child(1) a,
-  .g-fx:has(body > .site-head .site-nav li:nth-child(2) a:hover) .g-head .site-nav li:nth-child(2) a,
   .g-fx:has(.g-runner--real .g-runner__item:nth-child(1) a:hover) .g-head .g-runner__item:nth-child(1) a,
   .g-fx:has(.g-runner--real .g-runner__item:nth-child(2) a:hover) .g-head .g-runner__item:nth-child(2) a,
   .g-fx:has(.g-runner--real .g-runner__item:nth-child(3) a:hover) .g-head .g-runner__item:nth-child(3) a { color: var(--ink); }

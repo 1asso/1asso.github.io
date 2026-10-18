@@ -23,7 +23,6 @@
     var decimals = dot < 0 ? 0 : input.length - dot - 1;
     if (value === 'delete') {
       input = input.length <= 1 ? '0' : input.slice(0, -1);
-      if (input === '-' || input === '') input = '0';
     } else if (value === 'clear') {
       input = '0';
     } else if (value === '.') {
@@ -78,10 +77,10 @@
     span.replaceWith(key);
   });
   keys.setAttribute('role', 'group');
-  keys.setAttribute('aria-label', keys.dataset.label || 'Keypad');
+  keys.setAttribute('aria-label', keys.dataset.label);
   keys.removeAttribute('aria-hidden');
   var description = pad.querySelector('[data-nojs-description]');
-  if (description) description.remove();
+  description.remove();
 
   // Pressed while it's held (kozeni.css keeps it so 120ms more); by Enter, Space or typing, a flash. A finger's (or a
   // pen's) press is shown only once it's clearly a tap, held still TAP ms or let go within its reach, as a scroll view
@@ -110,7 +109,7 @@
     if (event.pointerType === 'mouse') press(key, true);
     else {
       touched = { key: key, x: event.clientX, y: event.clientY };
-      showing = setTimeout(function () { if (touched) press(touched.key, true); touched = null; }, TAP);
+      showing = setTimeout(function () { press(touched.key, true); touched = null; }, TAP);
     }
     if (key.dataset.key !== 'delete') return;
     letGo();
@@ -170,7 +169,5 @@
   });
 
   // Refitted when its column changes size.
-  if (window.ResizeObserver) new ResizeObserver(refit).observe(amount);
-
-  pad.querySelectorAll('[data-js-only]').forEach(function (el) { el.classList.add('is-ready'); });
+  new ResizeObserver(refit).observe(amount);
 })(window.TB);

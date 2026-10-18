@@ -19,7 +19,6 @@
 
 .proto-grid-lost {
   /* The screen, less the browser's bars on a phone, so nothing is ever under them. */
-  --sv: 100vh;
   --sv: 100svh;
   /* The header as close as the home page's, its height still exact. */
   --head-pad: clamp(10px, 1.3vw, 20px);
@@ -320,7 +319,7 @@ body.proto-grid-lost > main { flex: 1 0 auto; display: flex; flex-direction: col
 .gl-lens__type { position: absolute; margin: 0; font-weight: 500; line-height: 1; color: transparent; -webkit-text-stroke: 1px var(--ink); }
 .gl-lens__type .gl-mi__i { display: inline-block; line-height: 1; clip-path: inset(0.276em -0.2em -0.3em -0.2em); background: none; }
 .gl-lens__type .gl-mi::after { background: none; box-shadow: inset 0 0 0 1px var(--ink); }
-.gl-lens__type .gl-stop, .gl-lens__type .gl-w::after { visibility: hidden; }
+.gl-lens__type .gl-stop { visibility: hidden; }
 .gl-lens__type .gl-w::after { content: none; }
 /* The stop, the one thing here drawn at its weight: the hollow stop is already the site's drawing of a bit that isn't
    there (a seventh of its side, site.css), so it's shown as it is, in register. */
