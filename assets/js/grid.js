@@ -1709,18 +1709,28 @@
     var win = null, plate = null, U = null;
     var x = 0, v = 0, aimed = 0, spring = 0, then = 0, at = -1, built = false, wanted = false, shown = true;
     var sweeping = 0, hush = true, back = 0, drag = null;
+    // What's drawn on the plate, where it lies (a box with its outline, a span with its ticks, a hairline), so that
+    // what's written keeps clear of it; the boxes on their own too.
+    var marks = [], boxes = [];
 
     var quiet = function (yes) { hush = yes; el.classList.toggle('is-quiet', yes); };
     var paint = function () { el.classList.toggle('is-on', built && wanted && shown); };
-    // A note: its name, and under it its value, in mono, inside the column it's in (or against its right edge).
+    var lh = 13;   // a note's line
+    // A note's width, in the mono's 0.6em figures, 10px, padded 3px a side.
+    var wide = function (key, value) { return 6 + 6 * Math.max(key.length, (value || '').length); };
+    var meets = function (a, b) { return Math.min(a.r, b.r) - Math.max(a.l, b.l) > 0.5 && Math.min(a.b, b.b) - Math.max(a.t, b.t) > 0.5; };
+    // A note: its name, and under it its value (or, flat, beside it), in mono, inside the column it's in (or against its
+    // right edge). It keeps where it lies (gBox).
     var note = function (key, value, left, top, opts) {
       opts = opts || {};
       var n = document.createElement('span');
       n.className = 'g-lens__note' + (opts.quiet ? ' g-lens__note--quiet' : '') + (opts.end ? ' g-lens__note--end' : '');
-      n.textContent = key;
-      if (value) { var b = document.createElement('b'); b.textContent = value; n.appendChild(b); }
+      n.textContent = opts.flat ? key + ' ' + value : key;
+      if (value && !opts.flat) { var b = document.createElement('b'); b.textContent = value; n.appendChild(b); }
       n.style.left = left.toFixed(1) + 'px';
       n.style.top = top.toFixed(1) + 'px';
+      var w = opts.flat ? wide(key + ' ' + value) : wide(key, value);
+      n.gBox = { l: opts.end ? left - w : left, t: top, r: opts.end ? left : left + w, b: top + (value && !opts.flat ? 2 : 1) * lh };
       plate.appendChild(n);
       return n;
     };
@@ -1728,7 +1738,11 @@
       var r = document.createElement('i');
       r.className = 'g-lens__rule' + (cls ? ' g-lens__rule--' + cls : '');
       r.style.top = top.toFixed(1) + 'px';
-      if (cls === 'v') { r.style.left = left.toFixed(1) + 'px'; r.style.height = height.toFixed(1) + 'px'; }
+      if (cls === 'v') {
+        r.style.left = left.toFixed(1) + 'px';
+        r.style.height = height.toFixed(1) + 'px';
+        marks.push({ l: left, t: top, r: left + 1, b: top + height });
+      }
       plate.appendChild(r);
       return r;
     };
@@ -1739,6 +1753,7 @@
       s.style.width = Math.abs(x1 - x0).toFixed(1) + 'px';
       s.style.top = top.toFixed(1) + 'px';
       plate.appendChild(s);
+      marks.push({ l: Math.min(x0, x1), t: top - 4, r: Math.max(x0, x1), b: top + 4 });
     };
     var boxAround = function (b) {
       var o = document.createElement('i');
@@ -1748,6 +1763,9 @@
       o.style.width = b.width.toFixed(1) + 'px';
       o.style.height = b.height.toFixed(1) + 'px';
       plate.appendChild(o);
+      var around = { l: b.left - 3, t: b.top - 3, r: b.left + b.width + 3, b: b.top + b.height + 3 };
+      marks.push(around);
+      boxes.push(around);
       return o;
     };
     var fmt = function (em) { return (em > 0 ? '+' : em < 0 ? '−' : '') + Math.abs(em).toFixed(4).replace(/0+$/, '').replace(/\.$/, '') + 'em'; };
@@ -1776,6 +1794,8 @@
     var build = function () { steady(make); };
     var make = function () {
       el.textContent = '';
+      marks = [];
+      boxes = [];
       built = false;
       var h = hero.getBoundingClientRect();
       if (!h.width || !tagline.getBoundingClientRect().width) return;
@@ -1846,36 +1866,62 @@
       rows.forEach(function (r) { rule('', r.cap); rule('x', r.x); rule('', r.base); });
       var uLeft = function (k) { return U.left + k * U.step; };
       var unitOf = function (px) { return Math.max(0, Math.min(U.count - 1, Math.floor((px - U.left + gap / 2) / U.step))); };
-      var lh = 13;   // a note's line
       // Each line's metrics, named at each unit's right edge (the last line's baseline names kept, by unit, for a
-      // decision that must stand in their place, below).
-      var names = [], caps = [];
+      // decision that must stand in their place, below). Where the lines are set close (on a phone), a line's caps
+      // after the first's go unnamed, their name running into the baseline's just over it; and where the x-height's
+      // name would run into the caps' (on a phone on its side), the x-height's dashed rule goes unnamed.
+      var names = [], caps = [], metrics = [];
       for (var k = 0; k < U.count; k++) {
-        rows.forEach(function (r) {
-          var nc = note('cap', '', uLeft(k) + U.w - 4, r.cap - lh - 2, { quiet: true, end: true });
-          if (r === rows[0]) caps[k] = nc;
-          note('x', '', uLeft(k) + U.w - 4, r.x - lh - 2, { quiet: true, end: true });
+        rows.forEach(function (r, i) {
+          if (!i || r.cap - lh - 2 >= rows[i - 1].base + lh + 4) {
+            var nc = note('cap', '', uLeft(k) + U.w - 4, r.cap - lh - 2, { quiet: true, end: true });
+            if (!i) caps[k] = nc;
+            metrics.push(nc);
+          }
+          if (r.x - lh - 2 >= r.cap + 1) metrics.push(note('x', '', uLeft(k) + U.w - 4, r.x - lh - 2, { quiet: true, end: true }));
           var nb = note('base', '', uLeft(k) + U.w - 4, r.base + 3, { quiet: true, end: true });
           if (r === last) names[k] = nb;
+          metrics.push(nb);
         });
       }
-      // What was decided where, each noted in its own unit: above the first line's caps, or under its line's
-      // baseline (or, for the first line, under it when the space above is taken by the header). In the last unit,
-      // against its right edge.
+      // What was decided where, each noted in its own unit, once it's all drawn: above the first line's caps, or
+      // under its line's baseline (or, for the first line, under it when the space above is taken by the header)
+      // where that's clear of the next line's caps and of any box on them; or else (more than the lines set close
+      // leave room for, on a phone) under the last line, with what was decided on that, in the order of the lines. In
+      // the last unit, against its right edge.
       // Under the last line, the foot (the lede) bounds what's written: the window never lies over it, and stops 8px
       // over it at the most, as the not-found page's does.
       var foot = main.querySelector('.g-foot');
       var floor = rel(foot.getBoundingClientRect()).top - 8;
-      // A note's width, in the mono's 0.6em figures, 10px, padded 3px a side.
-      var wide = function (key, value) { return 6 + 6 * Math.max(key.length, (value || '').length); };
-      var taken = {}, used = {}, firsts = {};
+      // (tight, by unit and line: how what's under the line goes there; 1, from the baseline's name's place; 2, there on
+      // one line, the only one; 3, that one written.)
+      var taken = {}, used = {}, firsts = {}, tight = {}, found = [];
+      var decide = function (key, value, px, row) { found.push({ key: key, value: value, px: px, row: row, n: found.length }); };
+      // (False for a note under a line that isn't the last, where it isn't clear of the next one.)
       var put = function (key, value, px, row) {
         var k = unitOf(px), first = row === rows[0], id = k + ':' + rows.indexOf(row);
-        var slot = (taken[id] = (taken[id] || 0) + 1) - 1;
+        var slot = taken[id] || 0;
         var y = first ? row.cap - 2 * lh - 6 - slot * (2 * lh + 4) : row.base + lh + 10 + slot * (2 * lh + 4);
         // Over the first line, as many as the header leaves room for (none, on a short screen); the rest under it.
         if (first && y < top + 2) y = row.base + lh + 10 + (slot - Math.max(0, Math.floor((row.cap - 2 * lh - 8 - top) / (2 * lh + 4)) + 1)) * (2 * lh + 4);
-        var end = k === U.count - 1, side = false;
+        var end = k === U.count - 1, side = false, flat = false, w = wide(key, value);
+        if (row !== last && y > row.base) {
+          var next = rows[rows.indexOf(row) + 1], fw = wide(key + ' ' + value);
+          var clear = function (t, ww, hh) {
+            var x0 = end ? uLeft(k) + U.w - 4 - ww : uLeft(k) + 5, b = { l: x0, t: t, r: x0 + ww, b: t + hh };
+            return ww <= U.w - 9 && b.b <= next.cap - 2 && !boxes.some(function (o) { return meets(o, b); });
+          };
+          // Under the baseline's name; or, where the lines are too close for that, in its place (the name gives way to
+          // it, below), and the next in the unit under that; or, closer still (on a phone), in its place on one line,
+          // its name and its value side by side, the only one there.
+          if (tight[id] === undefined) tight[id] = clear(y, w, 2 * lh) ? 0 : clear(y - lh - 7, w, 2 * lh) ? 1 : clear(y - lh - 7, fw, lh) ? 2 : 0;
+          if (tight[id] === 3) return false;
+          if (tight[id]) y -= lh + 7;
+          flat = tight[id] === 2;
+          if (!clear(y, flat ? fw : w, flat ? lh : 2 * lh)) return false;
+          if (flat) { tight[id] = 3; w = fw; }
+        }
+        taken[id] = slot + 1;
         // Under the last line, where it would run into the foot: the first as low as there's room for, in place of
         // the baseline's name if it must be; one more beside it, against the unit's other edge, if the two fit side
         // by side; any other left out.
@@ -1885,7 +1931,7 @@
             y = Math.max(row.base + 3, floor - 2 * lh);
             if (y < row.base + lh + 6 && names[k]) { names[k].remove(); names[k] = null; }
           } else {
-            if (one.side || one.w + wide(key, value) + 9 > U.w) return k;
+            if (one.side || one.w + w + 9 > U.w) return true;
             one.side = side = true;
             y = one.y;
           }
@@ -1894,24 +1940,24 @@
         // Over the first line's caps, a decision is on the line of that unit's "cap", which it would run into, or come
         // within a few pixels of and read as one run with: the lane is the decision's, and the name gives way to it.
         if (first && caps[k] && y < row.cap && y + 2 * lh > row.cap - lh - 2) { caps[k].remove(); caps[k] = null; }
-        note(key, value, e ? uLeft(k) + U.w - 4 : uLeft(k) + 5, y, { end: e });
-        if (!slot) firsts[id] = { y: y, w: wide(key, value) };
+        note(key, value, e ? uLeft(k) + U.w - 4 : uLeft(k) + 5, y, { end: e, flat: flat });
+        if (!slot) firsts[id] = { y: y, w: w };
         used[k] = 1;
-        return k;
+        return true;
       };
       // The G, hung 0.06em into the left margin so its curve sits on it.
       var G = tagline.querySelector('.g-w--get .g-l');
       var g = rel(G.getBoundingClientRect());
       rule('v', rows[0].cap - fs * 0.05, m, fs * 0.83);
       span(g.left, m, rows[0].x + fs * 0.12);
-      put('G hangs', fmt(-0.06), m, rows[0]);
+      decide('G hangs', fmt(-0.06), m, rows[0]);
       // The kerning put back as a margin, where letters set apart would lose it.
       list(tagline.querySelectorAll('.g-l')).forEach(function (l) {
         var kv = l.style.getPropertyValue('--k');
         if (!kv) return;
         var b = rel(l.getBoundingClientRect()), row = rowOf(b), prev = l.previousElementSibling;
         rule('v', row.cap - fs * 0.05, b.left, fs * 0.83);
-        put(prev.textContent + l.textContent, fmt(parseFloat(kv)), b.left + 1, row);
+        decide(prev.textContent + l.textContent, fmt(parseFloat(kv)), b.left + 1, row);
       });
       // The word spaces.
       rows.forEach(function (r) {
@@ -1919,14 +1965,14 @@
           var a = r.words[i - 1].box, b = r.words[i].box;
           if (b.left - a.right < fs * 0.1) continue;
           span(a.right, b.left, r.x + fs * 0.27);
-          put('space', bare((b.left - a.right) / fs), (a.right + b.left) / 2, r);
+          decide('space', bare((b.left - a.right) / fs), (a.right + b.left) / 2, r);
         }
       });
       // The dots: square bits, the width of the stem.
       list(tagline.querySelectorAll('.g-dot')).forEach(function (d) {
         var b = rel(d.getBoundingClientRect());
         boxAround(b);
-        put('ı + bit', bare(Math.round(b.width / fs * 1000) / 1000), b.left, rowOf({ top: b.top + fs * 0.4, bottom: b.bottom + fs * 0.4 }));
+        decide('ı + bit', bare(Math.round(b.width / fs * 1000) / 1000), b.left, rowOf({ top: b.top + fs * 0.4, bottom: b.bottom + fs * 0.4 }));
       });
       // The stop, on the margin: its box, the margin, and what it measured.
       var stop = tagline.querySelector('.g-stop');
@@ -1934,29 +1980,43 @@
       var edge = W - m;
       boxAround(sb);
       rule('v', rows[0].cap - fs * 0.05, edge, last.base - rows[0].cap + fs * 0.1);
-      put('stop 0.15em', Math.round(Math.abs(sb.right - edge)) + 'px off', sb.left, rowOf(sb));
+      decide('stop 0.15em', Math.round(Math.abs(sb.right - edge)) + 'px off', sb.left, rowOf(sb));
+      // Each where it's clear to go, and the rest under the last line, in the order of their lines.
+      var under = [];
+      found.forEach(function (d) { if (d.row === last || !put(d.key, d.value, d.px, d.row)) under.push(d); });
+      under.sort(function (a, b) { return rows.indexOf(a.row) - rows.indexOf(b.row) || a.n - b.n; });
+      under.forEach(function (d) { put(d.key, d.value, d.px, last); });
       // The lead, from one line's baseline to the next one's caps, in the unit nearest the middle with nothing else
-      // to say.
+      // to say: written between them, or, where they're too close to write in, under the last line.
       if (rows.length > 1) {
         var free = range(U.count, function (q) { return q; }).filter(function (q) { return !used[q]; })
           .sort(function (a, b) { return Math.abs(a - (U.count - 1) / 2) - Math.abs(b - (U.count - 1) / 2); })[0];
         if (free != null) {
-          var gx = uLeft(free) + U.w / 2;
-          rule('v', rows[0].base, gx, rows[1].cap - rows[0].base);
-          note('lead', bare((rows[1].cap - rows[0].base) / fs), gx + 5, (rows[0].base + rows[1].cap) / 2 - lh);
+          var gx = uLeft(free) + U.w / 2, lead = rows[1].cap - rows[0].base;
+          rule('v', rows[0].base, gx, lead);
+          if (lead >= 2 * lh + 4) note('lead', bare(lead / fs), gx + 5, (rows[0].base + rows[1].cap) / 2 - lh);
+          else put('lead', bare(lead / fs), gx, last);
           used[free] = 1;
         }
       }
-      // A unit with nothing else to say gives the tracking.
-      var ty = rows[0].cap - 2 * lh - 6 < top + 2 ? rows[0].base + lh + 10 : rows[0].cap - 2 * lh - 6;
-      // (Under a tagline of one line, only if there's room for it before the foot.)
-      if (!(rows.length === 1 && ty > rows[0].base && ty + 2 * lh > floor))
+      // A unit with nothing else to say gives the tracking: over the first line, or under it where the header leaves
+      // no room there, or under the last line where the first is set too close to the next to write in; never on a box.
+      var ty = rows[0].cap - 2 * lh - 6;
+      if (ty < top + 2) ty = rows.length > 1 && rows[0].base + 3 * lh + 10 > rows[1].cap - 2 ? last.base + lh + 10 : rows[0].base + lh + 10;
+      // (Under the last line, only if there's room for it before the foot.)
+      if (!(ty > last.base && ty + 2 * lh > floor))
         for (var q = 0; q < U.count; q++) {
           if (used[q]) continue;
-          var qe = q === U.count - 1;
+          var qe = q === U.count - 1, tx = qe ? uLeft(q) + U.w - 4 : uLeft(q) + 5, tw = wide('tracking', '−0.034em');
+          var tq = { l: qe ? tx - tw : tx, t: ty, r: qe ? tx : tx + tw, b: ty + 2 * lh };
+          if (boxes.some(function (b) { return meets(b, tq); })) continue;
           if (caps[q] && ty < rows[0].cap) { caps[q].remove(); caps[q] = null; }
-          note('tracking', '−0.034em', qe ? uLeft(q) + U.w - 4 : uLeft(q) + 5, ty, { quiet: true, end: qe });
+          note('tracking', '−0.034em', tx, ty, { quiet: true, end: qe });
         }
+      // A metric's name gives way to anything else written or drawn where it is: a note, a box, a span, a hairline.
+      var over = marks.concat(list(plate.querySelectorAll('.g-lens__note')).filter(function (nt) { return metrics.indexOf(nt) < 0; })
+        .map(function (nt) { return nt.gBox; }));
+      metrics.forEach(function (nt) { if (nt.parentNode && over.some(function (b) { return meets(nt.gBox, b); })) nt.remove(); });
       // Each unit's number and width, under everything else written in it: in a row under the band, where there's
       // room for that before the foot; where there isn't (a short screen, the tagline as large as the foot leaves room
       // for), in a row as close under the notes as they go, or else in each unit as close under its own; and in a unit

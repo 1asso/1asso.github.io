@@ -699,14 +699,14 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
      first two columns and the album in the last nine, its stamps kept to what the name leaves of the height. Its
      number in the top right corner, the value of a stamp, three quarters of the screen tall and cut by its top and
      right edges. */
-  .g-set--michi .g-grid { --michi: calc((min(9 * var(--P), round(var(--avail) * 0.4 / 0.7275 * 2.072 + var(--g), var(--P))) - var(--g)) / 2.072); }
-  .g-set--michi .g-name { grid-column: 1 / span 9; grid-row: 1; align-self: start; font-size: var(--michi); }
+  .g-set--michi .g-grid { --michi-size: calc((min(9 * var(--P), round(var(--avail) * 0.4 / 0.7275 * 2.072 + var(--g), var(--P))) - var(--g)) / 2.072); }
+  .g-set--michi .g-name { grid-column: 1 / span 9; grid-row: 1; align-self: start; font-size: var(--michi-size); }
   .g-set--michi .g-name .g-art { margin-left: -0.0586em; }
   .g-set--michi .g-no { top: 0; right: 0; font-size: calc(var(--sv) * 0.66 / 0.737); margin: -0.16em -0.05em 0 0; }
   .g-set--michi .g-intro { grid-column: 10 / -1; grid-row: 1; align-self: end; }
   .g-set--michi .g-icon { grid-column: 1 / span 2; grid-row: 3; align-self: end; }
   .g-set--michi .g-piece { grid-column: 4 / -1; grid-row: 3; align-self: end; }
-  .g-set--michi .album { max-width: calc(6 * (var(--avail) - 0.7275 * var(--michi) - 112px - var(--beat)) / 1.25 + 5 * var(--album-gap)); }
+  .g-set--michi .album { max-width: calc(6 * (var(--avail) - 0.7275 * var(--michi-size) - 112px - var(--beat)) / 1.25 + 5 * var(--album-gap)); }
 
   /* Lark: a call and its echo, as its drill plays a sentence and you say it back, one figure: the name, the call,
      against the right margin, the k's arm on it (it reaches 0.056em past its box; "Lark" is 1.724em of ink from its
