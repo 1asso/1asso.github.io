@@ -708,17 +708,21 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
   .g-set--michi .album { max-width: calc(6 * (var(--avail) - 0.7275 * var(--michi-size) - 112px - var(--beat)) / 1.25 + 5 * var(--album-gap)); }
 
   /* Lark: a call and its echo, as its drill plays a sentence and you say it back, one figure: the name, the call,
-     against the right margin, the k's arm on it (it reaches 0.056em past its box; "Lark" is 1.724em of ink from its
-     L's stem), and a line under it the echo, the name again in outline at the same size, a column further in, as you
-     say a sentence back a beat behind. Their size is the most whole columns (at most six) that the two lines, 1.685em
-     tall, can take of what the practice at the foot leaves of the room (--g-piece, measured by grid.js). Their columns
-     come the same way, from the right margin in, the echo's strip in each a beat behind its column (grid.js). The pitch
-     and the badge beside the name, in the three columns before it, their foot on its line's, as Michi's are beside its
-     own on the other side; under them, in the band the echo leaves, the number in outline, as tall as the band and cut
-     by the screen's left edge, so that it crosses nothing. At the foot, all on the room's foot line: the sentence in
-     the first seven columns, its toggles last (the meaning, kept its place while it's hidden, above them, under the
-     sentence it gives the sense of); the rhythm of a turn in the next three (its runs and their labels shown while
-     Practice runs, below), the labels over the runs; the icon in the last two. */
+     against the right margin, the k's arm on it (it reaches 0.056em past its box; "Lark" is 1.724em of ink from its L's
+     stem), and a line under it the echo, the name again in outline at the same size, a column further in, as you say a
+     sentence back a beat behind. Their size is the most whole columns (at most six) that the two lines, 1.685em tall,
+     can take of what the practice at the foot leaves of the room (--g-piece, measured by grid.js). Their columns come
+     the same way, from the right margin in, the echo's strip in each a beat behind its column (grid.js). The pitch and
+     the badge beside the name, in the three columns before it, their foot on its line's, as Michi's are beside its own
+     on the other side; and the number in outline, cut by the screen's left edge, from the room's head to the foot of
+     the band the echo leaves, under the pitch and the badge as Michi's is under its own, about as tall as the other
+     rooms' numbers, in the columns before the echo's, so that it meets neither the echo nor the practice under it (the
+     echo starts a column further in than the name, n columns wide: its box ends n - 4 columns short of the seventh's
+     edge, a gutter before the echo, and the figures are as large as its height or its width allows, whole across it).
+     At the foot, all on the room's foot line: the sentence in the first seven columns, its toggles last (the meaning,
+     kept its place while it's hidden, above them, under the sentence it gives the sense of); the rhythm of a turn in
+     the next three (its runs and their labels shown while Practice runs, below), the labels over the runs; the icon in
+     the last two. */
   .g-set--lark .g-grid {
     grid-template-rows: auto auto minmax(var(--beat), 1fr) auto;
     --lark-size: calc((min(6 * var(--P), round(down, (var(--avail) - var(--g-piece, calc(var(--avail) * 0.36)) - var(--beat)) / 1.685 * 1.724 + var(--g), var(--P))) - var(--g)) / 1.724);
@@ -727,11 +731,12 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
   .g-set--lark .g-name .g-art { margin-right: 0.056em; }
   .g-set--lark .g-intro { grid-column: 5 / span 3; grid-row: 1; align-self: end; }
   .g-set--lark .g-echo { display: block; grid-column: 1 / -1; grid-row: 2; justify-self: end; align-self: start; font-size: var(--lark-size); margin: 0.23em calc(var(--P) + 0.056em) 0 0; }
-  .g-set--lark .g-no { position: relative; grid-column: 1 / span 5; grid-row: 2 / 4; margin: clamp(8px, 1.6svh, 16px) 0 clamp(8px, 1.6svh, 16px) calc(-1 * var(--m)); container-type: size; overflow: clip visible; }
-  /* The figures' round tops (0.737em) to the band's top, their feet on its foot: set by the caps (0.7275em, the trim)
-     and lowered by what the rounds rise past them; clipped across only, by the screen's edge, so the rounds' overshoot
-     and the outline's outer half are never cut flat. */
-  .g-set--lark .g-no__digits { font-size: calc(100cqh / 0.737); margin: 0.0095em 0 0 -0.2em; }
+  .g-set--lark .g-no { position: relative; grid-column: 1 / span 7; grid-row: 1 / 4; margin: clamp(8px, 1.6svh, 16px) max(0px, 1.724 * var(--lark-size) + var(--g) - 4 * var(--P)) clamp(8px, 1.6svh, 16px) calc(-1 * var(--m)); container-type: size; overflow: clip visible; }
+  /* The figures' round tops (0.737em) to the box's top, or, where its width is what holds them (their ink 0.165em
+     short of their own, cut by the screen's edge, and the outline's 2.5px outside it), lower; their feet on its foot:
+     set by the caps (0.7275em, the trim), and so lowered by what the rounds rise past them. Clipped across only, by
+     the screen's edge, so the rounds' overshoot and the outline's outer half are never cut flat. */
+  .g-set--lark .g-no__digits { font-size: min(100cqh / 0.737, (100cqw - 2.5px) / (var(--no-ink) - 0.165)); margin: calc(100cqh - 0.7275em) 0 0 -0.2em; }
   .g-set--lark .g-piece { grid-column: 1 / span 10; grid-row: 4; align-self: end; display: grid; grid-template-columns: subgrid; }
   .g-set--lark .turn { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: end; --display: min(5.2cqi, var(--avail) * 0.085); }
   .g-set--lark .covered { grid-column: 1 / span 7; }
@@ -938,30 +943,32 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
   /* Michi's stamps as large as the room allows, three across, up to the measure: their two rows take what the
      screen leaves under the words and the icon (--g-words, how far down the room they reach, measured by grid.js), less
      the band's least (the beat, or the number's two margins, clamp(8px, 1.6svh, 16px), where they're more), the bottom
-     margin and the album's own lines: the shelves' names (their caps, 0.698 of the label size), the space under a name,
-     which is the space between a shelf's rows too (--album-line), and the space between the shelves (--album-shelf). A
-     stamp is 1.25 times as tall as it's wide. Two rows in every arrangement, so the album keeps its height and no stamp
-     changes size, whichever shelf it's on (michi.css): a row to a shelf; or five on one, three and two, and the other
-     just its name, nothing under it; or four on one, kept to its row, each laid over the one before by what the row is
-     short, as stamps dealt out by hand overlap, the value in each one's corner still showing (three columns of what the
-     last stamp leaves of the row, each stamp running on over the next column). Four is album.js's --count on the shelf:
-     a selector that counts the stamps themselves isn't always matched again in Safari when one is filed there. Never
-     under 0.155 of the room's height a stamp, which only a screen too short for the deck needs (320x568, or a phone on
-     its side); never wider than on the largest phone, the measure of a 440px screen, so a window between a phone's
-     width and a tablet's (a narrow window on a Mac, a tablet's split view) keeps a phone's stamps: its wider row would
-     want more stamps across, not larger. */
+     margin and the album's own lines: the shelves' names (their caps, 0.698 of the label size), the space under a name
+     (--album-line), the space between a shelf's rows, which is the space between its stamps across (--album-gap), and
+     the space between the shelves (--album-shelf). A stamp is 1.25 times as tall as it's wide. Two rows in every
+     arrangement, so the album keeps its height and no stamp changes size, whichever shelf it's on (michi.css): a row to
+     a shelf, the shelves the further apart by what a shelf's two rows would take between them past the space under a
+     name; or five on one, three and two, and the other just its name, nothing under it; or four on one, kept to its
+     row, each laid over the one before by what the row is short, as stamps dealt out by hand overlap, the value in each
+     one's corner still showing (three columns of what the last stamp leaves of the row, each stamp running on over the
+     next column). Four is album.js's --count on the shelf: a selector that counts the stamps themselves isn't always
+     matched again in Safari when one is filed there. Never under 0.155 of the room's height a stamp, which only a
+     screen too short for the deck needs (320x568, or a phone on its side); never wider than on the largest phone, the
+     measure of a 440px screen, so a window between a phone's width and a tablet's (a narrow window on a Mac, a
+     tablet's split view) keeps a phone's stamps: its wider row would want more stamps across, not larger. */
   .proto-grid .album {
     --album-line: 10px;
     --album-shelf: clamp(10px, 2svh, 22px);
-    --album-stamp: max(var(--avail) * 0.155, (var(--sv) - var(--g-words, var(--sv)) - max(var(--beat), 2 * clamp(8px, 1.6svh, 16px)) - var(--room-bottom) - 2 * 0.698 * var(--meta) - var(--album-shelf) - 2 * var(--album-line)) / 2);
+    --album-stamp: max(var(--avail) * 0.155, (var(--sv) - var(--g-words, var(--sv)) - max(var(--beat), 2 * clamp(8px, 1.6svh, 16px)) - var(--room-bottom) - 2 * 0.698 * var(--meta) - var(--album-shelf) - var(--album-line) - var(--album-gap)) / 2);
     max-width: min(392px, 3 * var(--album-stamp) / 1.25 + 2 * var(--album-gap));
   }
   .proto-grid .album__shelf, .proto-grid .album__stamps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .proto-grid .album__stamp:nth-child(n) .album__print { rotate: calc(-1 * var(--lean, 2deg)); }
   .proto-grid .album__stamp:nth-child(even) .album__print { rotate: var(--lean, 2deg); }
-  .proto-grid .album__stamps { margin-top: var(--album-line); row-gap: var(--album-line); }
+  .proto-grid .album__stamps { margin-top: var(--album-line); row-gap: var(--album-gap); }
   .proto-grid .album__shelf.is-empty .album__stamps { margin-top: 0; }
-  .proto-grid .album__shelf + .album__shelf { margin-top: var(--album-shelf); }
+  .proto-grid .album__shelf + .album__shelf { margin-top: calc(var(--album-shelf) + var(--album-gap) - var(--album-line)); }
+  .proto-grid :is(.album__shelf.is-empty + .album__shelf, .album__shelf + .album__shelf.is-empty) { margin-top: var(--album-shelf); }
   .proto-grid .album__shelf[style*="--count: 4"] .album__stamps { grid-template-columns: repeat(3, minmax(0, 1fr)) calc((100% - 2 * var(--album-gap)) / 3); column-gap: 0; }
   .proto-grid .album__shelf[style*="--count: 4"] .album__stamp:not(:last-child) { width: calc(150% - var(--album-gap)); }
   .proto-grid .album__shelf[style*="--count: 4"] .album__stamp:focus-visible { z-index: 1; }
@@ -997,13 +1004,16 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
      the first two) to the screen's right edge; and never past 0.28 of the screen, the least they are elsewhere. Each
      stands on its band's foot, under the room's words and exhibit as ever, and runs to the screen's edge, its outline
      whole along it (the outline's 2.5px outside the letters' ink): Michi's and Kozeni's to the right edge, Lark's from
-     the left, as on every screen. */
+     the left, as on every screen. Michi's band, under its name, can be too short for it on a short screen (a phone's
+     with Safari's bars showing): there it stands lower, its round tops kept the number's margin under the name's foot
+     (--g-name, how far down the room the name reaches, measured by grid.js), its foot running on behind the album's
+     top, so it never touches the name. */
   .g-room .g-no__digits {
     --x5: calc(var(--m) + (100cqw - 2 * var(--m) + var(--g)) / 3);
     font-size: min((100cqw - var(--x5) - 5px) / var(--no-ink), var(--sv) * 0.28 / 0.737);
     margin: calc(100cqh - 0.7275em) 0 0;
   }
-  .g-set--michi .g-no__digits { text-align: right; margin-right: calc(2.5px - var(--no-r1)); }
+  .g-set--michi .g-no__digits { text-align: right; margin-right: calc(2.5px - var(--no-r1)); margin-top: max(100cqh - 0.7275em, var(--g-name, -100vh) - var(--g-words, 0px) + 0.0095em); }
   .g-set--kozeni .g-no__digits { text-align: right; margin-right: calc(2.5px - var(--no-r3)); }
   .g-set--lark .g-no { grid-column: 1 / -1; }
   .g-set--lark .g-no__digits { margin-left: calc(2.5px - var(--no-l)); }
@@ -1580,9 +1590,9 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
   /* The rooms' numbers on paper: their outlines alone, in grey (the ground isn't printed, and the room's words are
      the ink). */
   .g-room .g-no.g-no { color: var(--canvas); -webkit-text-stroke: 5px color-mix(in srgb, var(--ink) 38%, var(--canvas)); paint-order: stroke fill; }
-  /* What grid.js measured on the screen (a room's foot, Michi's words, the Studio's paragraph and footer, the first
-     screen's foot) means nothing on the page: the sheet's own sizes are taken, as they are without the script. */
-  :root, .g-room { --g-foot: initial !important; --g-piece: initial !important; --g-para: initial !important; --g-words: initial !important; }
+  /* What grid.js measured on the screen (a room's foot, Michi's words and name, the Studio's paragraph and footer, the
+     first screen's foot) means nothing on the page: the sheet's own sizes are taken, as they are without the script. */
+  :root, .g-room { --g-foot: initial !important; --g-piece: initial !important; --g-para: initial !important; --g-words: initial !important; --g-name: initial !important; }
   /* The footer's line on the Studio's page, at its foot in the room kept for it, as in the deck, not on a page of its
      own: the Studio's copy of it (its mark there, the one on the page), and not the real one. */
   .g-room--studio { --foot-h: 4.5rem !important; }

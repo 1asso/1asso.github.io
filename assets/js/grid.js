@@ -227,6 +227,7 @@
         r.types = document.createElement('div');
         r.types.className = 'g-types';
         r.types.setAttribute('aria-hidden', 'true');
+        r.types.setAttribute('inert', '');
         r.bed.after(r.types);
       }
       r.types.textContent = '';
@@ -1319,9 +1320,9 @@
     if (k >= 0 && k !== where()) findTo(k);
   });
   // A link to a passage (a text fragment, #:~:text=, as search results and "Copy link to highlight" make): the screen
-  // the passage is on, among the words a reader can read (not the copies the screens draw of the header, the footer
-  // and the big type, which are aria-hidden), or -1. The browser's own move there would stop a screen short, as a
-  // find's does.
+  // the passage is on, among the words the browser finds there (any of a room's own, a stamp's too; not the copies the
+  // screens draw of the header, the footer and the big type, which are inert, index.html), or -1. The browser's own
+  // move there would stop a screen short, as a find's does.
   var passage = function () {
     var n = performance.getEntriesByType('navigation')[0];
     var m = n && /:~:(?:.*&)?text=([^&]+)/.exec(n.name || '');
@@ -1334,7 +1335,7 @@
     for (var k = 0; k < screens.length; k++) {
       var words = [], walk = document.createTreeWalker(screens[k], NodeFilter.SHOW_TEXT);
       for (var node = walk.nextNode(); node; node = walk.nextNode()) {
-        if (!node.parentElement.closest('[aria-hidden="true"], [inert]')) words.push(node.nodeValue);
+        if (!node.parentElement.closest('[inert]')) words.push(node.nodeValue);
       }
       if (norm(words.join('')).indexOf(want) >= 0) return k;
     }
@@ -1348,7 +1349,8 @@
   // is just in, under the screen before, at the top of the window. On an iPhone or an iPad the page snaps, and Safari's
   // move with it: to the stop before the passage's room. On a Mac nothing snaps (.g-own-snap): Safari centres the
   // passage, and centres it again at every layout after, until anything else moves the scroll, each time a step
-  // further where its screen is held to the window; there it's the screen with a line of words (or a run of a few)
+  // further where its screen is held to the window; there it's the screen with a line of words (or a run of a few:
+  // any it can find, those hidden from a screen reader or from sight too, as a stamp's and the motto's words are)
   // that Safari's centring, once or the fewest times over, brings the scroll to. (Where it went alone doesn't tell the
   // first screen from Michi's, both held to the top of the window there.) The page then opens on that screen, its
   // arrival played over the void, as a link to it would; or, the first screen's columns already under way, it lands
@@ -1365,7 +1367,7 @@
       var top = natTop(k, y), walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), r = document.createRange();
       for (var node = walk.nextNode(); node; node = walk.nextNode()) {
         var p = node.parentElement;
-        if (!node.nodeValue.trim() || p.closest('[aria-hidden="true"], [inert], .visually-hidden') || getComputedStyle(p).visibility === 'hidden') continue;
+        if (!node.nodeValue.trim() || p.closest('[inert], .g-lens') || getComputedStyle(p).visibility === 'hidden') continue;
         r.selectNodeContents(node);
         var lines = list(r.getClientRects()).filter(function (b) { return b.height > 0; });
         for (var i = 0; i < lines.length; i++) for (var j = i; j < lines.length && j < i + 4; j++) {
@@ -1454,11 +1456,14 @@
       list(r.content.querySelectorAll('.g-piece, .g-icon')).forEach(function (el) { h = Math.max(h, el.getBoundingClientRect().height); });
       if (h) setPx(r.el, '--g-piece', Math.ceil(h));
       // Michi's stamps take what the room leaves under its words and the icon beside them (on a phone, grid.css): how
-      // far down the room those reach (--g-words), which doesn't depend on the album's height.
+      // far down the room those reach (--g-words), which doesn't depend on the album's height. Its number keeps clear
+      // of its name there, how far down the room the name reaches (--g-name), which doesn't depend on the number.
       if (r.album) {
         var y0 = r.grid.getBoundingClientRect().top, w = 0;
         list(r.content.querySelectorAll('.g-intro, .g-icon')).forEach(function (el) { w = Math.max(w, el.getBoundingClientRect().bottom - y0); });
+        var named = r.content.querySelector('.g-name .g-art').getBoundingClientRect().bottom - y0;
         setPx(r.el, '--g-words', Math.ceil(w));
+        setPx(r.el, '--g-name', Math.ceil(named));
       }
     });
     // Lark, upright on a phone, hangs its icon under its pitch wherever the room fits on the screen so (grid.css), and
@@ -1895,8 +1900,8 @@
       // What was decided where, each noted in its own unit, once it's all drawn: above the first line's caps, or
       // under its line's baseline (or, for the first line, under it when the space above is taken by the header)
       // where that's clear of the next line's caps and of any box on them; or else (more than the lines set close
-      // leave room for, on a phone) under the last line, with what was decided on that, in the order of the lines. In
-      // the last unit, against its right edge.
+      // leave room for, on a phone) under the last line, with what was decided on that, in the order of the lines
+      // (below). In the last unit, against its right edge.
       // Under the last line, the foot (the lede) bounds what's written: the window never lies over it, and stops 8px
       // over it at the most, as the not-found page's does.
       var foot = main.querySelector('.g-foot');
@@ -1905,19 +1910,24 @@
       // one line, the only one; 3, that one written.)
       var taken = {}, used = {}, firsts = {}, tight = {}, found = [];
       var decide = function (key, value, px, row) { found.push({ key: key, value: value, px: px, row: row, n: found.length }); };
-      // (False for a note under a line that isn't the last, where it isn't clear of the next one.)
-      var put = function (key, value, px, row) {
+      // (False for a note under a line that isn't the last, where it isn't clear of the next one. at, for one under the
+      // last line: where it goes, and whether on one line.)
+      var put = function (key, value, px, row, at) {
         var k = unitOf(px), first = row === rows[0], id = k + ':' + rows.indexOf(row);
         var slot = taken[id] || 0;
         var y = first ? row.cap - 2 * lh - 6 - slot * (2 * lh + 4) : row.base + lh + 10 + slot * (2 * lh + 4);
         // Over the first line, as many as the header leaves room for (none, on a short screen); the rest under it.
         if (first && y < top + 2) y = row.base + lh + 10 + (slot - Math.max(0, Math.floor((row.cap - 2 * lh - 8 - top) / (2 * lh + 4)) + 1)) * (2 * lh + 4);
         var end = k === U.count - 1, side = false, flat = false, w = wide(key, value);
-        if (row !== last && y > row.base) {
+        if (at) {
+          y = at.y;
+          flat = at.flat;
+          if (flat) w = wide(key + ' ' + value);
+        } else if (row !== last && y > row.base) {
           var next = rows[rows.indexOf(row) + 1], fw = wide(key + ' ' + value);
           var clear = function (t, ww, hh) {
             var x0 = end ? uLeft(k) + U.w - 4 - ww : uLeft(k) + 5, b = { l: x0, t: t, r: x0 + ww, b: t + hh };
-            return ww <= U.w - 9 && b.b <= next.cap - 2 && !boxes.some(function (o) { return meets(o, b); });
+            return ww <= U.w - 6 && b.b <= next.cap - 2 && !boxes.some(function (o) { return meets(o, b); });
           };
           // Under the baseline's name; or, where the lines are too close for that, in its place (the name gives way to
           // it, below), and the next in the unit under that; or, closer still (on a phone), in its place on one line,
@@ -1933,7 +1943,7 @@
         // Under the last line, where it would run into the foot: the first as low as there's room for, in place of
         // the baseline's name if it must be; one more beside it, against the unit's other edge, if the two fit side
         // by side; any other left out.
-        if (row === last && y > row.base && y + 2 * lh > floor) {
+        if (!at && row === last && y > row.base && y + 2 * lh > floor) {
           var one = firsts[id];
           if (!one) {
             y = Math.max(row.base + 3, floor - 2 * lh);
@@ -1993,7 +2003,53 @@
       var under = [];
       found.forEach(function (d) { if (d.row === last || !put(d.key, d.value, d.px, d.row)) under.push(d); });
       under.sort(function (a, b) { return rows.indexOf(a.row) - rows.indexOf(b.row) || a.n - b.n; });
-      under.forEach(function (d) { put(d.key, d.value, d.px, last); });
+      // Under the last line, a unit's notes one under another, each on its two lines, under the baseline's name and the
+      // tails of the letters on that line. Where they'd run into the foot so: from the baseline's name's place, the name
+      // giving way to them, where no tail hangs into it; or on one line each, where the unit is wide enough for that.
+      // Where they still would, one of them goes under another line of its unit where there's room (the nearest to its
+      // own), and the rest are tried again; and whatever is still left is put as ever: the first as low as there's room
+      // for, one more beside it, any other left out.
+      var tails = list(tagline.querySelectorAll('.g-l')).filter(function (l) { return /[gjpqy,]/.test(l.textContent); })
+        .map(function (l) { return rel(l.getBoundingClientRect()); }).filter(function (b) { return rowOf(b) === last; });
+      var stack = function (q, ds) {
+        var hung = tails.some(function (b) { return b.right > uLeft(q) && b.left < uLeft(q) + U.w; });
+        var tries = hung ? [[lh + 10, false], [lh + 10, true]] : [[lh + 10, false], [3, false], [3, true]];
+        for (var t = 0; t < tries.length; t++) {
+          var hs = ds.map(function (d) { return tries[t][1] && wide(d.key + ' ' + d.value) <= U.w - 6 ? lh : 2 * lh; });
+          if (last.base + tries[t][0] + hs.reduce(function (sum, hh) { return sum + hh + 4; }, -4) <= floor) return { y: last.base + tries[t][0], hs: hs };
+        }
+        return null;
+      };
+      // (spots, by note: where each goes there, once its unit is planned; none, for one put as ever. Written in the
+      // order of their lines, whichever unit they're in.)
+      var spots = under.map(function () { return null; });
+      range(U.count, function (q) { return q; }).forEach(function (q) {
+        var ds = under.filter(function (d) { return unitOf(d.px) === q; });
+        if (!ds.length) return;
+        var plan = stack(q, ds);
+        while (!plan && ds.length > 1) {
+          var tries = [], moved = null;
+          ds.forEach(function (d, i) {
+            rows.forEach(function (r, j) { if (r !== last && r !== d.row) tries.push({ d: d, r: r, far: Math.abs(j - rows.indexOf(d.row)), i: i }); });
+          });
+          tries.sort(function (a, b) { return a.far - b.far || a.i - b.i; });
+          for (var t = 0; t < tries.length && !moved; t++) {
+            // (An unused place under a line is weighed for this note, not for one that didn't fit there before.)
+            var id = q + ':' + rows.indexOf(tries[t].r), was = tight[id];
+            if (!taken[id]) delete tight[id];
+            if (put(tries[t].d.key, tries[t].d.value, tries[t].d.px, tries[t].r)) moved = tries[t].d;
+            else tight[id] = was;
+          }
+          if (!moved) break;
+          moved.moved = true;
+          ds.splice(ds.indexOf(moved), 1);
+          plan = stack(q, ds);
+        }
+        if (!plan) return;
+        var y = plan.y;
+        ds.forEach(function (d, i) { spots[under.indexOf(d)] = { y: y, flat: plan.hs[i] === lh }; y += plan.hs[i] + 4; });
+      });
+      under.forEach(function (d, i) { if (!d.moved) put(d.key, d.value, d.px, last, spots[i] || undefined); });
       // The lead, from one line's baseline to the next one's caps, in the unit nearest the middle with nothing else
       // to say: written between them, or, where they're too close to write in, under the last line.
       if (rows.length > 1) {

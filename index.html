@@ -45,7 +45,8 @@ scripts: [album, lark, kozeni, grid]
   (g-fx) and draws the columns, on springs that follow the scroll. Without it, under Reduce Motion, in forced colors or
   on paper, the screens simply stack, edge to edge, and still snap. The header and footer drawn in the screens (.g-head,
   .g-foot-copy) are copies, aria-hidden and inert; the real ones, from the layout, lie over them, clear, and take the
-  pointer and the keyboard.
+  pointer and the keyboard. So are the columns (.g-slabs, and the layer their type rides in), so that a find in the
+  page, or a link to a passage, finds a room's own words, where they stand, and not the copies the columns carry.
 
   Addresses outside this site point at ids on this page: App Store Connect's Support URL for every app is
   https://tinybit.studio/#contact, and an app's Marketing URL, if set, is its room (/#kozeni, /#lark, /#michi), whose id
@@ -136,7 +137,7 @@ scripts: [album, lark, kozeni, grid]
     <div class="g-track" aria-hidden="true"></div>
     <span class="g-snap" aria-hidden="true"></span>
     <div class="g-screen">
-      <div class="g-slabs" aria-hidden="true"></div>
+      <div class="g-slabs" aria-hidden="true" inert></div>
       <div class="g-head" aria-hidden="true" inert>{% include header.html %}{% include grid-runner.html current=key %}</div>
       <div class="g-content">
         <div class="g-grid wrap grid">
@@ -174,7 +175,7 @@ scripts: [album, lark, kozeni, grid]
     <div class="g-track" aria-hidden="true"></div>
     <span class="g-snap" aria-hidden="true"></span>
     <div class="g-screen">
-      <div class="g-slabs" aria-hidden="true"></div>
+      <div class="g-slabs" aria-hidden="true" inert></div>
       <div class="g-head" aria-hidden="true" inert>{% include header.html %}</div>
       <div class="g-content">
         <div class="g-grid g-studio wrap grid">
