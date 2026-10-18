@@ -16,7 +16,7 @@ The site's 12-column grid is drawn on every page, in hairlines. The home page go
 screen arrives as columns of its ground, each carrying its strip of the screen's big type (see "How the pages
 move" below).
 
-It's a plain [Jekyll](https://jekyllrb.com) site. GitHub Pages builds it from the `master` branch
+It's a plain [Jekyll](https://jekyllrb.com) site. GitHub Pages builds it from the `main` branch
 (root folder) on every push. There's no workflow or build step of your own.
 
 ## Change the title, description or email addresses
@@ -208,7 +208,7 @@ committed): serve with `BUNDLE_GEMFILE=vendor/Gemfile bundle exec jekyll serve`,
 
 ## Publish
 
-Commit and push to `master`. That's the only step: GitHub Pages builds and publishes the site,
+Commit and push to `main`. That's the only step: GitHub Pages builds and publishes the site,
 usually within a minute or two. Commit every file a change adds or removes, not only the ones it
 edits. A file still untracked (`git status` lists it under "Untracked files") isn't pushed: without
 an include or a layout, GitHub's build fails and the site stays as it was; without a stylesheet, a
