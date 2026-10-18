@@ -200,6 +200,8 @@
   // 0.171em and from 0.63em to 0.757em over the baseline). Where each i is, and its line's baseline, is measured on the
   // letters as they're set, so it holds however the name wraps.
   var names = list(doc.querySelectorAll('.gd-band h2'));
+  // (In three steps, each taken for every name before the next: its probe set, then everything read, then its dots
+  // drawn, so that the page is laid out once for the names, not once for each.)
   var dot = function (h) {
     var decor = h.nextElementSibling && h.nextElementSibling.classList.contains('gd-decor') ? h.nextElementSibling : null;
     if (!decor) {
@@ -219,49 +221,54 @@
     var p = document.createElement('span');
     p.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
     h.appendChild(p);
-    range.setStart(last, last.length - 1);
-    range.setEnd(last, last.length);
-    var drop = p.getBoundingClientRect().bottom - range.getBoundingClientRect().top;
-    text.forEach(function (node) {
-      for (var i = node.data.indexOf('i'); i > -1; i = node.data.indexOf('i', i + 1)) {
-        range.setStart(node, i);
-        range.setEnd(node, i + 1);
-        var b = range.getClientRects()[0] || range.getBoundingClientRect();
-        spots.push({ x: b.left, base: b.top + drop });
-      }
-    });
-    var box = h.getBoundingClientRect(), d = decor.getBoundingClientRect();
-    var em = parseFloat(getComputedStyle(h).fontSize);
-    p.remove();
-    var f = function (n) { return (n / em).toFixed(4) + 'em'; };
-    var holes = spots.map(function (s) { return { x: f(s.x - box.left + 0.031 * em), y: f(s.base - box.top - 0.763 * em) }; });
-    var img = holes.map(function () { return 'linear-gradient(#000 0 0)'; }).concat('linear-gradient(#000 0 0)').join(', ');
-    var pos = holes.map(function (o) { return o.x + ' ' + o.y; }).concat('0 0').join(', ');
-    var size = holes.map(function () { return '0.146em 0.139em'; }).concat('100% 100%').join(', ');
-    [['mask-image', img], ['mask-position', pos], ['mask-size', size]].forEach(function (p) { h.style.setProperty(p[0], p[1]); });
-    // The bits kept and moved, not made again, so a dot that has popped out of its stem doesn't pop again.
-    var bits = list(decor.children);
-    while (bits.length > spots.length) bits.pop().remove();
-    spots.forEach(function (s, k) {
-      var b = bits[k];
-      if (!b) { b = document.createElement('b'); b.className = 'gd-bit'; decor.appendChild(b); }
-      b.style.left = f(s.x - d.left + 0.051 * em);
-      b.style.top = f(s.base - d.top - 0.7455 * em);
-    });
+    return function () {
+      range.setStart(last, last.length - 1);
+      range.setEnd(last, last.length);
+      var drop = p.getBoundingClientRect().bottom - range.getBoundingClientRect().top;
+      text.forEach(function (node) {
+        for (var i = node.data.indexOf('i'); i > -1; i = node.data.indexOf('i', i + 1)) {
+          range.setStart(node, i);
+          range.setEnd(node, i + 1);
+          var b = range.getClientRects()[0] || range.getBoundingClientRect();
+          spots.push({ x: b.left, base: b.top + drop });
+        }
+      });
+      var box = h.getBoundingClientRect(), d = decor.getBoundingClientRect();
+      var em = parseFloat(getComputedStyle(h).fontSize);
+      return function () {
+        p.remove();
+        var f = function (n) { return (n / em).toFixed(4) + 'em'; };
+        var holes = spots.map(function (s) { return { x: f(s.x - box.left + 0.031 * em), y: f(s.base - box.top - 0.763 * em) }; });
+        var img = holes.map(function () { return 'linear-gradient(#000 0 0)'; }).concat('linear-gradient(#000 0 0)').join(', ');
+        var pos = holes.map(function (o) { return o.x + ' ' + o.y; }).concat('0 0').join(', ');
+        var size = holes.map(function () { return '0.146em 0.139em'; }).concat('100% 100%').join(', ');
+        [['mask-image', img], ['mask-position', pos], ['mask-size', size]].forEach(function (p) { h.style.setProperty(p[0], p[1]); });
+        // The bits kept and moved, not made again, so a dot that has popped out of its stem doesn't pop again.
+        var bits = list(decor.children);
+        while (bits.length > spots.length) bits.pop().remove();
+        spots.forEach(function (s, k) {
+          var b = bits[k];
+          if (!b) { b = document.createElement('b'); b.className = 'gd-bit'; decor.appendChild(b); }
+          b.style.left = f(s.x - d.left + 0.051 * em);
+          b.style.top = f(s.base - d.top - 0.7455 * em);
+        });
+      };
+    };
   };
   var dotAll = function () {
     if (!root.classList.contains('gd-type')) return;
-    names.forEach(dot);
+    names.map(dot).filter(Boolean).map(function (read) { return read(); }).forEach(function (draw) { draw(); });
   };
   // Each band's number reaches from its name's cap line to a third past the band's foot, however tall the band is
   // with its summary: how far that is, measured (doc.css, --below).
   var figures = list(doc.querySelectorAll('.gd-band .gd-no'));
   var reach = function () {
-    figures.forEach(function (n) {
+    // (All read, then all written: the page laid out once for them.)
+    figures.map(function (n) {
       var band = n.closest('.gd-band');
       var top = parseFloat(getComputedStyle(n).top) || 0;
-      band.style.setProperty('--below', Math.max(0, band.offsetHeight - top).toFixed(1) + 'px');
-    });
+      return [band, Math.max(0, band.offsetHeight - top)];
+    }).forEach(function (b) { b[0].style.setProperty('--below', b[1].toFixed(1) + 'px'); });
   };
 
   // ------------------------------------------------------------ The title, short
@@ -1005,6 +1012,7 @@
     if (frame) return;
     frame = requestAnimationFrame(function () { frame = 0; paint(); if (landing) landOn(); });
   };
+  var laidW = -1, laidH = -1;   // the page's size when it was last laid out
   var relayout = function () {
     shortness();
     if (fx && window.gdFoot) window.gdFoot();
@@ -1013,6 +1021,9 @@
     lineUp();
     place();
     measure();
+    var size = doc.getBoundingClientRect();
+    laidW = size.width;
+    laidH = size.height;
     paint(true);
   };
   // A resize that lays a band out anew (the window's width, or its height where the band's measures follow it)
@@ -1044,9 +1055,16 @@
   });
   window.addEventListener('load', function () { measure(); land(); paint(true); });
   // The page laid out again without the window changing (the fonts in, a larger text size): measured again, a frame
-  // later, once.
+  // later, once. Not when it's the size it was last laid out at: the observer says what it sees as it starts to watch,
+  // and after every resize the relayout above has dealt with.
   var settling = 0;
-  new ResizeObserver(function () { cancelAnimationFrame(settling); settling = requestAnimationFrame(relayout); }).observe(doc);
+  new ResizeObserver(function (entries) {
+    var b = entries[entries.length - 1].borderBoxSize;
+    b = b && (b[0] || b);
+    if (b && Math.abs(b.inlineSize - laidW) < 0.5 && Math.abs(b.blockSize - laidH) < 0.5) return;
+    cancelAnimationFrame(settling);
+    settling = requestAnimationFrame(relayout);
+  }).observe(doc, { box: 'border-box' });
   // Here, and set going: the layout's script, which draws a band to be landed on or to arrive in its plan before this
   // comes, needn't show it as it is after all.
   window.gdLive = true;

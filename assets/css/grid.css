@@ -539,7 +539,8 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
    poster is in outline, as a drawing is checked, in register with the type around it; on it, in mono, what was decided
    in that strip: the caps and the baselines, the G's hang, the kerning put back, the word spaces, the dots' size, the
    stop on the margin. The window is a column of the grid; the plate inside it stays where the poster is, so what you
-   see through it is always the strip it's over. Once the stop has clicked home it sweeps across the tagline once and
+   see through it is always the strip it's over (grid.js moves the window and its edges, and the plate the other way,
+   each by its own translate). Once the stop has clicked home it sweeps across the tagline once and
    goes quiet: its edges and everything drawn in it go, and the poster is simply there again. A mouse moves it, and on a
    touch screen a sideways drag on the tagline scrubs it; a moment after it's let go, it goes quiet where it is. Its
    window and its edges stack by z-index, never by the order they come in. */
@@ -551,7 +552,6 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
   top: 0;
   left: 0;
   width: var(--lw, 0px);
-  translate: var(--x, 0px) 0;
   overflow: clip;
   opacity: 0;
   transition: opacity 160ms var(--ease);
@@ -562,13 +562,12 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
   top: 0;
   left: 0;
   width: var(--lw, 0px);
-  translate: var(--x, 0px) 0;
   border-inline: 1px solid color-mix(in srgb, var(--ink) 55%, transparent);
   opacity: 0;
   transition: opacity 160ms var(--ease), border-color 360ms var(--ease);
 }
 .g-lens.is-on :is(.g-lens__win, .g-lens__edges) { opacity: 1; }
-.g-lens__plate { position: absolute; top: 0; left: 0; width: var(--w, 100vw); translate: calc(-1 * var(--x, 0px)) 0; }
+.g-lens__plate { position: absolute; top: 0; left: 0; width: var(--w, 100vw); }
 /* The window's ground: the canvas, faintly inked, so the type it's over is hidden and only its outline shows. */
 .g-lens__ground { position: absolute; top: 0; left: 0; right: 0; background: color-mix(in srgb, var(--ink) 4%, var(--canvas)); }
 /* The poster in outline: a copy of the tagline, its letters drawn as their edges, in register with the type around
