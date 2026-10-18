@@ -16,22 +16,21 @@
 // puts them back on the one they were on (kept for the tab), and should Safari put the page back at the top as it
 // finishes loading, or as it brings the page back from its cache (it does on an iPhone), back on that screen. Whichever
 // screen the page opens on plays its arrival over the void, the first screen's or a room's (The first screen's
-// arrival, below). If a scroll ever comes to rest between two stops, which mandatory snapping shouldn't allow, it
-// finishes the step the reader was taking, or, if it's only a small move from the stop the reader is on, puts it back
-// there. (In Safari on a Mac and in Firefox on a desktop the page doesn't snap while the deck is drawn: there the deck
-// alone keeps it on its stops, as that does. See ownSnap, below.)
+// arrival, below). In Safari on a Mac and in Firefox on a desktop the page doesn't snap while the deck is drawn
+// (ownSnap, below): there the deck keeps it on its stops itself, and a scroll come to rest between two of them finishes
+// the step the reader was taking, or, if it's only a small move from the stop the reader is on, goes back there.
 //
 // The deck. Every screen after the first rises over the one before as twelve columns of its ground (six on a phone),
 // each carrying its strip of the room's big type: its name, its number, the Studio's motto. Each column is a damped
 // spring. A step the deck takes is played by time: each column's spring is let go towards its place at its moment in
-// its app's cascade, and moves at once, from wherever it is. Under a finger, each column's target is how far the
-// scroll has come through the screen's track, its rise beginning the later in the track the later it is in the
-// cascade, so a slow drag scrubs the cascade under the finger; and scrolling back brings them down, the last risen
-// first. A column going past its place takes the type only a fifth as far, so the name is a pixel or two out of
-// register as the columns overshoot, and clicks into register as they settle. As each column lands, the rest of the
-// room over it is uncovered (one clip, changed a column at a time). When the columns are all up, the room has arrived
-// (.is-here: the square dots of its i's come out of their stems); when they've settled and the scroll is at rest,
-// it's done (.is-done).
+// its app's cascade, and moves at once, from wherever it is. Under a finger, and as the browser's own glide and snap
+// carry the scroll on after it, each column's target is how far the scroll has come through the screen's track, its
+// rise beginning the later in the track the later it is in the cascade, so a slow drag scrubs the cascade under the
+// finger; and scrolling back brings them down, the last risen first. A column going past its place takes the type
+// only a fifth as far, so the name is a pixel or two out of register as the columns overshoot, and clicks into
+// register as they settle. As each column lands, the rest of the room over it is uncovered (one clip, changed a column
+// at a time). When the columns are all up, the room has arrived (.is-here: the square dots of its i's come out of
+// their stems); when they've settled and the scroll is at rest, it's done (.is-done).
 //
 // Each app keeps its own time (CASCADES): Michi's columns are struck home left to right, quicker and quicker, like a
 // postmark; Lark's come in from the right margin carrying its name, the call, and in each the name's echo comes up a
@@ -39,11 +38,11 @@
 // its slot from the top; the Studio's come down as a curtain. Each room arrives in about half a second and is at rest
 // in about four fifths of one (Lark, its echo a beat behind, a little later).
 //
-// A jump of more than one screen (an index link, the header's Contact, End or Home, a scroll that runs fast with no
-// finger on it) doesn't play every room it passes: the screen the reader left is held where it was, the rooms between
-// are left out, and only the screen they land on plays its columns, over the one they left, as a step would. And
-// while a room's columns are in flight, the screen under them is held where it rests, however the scroll moves. It
-// works once a frame, only while the scroll moves or a spring hasn't settled, and writes only what changed.
+// A jump of more than one screen (an index link, the header's Contact, End or Home) doesn't play every room it passes:
+// the screen the reader left is held where it was, the rooms between are left out, and only the screen they land on
+// plays its columns, over the one they left, as a step would. And while a room's columns are in flight, the screen
+// under them is held where it rests, however the scroll moves. It works once a frame, only while the scroll moves or a
+// spring hasn't settled, and writes only what changed.
 (function () {
   'use strict';
   var root = document.documentElement;
@@ -131,15 +130,15 @@
       return range(n, function (i) { return { delay: 240 * Math.pow(i / (n - 1), 0.9), from: -1, f: 4.2, z: 0.88 }; });
     }
   };
-  // Under a finger (the deck following the scroll): each column's rise begins a share of the way through the track
-  // (spread over the first SPREAD of it, in its cascade's order) and takes STRETCH of it, its spring a little quicker
-  // and never past its place, so the columns stay with the finger. A step played by time has no share: its columns
-  // keep their cascade's delays, and nothing else.
+  // Following the scroll (under a finger, on through the browser's own glide and snap after it, or the scrollbar's):
+  // each column's rise begins a share of the way through the track (spread over the first SPREAD of it, in its
+  // cascade's order) and takes STRETCH of it, its spring a little quicker and never past its place, so the columns stay
+  // with the scroll. A step played by time has no share: its columns keep their cascade's delays, and nothing else.
   var SPREAD = 0.42, STRETCH = 0.5, HELD = { f: 1.25, z: 0.9 };
   var UP = 0.97;   // a column this far up has landed: what's over it is uncovered
   var GIVE = 0.2;  // how far the type goes with a column past its place
   // Lark's echo: its strip in each column rises ECHO ms behind the column, on the column's spring, when a step is
-  // played by time (under a finger, or going back, it goes with its column).
+  // played by time (following the scroll, or going back, it goes with its column).
   var ECHO = 150;
   // A spine's drop, from the top: DROP ms, falling faster as it goes, as a weight does, to a dead stop.
   var DROP = 200;
@@ -159,7 +158,7 @@
   var anchor = 0;      // the screen the reader is on: where the scroll came to rest, or has since got to
   var place = 0;       // the same, kept while the screens are stacked too, so a new layout puts the reader back there
   var jump = null;     // a jump of more than one screen, while it plays
-  var touching = 0, pressing = false, resizedAt = -1e9, touchedAt = -1e9;
+  var touching = 0, pressing = false, resizedAt = -1e9;
 
   // The page's scroll, and an instant move of it (never an animated one: the deck draws the rest).
   var Y = function () { return window.scrollY; };
@@ -504,7 +503,7 @@
   // before its columns have landed, as a wheel's can, mustn't take the screen they're rising over with it).
   var hold = function (el, k, y, yes) {
     var t = yes ? 'translateY(' + (-natTop(k, y)).toFixed(1) + 'px)' : '';
-    if (el.style.transform !== t) el.style.transform = t;
+    if (t !== el.gHeld) { el.gHeld = t; el.style.transform = t; }
   };
   var holdAll = function (y) {
     var under = {}, t = now();
@@ -520,7 +519,6 @@
     var y = Y(), hushed = arrival.hushed();
     hist = [];
     record(now(), y);
-    holding = null;   // (a room held at the start of a slow scroll back is let go with the rest: follow)
     root.classList.add('g-quiet');
     rooms.forEach(function (r) {
       r.p = progress(r, y);
@@ -591,14 +589,13 @@
     if (y !== before) moved = t;
     var busy = t - moved < 400;
     if (arrival.frame(t)) busy = true;
-    follow(t, y);
+    follow(y);
     rooms.forEach(function (r) {
       var was = r.p;
       r.p = progress(r, y);
-      // The scroll moved this room on or back by itself (under a finger, by the scrollbar): its columns follow the
-      // scroll from wherever they are, whatever step was playing (but a step taken from the browser's own snap, which
-      // goes on moving the scroll, plays on, unless a finger takes hold).
-      if (r.p !== was && r.drive && !(r.drive.native && !touching && !pressing)) r.drive = null;
+      // The scroll moved this room on or back by itself (a finger, the browser's glide and snap, the scrollbar): its
+      // columns follow the scroll from wherever they are, whatever step was playing.
+      if (r.p !== was) r.drive = null;
       if (r.frozen || r.skipped) return;
       var d = r.drive;
       for (var i = 0; i < r.slabs.length; i++) {
@@ -628,8 +625,8 @@
             busy = true;
           }
         }
-        // Lark's echo: going up by time, its goal is its column's a beat (ECHO) later, on the same spring; under a
-        // finger or going back it's simply with its column.
+        // Lark's echo: going up by time, its goal is its column's a beat (ECHO) later, on the same spring; following
+        // the scroll, or going back, it's simply with its column.
         if (r.echoes) {
           if (!d || d.to <= 0) { s.ey = s.eg = s.y; s.ev = s.v; }
           else {
@@ -659,7 +656,6 @@
     strips.push();
     covering(t);
     if (settling(t) || rooms.some(function (r) { return r.layered; })) busy = true;
-    if (jump && !jump.playing && (jump.fwd ? y >= stops[stops.length - 1] - 0.5 : y <= 0.5)) arrive(nearest(y), y);
     if (jump) {
       busy = true;
       // A jump is over once its landing has played, every column is still and the scroll is at its stop, or has
@@ -667,7 +663,7 @@
       // deck).
       var still = function (r) { return r.frozen || r.skipped || (!r.moving && !(r.drive && r.slabs.some(function (s) { return s.at > t; }))); };
       var there = Math.abs(y - stops[jump.b]) <= 1 || t - moved > 300;
-      if (jump.playing && (t - jump.landed > 2400 || (there && rooms.every(still)))) { settle(); setAnchor(nearest(Y())); }
+      if (t - jump.landed > 2400 || (there && rooms.every(still))) { settle(); setAnchor(nearest(Y())); }
     }
     holdAll(y);
     lens.follow(lensable());
@@ -695,48 +691,36 @@
       if (b > a) play(rooms[b - 1], 1, t, quick); else play(rooms[a - 1], 0, t, quick);
       return;
     }
-    leap(t, a, b, true);
+    leap(t, a, b);
   };
-  // A jump of more than one screen. The screen left is held where it was, and the rooms between are left out. A jump in
-  // one frame (instantly) knows where it lands, and plays the landing at once; the room it leaves, if it was still coming
-  // in, is finished at once under the landing going on (which covers it in a moment: only the screen landed on moves),
-  // or, going back, turns back from where it is. A scroll that runs fast with no finger on it doesn't know yet (b is only
-  // the way it's going, 1 or -1), and is caught in its first frames: going on, the room it had only begun to step to
-  // sinks back into the screen left, held with it; going back, the room it leaves is held as it was, and if it had begun
-  // to go, the screen under it too. The landing plays once the scroll is at rest.
-  var leap = function (t, a, b, instantly) {
-    var fwd = instantly ? b > a : b === 1;
+  // A jump of more than one screen: the screen left is held where it was, the rooms between are left out, and the
+  // landing plays at once. The room it leaves, if it was still coming in, is finished at once under the landing going
+  // on (which covers it in a moment: only the screen landed on moves), or, going back, turns back from where it is.
+  var leap = function (t, a, b) {
+    var fwd = b > a;
     var held = {};
     held[a] = true;
-    var left = a > 0 ? rooms[a - 1] : null;
-    var covers = !left || left.slabs.every(function (s) { return s.y >= UP; });
     rooms.forEach(function (r) {
       var k = r.k;
       if (k === a) {
-        var arriving = instantly && r.drive && r.drive.to > 0;
+        var arriving = r.drive && r.drive.to > 0;
         if (arriving && fwd) { r.slabs.forEach(function (s) { s.y = s.goal = s.ey = s.eg = 1; s.v = s.ev = 0; s.busy = false; s.at = 0; s.drop = null; }); arriving = false; }
         if (!arriving) { r.drive = null; r.frozen = true; }
         return;
       }
-      var running = !instantly;
-      if (running && fwd && k === a + 1 && r.slabs.some(function (s) { return s.y > 0.001; })) { held[k] = true; play(r, 0, t); return; }
-      if (running && !fwd && k === a - 1 && !covers) { held[k] = true; r.drive = null; r.frozen = true; return; }
-      var between = instantly ? (fwd ? k > a && k < b : k < a && k > b) : (fwd ? k > a : k < a);
-      if (between) { r.skipped = true; r.drive = null; r.el.classList.add('is-skipped'); }
+      if (fwd ? k > a && k < b : k < a && k > b) { r.skipped = true; r.drive = null; r.el.classList.add('is-skipped'); }
     });
-    jump = { a: a, b: b, fwd: fwd, held: held, playing: false };
+    // (playing from this frame: every jump plays its landing at once. Keys and the wheel read it to know where the
+    // deck is taking the reader.)
+    jump = { a: a, b: b, fwd: fwd, held: held, playing: true, landed: t };
     // Held from this very frame: the browser runs the frame's callbacks (tick) after the scroll's events and before it
     // paints, so the jump is never seen without its hold. (Not here, in the scroll's own event: a scroll handler that
     // moves things is what browsers warn of as a scroll-linked effect.)
     queue();
-    if (instantly) land(t, b);
+    land(t, b);
   };
-  // The scroll has come to rest at b after a jump: forward, b's columns rise over what's held; back, what's held
-  // drops away from over b.
+  // The landing, at b: forward, b's columns rise over what's held; back, what's held drops away from over b.
   var land = function (t, b) {
-    jump.b = b;
-    jump.playing = true;
-    jump.landed = t;
     if (jump.fwd) {
       rooms.forEach(function (r) {
         if (r.k === b) { r.slabs.forEach(function (s) { s.y = s.goal = 0; s.v = 0; s.busy = false; }); r.hit = false; r.landed = ''; play(r, 1, t); }
@@ -748,71 +732,14 @@
         else if (r.k <= b) { r.skipped = false; r.el.classList.remove('is-skipped'); }
       });
     }
-    queue();
   };
-  // A scroll running fast that the deck didn't start (a tap on the status bar, a screen reader's), from screen a: one
-  // move to wherever it comes to rest, whatever it passes. Going back with nothing on the page (free: no finger, no
-  // button held), it's taken to be going to the top, as it nearly always is (the tap on the status bar): its landing
-  // plays at once, over the first screen, which is held in view until the scroll gets there. Otherwise the screen left
-  // is held as it was, and the landing plays once the scroll comes to rest, or reaches either end of the page. Either
-  // way, if it comes to rest somewhere else after all, the deck is put where it is once the move has played. A step
-  // still queued (a key's, the wheel's) is dropped: the reader has gone on without it.
-  var race = function (t, a, dir, free) {
-    pending = null;
-    if (dir < 0 && free && a === 1) { play(rooms[0], 0, t); return; }
-    if (dir < 0 && free && a > 1) { leap(t, a, 0, true); if (jump) jump.held[0] = true; return; }
-    leap(t, a, dir, false);
-  };
-  // The scroll moving by itself. On to the next stop (or back to the one before), the reader is there now, whatever
-  // the finger does next: so a second flick, just as the first one's room lands, goes on to the room after it, rather
-  // than reading as a jump of two from where the first began, which would pull the room just reached back down.
-  // With no finger on it and no button held (the deck takes the keys and the wheel itself, so this is the browser's
-  // own scroll, or a screen reader's): running fast (a screen in FAST ms, or quicker, faster than any browser's own
-  // snap of one step), it's one move (race, above); at an ordinary pace, once it has gone COMMIT of a screen from its
-  // stop, its step is taken and played by time, to the next stop the way it's going (the browser never lets it pass a
-  // stop, nor rest between two), ahead of the browser's own snap; turned back on its way, the step is turned back.
-  // A finger, while it's on the screen, drives the columns itself. Once it has let go (LIFT ms ago, at most), the
-  // browser's own snap takes the scroll the rest of the way to a stop, slowing all the way there; on that slow tail
-  // a cascade would lose its rhythm (Michi's strike slowing where it should quicken, Lark's echo with its column). So
-  // the rest of the step is played by time from where the columns are, in the room's own rhythm, as a key's is: on,
-  // if the scroll is going on (or, hardly moving, is past half way), else back; and turned at once should the snap
-  // turn out to be going the other way. rested() makes sure of it once the scroll is at rest.
-  // Going back by itself from a room over another, the scroll may be one to the top that starts slowly (a smooth one, a
-  // link to the page's head): for its first HOLD ms, or until it's a quarter of a screen out, the room it leaves is held
-  // where it is, and if it has gone SOON of a screen by then it's taken to be one (race), so the room under it never
-  // shows for a moment on the way; only after that is it a step back.
-  var FAST = 200, COMMIT = 0.06, LIFT = 1500, HOLD = 150, SOON = 0.15;
-  var leftAt = -1, holding = null;   // when the scroll last left its stop by itself, and the room it holds meanwhile
-  var unhold = function () { if (holding) { holding.frozen = false; holding = null; } };
-  var follow = function (t, y) {
-    if (jump) { holding = null; return; }
+  // The scroll moving by itself (a finger, the browser's own glide and snap, the scrollbar): its columns follow it
+  // (tick), and once it has got to the next stop (or back to the one before), the reader is on that screen, whatever
+  // they do next (the screen kept for the tab, the lens, and a key's step or a jump taken from there).
+  var follow = function (y) {
+    if (jump) return;
     while (anchor < stops.length - 1 && y >= stops[anchor + 1] - 1 && !rooms[anchor].skipped && !rooms[anchor].frozen) setAnchor(anchor + 1, true);
     while (anchor > 0 && y <= stops[anchor - 1] + 1 && !rooms[anchor - 1].skipped && !rooms[anchor - 1].frozen) setAnchor(anchor - 1, true);
-    var H = stops[1], v = (y - scrollAt(t - 50)) / 50, off = y - stops[anchor];
-    if (Math.abs(off) <= 2) { leftAt = -1; unhold(); } else if (leftAt < 0) leftAt = t;
-    if (touching || pressing || t - ownAt < 120) { unhold(); return; }
-    var dir = off > 0 ? 1 : -1, r = dir > 0 ? rooms[anchor] : rooms[anchor - 1], way;
-    if (t - touchedAt < LIFT) {
-      unhold();
-      if (Math.abs(off) < 2 || !r || r.skipped || r.frozen) return;
-      way = Math.abs(v) > 0.15 ? (v > 0 ? 1 : -1) : Math.abs(off) > H / 2 ? dir : -dir;
-    } else {
-      if (Math.abs(v) * FAST >= H && Math.abs(off) > 2) { holding = null; race(t, anchor, v > 0 ? 1 : -1, true); return; }
-      if (off < -2 && anchor > 1 && r && !r.skipped && (holding === r || !r.frozen) && t - leftAt < HOLD && -off < H / 4) {
-        if (-off >= SOON * H) { holding = null; race(t, anchor, -1, true); return; }
-        if (!holding) { holding = r; r.frozen = true; r.drive = null; }
-        return;
-      }
-      unhold();
-      if (Math.abs(off) < COMMIT * H) return;
-      if (!r || r.skipped || r.frozen) return;
-      // Which way it's going now: back towards its stop, or on.
-      way = Math.abs(v) > 0.02 ? (v > 0 ? 1 : -1) : dir;
-    }
-    var aim = (way > 0) === (dir > 0) ? (dir > 0 ? 1 : 0) : (dir > 0 ? 0 : 1);
-    if (r.drive && r.drive.to === aim) return;
-    play(r, aim, t);
-    r.drive.native = true;
   };
 
   // ------------------------------------------------------------ Keys and the wheel
@@ -1239,62 +1166,31 @@
     return anchor === 0 && !jump && arrival.up() && !(rooms[0] && rooms[0].slabs.some(function (s) { return s.y > 0.001; }));
   };
   var rest = 0;
-  // A scroll that ran on past a stop (a jump that didn't know where it would land) has come to rest at stop k, or to
-  // an end of the page, where it can go no further: back where it began, or only a step on after all, there's no
-  // jump, everything carries on from where it is, and a step on (or back) plays out by time from here; further, the
-  // jump lands.
-  var arrive = function (k, y) {
-    if (Math.abs(k - jump.a) <= 1) {
-      var a = jump.a;
-      rooms.forEach(function (r) { r.frozen = r.skipped = false; r.el.classList.remove('is-skipped'); });
-      jump = null;
-      if (k > a) play(rooms[k - 1], 1, now()); else if (k < a) play(rooms[a - 1], 0, now());
-      holdAll(y);
-      queue();
-    } else land(now(), k);
-  };
   var rested = function () {
     clearTimeout(rest);
-    if (!on || touching || pressing) return;
+    if (!on || pressing) return;
     // Just after a resize the layout may still be settling: look again once it has.
     if (now() - resizedAt < 350) { rest = setTimeout(rested, 370 - (now() - resizedAt)); return; }
     var y = Y(), k = nearest(y);
-    // Between two stops: the browser's snap may not have begun yet (a move of the deck's own then would be followed by
-    // the browser's, a screen further on). Only if the scroll is still there a while later is the step finished by the
-    // deck.
+    // Between two stops: where the browser snaps the page, its snap is still to come; where the deck does (ownSnap),
+    // if the scroll is still there a while later, the deck finishes the step (resnap).
     if (Math.abs(y - stops[k]) > 1.5) { rest = setTimeout(resnap, RESNAP); return; }
-    // A step taken from the browser's own scroll only a moment ago (follow), and the scroll back where it began: the
-    // browser may only be resting before it snaps on. Wait and see.
-    var t = now();
-    if (rooms.some(function (r) { var d = r.drive; return d && d.native && d.to !== (r.p >= 0.5 ? 1 : 0) && t - d.t0 < 400; })) { rest = setTimeout(rested, 250); return; }
-    if (jump && !jump.playing) arrive(k, y);
-    // A step taken from the browser's own snap (follow): where the scroll came to rest says whether it was taken.
-    rooms.forEach(function (r) {
-      var d = r.drive;
-      if (!d || !d.native) return;
-      d.native = false;
-      var aim = r.p >= 0.5 ? 1 : 0;
-      if (d.to !== aim) play(r, aim, now());
-    });
     setAnchor(k);
     flush();
   };
-  // A scroll at rest between two stops for a while (RESNAP ms: a browser that let one through): the step it was taking
-  // is finished, to the next stop the way it was last going. Asked of the browser, it would go back to the stop it last
-  // snapped to, undoing the reader's move. The deck plays the rest of the step.
-  var snapping = function () { return (ownSnap && on) || (getComputedStyle(root).scrollSnapType || '').indexOf('mandatory') >= 0; };
   // Which way the scroll last moved (1 down, -1 up, 0 if it hasn't in the last moment): by where it was last
   // somewhere else, so a step turned back mid-way counts as going back.
   var lastWay = function (y) {
     for (var i = hist.length - 1; i >= 0; i--) { var d = y - hist[i][1]; if (Math.abs(d) > 1) return d > 0 ? 1 : -1; }
     return 0;
   };
+  // Where the deck snaps the page itself (ownSnap: Safari on a Mac, Firefox on a desktop), a scroll at rest between two
+  // stops for a while (RESNAP ms: the scrollbar let go there, say) is finished, to the next stop the way it was last
+  // going: the deck plays the rest of the step. But a small move from the stop the reader is on, with no step under
+  // way (the drift of a sideways swipe, which the browser has: a quarter of a screen or less), is put back there.
   var RESNAP = 450;
-  // But a small move from the stop the reader is on, with no step under way (the drift of a sideways swipe, which the
-  // browser has: a quarter of a screen or less), is put back on that stop.
   var resnap = function () {
-    if (!on || !snapping()) return;   // snapping is off (a short screen, or someone turned it off): rest is anywhere
-    if (touching || pressing || now() - moved < RESNAP - 20) return;
+    if (!on || !ownSnap || pressing || now() - moved < RESNAP - 20) return;
     var y = Y(), k = nearest(y), going = lastWay(y), H = stops[1];
     if (!jump && !timed() && Math.abs(y - stops[anchor]) <= H / 4) k = anchor;
     else if (going > 0) { k = 0; while (k < stops.length - 1 && stops[k] < y) k++; }
@@ -1308,23 +1204,15 @@
   // one before).
   var stackedRest = 0;
   // A move of the scroll the deck didn't make (its own are already counted in lastY), seen in its scroll event or, if
-  // it was made by a script in this very frame, in the frame first. One of most of a screen at once is a jump (a link,
-  // a find, the browser putting the page back), played at once. A scroll running fast (a screen in FAST ms, or
-  // quicker) with nothing on the page, or one that keeps going on the heels of such a jump (within RUN ms, the same
-  // way: a tap on the status bar, on slow frames, a screen a frame), is one move (race) from where it began.
-  var natAt = -1e9, natDir = 0, natFrom = 0, natJumped = false, RUN = 150;
+  // it was made by a script in this very frame, in the frame first. One of most of a screen at once, onto a stop, is a
+  // jump (a link, a find, the browser putting the page back), played at once. Any other is the scroll moving, and the
+  // columns follow it, however fast it goes, and however seldom the page is told where it is (Safari on an iPhone or
+  // an iPad tells it only every tenth of a second or so while its bars come and go, so a flick can be seen to go most
+  // of a screen at once, but never onto its stop: its snap slows to it).
   var seen = function (t, y0, y) {
-    var dy = y - y0;
-    if (!dy) return;
-    var dir = dy > 0 ? 1 : -1, running = t - natAt < RUN && dir === natDir, H = stops[1];
-    if (!running) { natFrom = anchor; natJumped = false; }
-    natAt = t;
-    natDir = dir;
     if (jump || t - resizedAt <= 350) return;
-    var free = !touching && !pressing && t - touchedAt >= LIFT;
-    var big = Math.abs(dy) >= 0.6 * H, fast = Math.abs(y - scrollAt(t - 50)) / 50 * FAST >= H;
-    if (running && natJumped && (big || fast) || free && fast && !big && t - ownAt >= 120) race(t, natFrom, dir, free);
-    else if (big) { natJumped = true; ownAt = t; instant(t, y0, y); }
+    var H = stops[1];
+    if (Math.abs(y - y0) >= 0.6 * H && Math.abs(y - stops[nearest(y)]) <= 1) instant(t, y0, y);
   };
   // Safari on an iPhone, as the page finishes loading with the deck drawn, puts the scroll back at the top, and moves it
   // to the screen the address names only a few frames later (iOS 27: on the room's stop once the document is read, at
@@ -1371,10 +1259,9 @@
   };
   window.addEventListener('scroll', onScroll, { passive: true });
   if ('onscrollend' in window) window.addEventListener('scrollend', function () { if (on) { clearTimeout(rest); rest = setTimeout(rested, 30); } });
-  // A finger on the screen, or a button held (on the scrollbar, say), is the reader still scrolling.
-  window.addEventListener('touchstart', function (e) { touching = e.touches.length; touchedAt = now(); }, { passive: true });
-  window.addEventListener('touchend', function (e) { touching = e.touches.length; touchedAt = now(); if (!touching) { clearTimeout(rest); rest = setTimeout(rested, 160); } }, { passive: true });
-  window.addEventListener('touchcancel', function () { touching = 0; touchedAt = now(); }, { passive: true });
+  // A finger on the screen (a key's step waits for it to lift, and what it selects is no find), or a button held (on
+  // the scrollbar, say: the reader still scrolling, rested and resnap wait for it).
+  ['touchstart', 'touchend', 'touchcancel'].forEach(function (type) { window.addEventListener(type, function (e) { touching = e.touches.length; }, { passive: true }); });
   window.addEventListener('pointerdown', function (e) { if (e.pointerType === 'mouse') pressing = true; }, { passive: true });
   window.addEventListener('pointerup', function () { if (pressing) { pressing = false; clearTimeout(rest); rest = setTimeout(rested, 160); } }, { passive: true });
 
@@ -1400,7 +1287,6 @@
     pending = null;
     to(stops[k]);
     lastY = Y();
-    ownAt = now();
     settle();
     setAnchor(nearest(lastY));
   });
@@ -1415,7 +1301,7 @@
     to(stops[k]);
     var y1 = Y();
     lastY = y1;
-    moved = ownAt = now();
+    moved = now();
     record(moved, y1);
     instant(moved, y0, y1);
     holdAll(y1);
@@ -1597,7 +1483,6 @@
     else if (k > 0) y = screens[k].getBoundingClientRect().top + window.scrollY;
     to(Math.round(y));
     lastY = Y();
-    ownAt = now();
     place = k;
   };
   var teardown = function () {
@@ -1609,12 +1494,12 @@
       r.screen.classList.remove('g-covered');
       r.content.style.clipPath = '';
       r.head.style.clipPath = '';
-      r.screen.style.transform = '';
+      hold(r.screen, r.k, 0, false);
       r.el.classList.remove('is-done', 'is-here', 'is-moving', 'is-skipped', 'is-give');
       r.here = r.done = r.moving = r.layered = false;
       r.drive = null; r.frozen = r.skipped = false;
     });
-    hero.style.transform = '';
+    hold(hero, 0, 0, false);
     hero.classList.remove('g-covered');
     strips.remove();
     jump = null;
@@ -1781,8 +1666,8 @@
         measure();
         settle();
         setAnchor(nearest(Y()));
+        lens.reset();
       }
-      lens.reset();
     });
   });
   var change = function () { decide(where()); lens.reset(); };
@@ -2614,6 +2499,7 @@
       var k = where();
       decide(k);
       if (on) { buildAll(); restore(k); measure(); settle(); setAnchor(nearest(Y())); }
+      laid = layout();   // what it's laid out on now, so that Safari's first move of its bars after it isn't a new layout
       lens.reset();
     });
   }
