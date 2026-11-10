@@ -3,7 +3,7 @@ layout: doc
 title: Privacy
 description: "How the Tiny Bit Studio website and its apps, Michi, Lark and Kozeni, handle your data: no accounts, no analytics, ads or tracking, and nothing collected by us."
 permalink: /privacy/
-updated: 2026-10-14
+updated: 2026-11-10
 body_class: proto-grid-doc
 styles: [doc]
 scripts: [doc]
@@ -21,7 +21,7 @@ scripts: [doc]
 In short
 {: .margin}
 
-This page covers this website and our three apps, Michi, Lark and Kozeni. We don’t collect your data. None of them needs an account, and none has analytics, ads or tracking of our own. What you keep in the apps stays on your device and in your own iCloud, apart from the trips you share in Michi, which go to the people you invite, and what Lark and Michi send to the services they use, such as YouTube and Apple Maps. Nothing that identifies you reaches us unless you write to us.
+This page covers this website and our three apps, Michi, Lark and Kozeni. We don’t collect your data. None of them needs an account, and none has analytics, ads or tracking of our own. What you keep in the apps stays on your device and in your own iCloud, apart from the trips you share in Michi and the households you share in Kozeni, which go to the people you invite, and what Lark and Michi send to the services they use, such as YouTube and Apple Maps. Nothing that identifies you reaches us unless you write to us.
 
 Each has its own section below: [this website](#website), [Michi](#michi), [Lark](#lark) and [Kozeni](#kozeni).
 
@@ -297,7 +297,7 @@ Privacy
 ### In short
 {: .margin}
 
-Kozeni collects no data. What you enter stays on your device and, if you use iCloud, in your own private iCloud database, where we can’t see it. There’s no account, no server of ours, and no analytics, ads or tracking.
+Kozeni collects no data. What you enter stays on your device and, if you use iCloud, in your own iCloud, where we can’t see it, apart from a household, which you share with the people you invite to it. There’s no account, no server of ours, and no analytics, ads or tracking.
 
 ### Settings
 {: .margin}
@@ -307,35 +307,51 @@ The paths below start in Kozeni’s Settings. On iPhone, tap the four‑squares 
 ### On your device
 {: .margin}
 
-Kozeni keeps your entries (amount, expense or income, category, note, date and how it repeats), categories, recurring items and budgets in a database on your device, along with your settings and the highlights Insights has picked. For the Home Screen widget, it writes a short summary to storage it shares only with the widget: your totals for the week, month and year, and your latest entries with their notes and amounts. The widget makes no network requests. Kozeni has no networking code of its own; it goes online only through Apple’s iCloud and App Store, as described below.
+Kozeni keeps your entries (amount, expense or income, category, note, date and how it repeats), categories, recurring items and budgets in a database on your device, along with your settings and the highlights Insights has picked. In a household, it keeps the household’s entries, categories, recurring items and budgets in a second database on your device, with who’s in it (see Household). For the Home Screen widget, it writes a short summary to storage it shares only with the widget: your totals for the week, month and year, and your latest entries with their notes and amounts, from your household while you’re in one. The widget makes no network requests. Kozeni has no networking code of its own; it goes online only through Apple’s iCloud and App Store, as described below.
 
 ### iCloud
 {: .margin}
 
-If iCloud is on for Kozeni, your entries, categories, recurring items and budgets sync between your devices through Apple’s CloudKit, in your iCloud account’s private database. Entries in Recently deleted sync too, until they’re removed. Your settings, the widget’s summary and the saved highlights stay on each device, and Kozeni Pro doesn’t sync through iCloud at all: each device asks the App Store (see Kozeni Pro). Kozeni has no sync switch of its own: it follows iCloud, which you can turn off for Kozeni in the Settings app, under your name&nbsp;→ iCloud. [Apple’s privacy policy](https://www.apple.com/legal/privacy/en-ww/) covers iCloud.
+If iCloud is on for Kozeni, your entries, categories, recurring items and budgets sync between your devices through Apple’s CloudKit, in your iCloud account’s private database. Entries in Recently deleted sync too, until they’re removed. Your settings, the widget’s summary and the saved highlights stay on each device, and Kozeni Pro doesn’t sync through iCloud at all: each device asks the App Store (see Kozeni Pro). Kozeni has no sync switch of its own: it follows iCloud, which you can turn off for Kozeni in the Settings app, under your name&nbsp;→ iCloud. A household syncs on its own, through its owner’s iCloud (see Household). [Apple’s privacy policy](https://www.apple.com/legal/privacy/en-ww/) covers iCloud.
 
-### Shortcuts
+### Household
 {: .margin}
 
-Kozeni can log Apple Pay purchases for you through a shortcut. Settings&nbsp;→ Preferences&nbsp;→ Shortcuts&nbsp;→ Add automation opens a ready-made shortcut from iCloud; you add it, then turn it on in the Shortcuts app, and iOS asks your permission the first time it runs. Each time, the shortcut hands Kozeni a note (the merchant’s name, for example), an amount, a date, whether it’s an expense or income, and, optionally, a category name. Kozeni saves them as an entry, which syncs like any other. It never reads Wallet or your cards itself; it gets only what the shortcut passes in.
+Settings&nbsp;→ Sharing&nbsp;→ Household lets you keep one ledger with the people you live with. Creating a household needs Kozeni Pro; joining one doesn’t. You can be in one household at a time.
+
+- **Where it’s kept.** A household is kept in the iCloud of its owner, the person who created it, through Apple’s CloudKit, in a part of their private database of its own, and counts toward their iCloud storage. The people in it reach it through iCloud sharing. Everything anyone writes in it, amounts, notes and categories included, is kept in CloudKit’s encrypted fields. The share iCloud keeps, and the invitation, can’t be encrypted, so Kozeni puts nothing of the household there: both say “A household on Kozeni”, with Kozeni’s icon.
+- **Inviting.** Only the owner invites people, with the invite button on the Household page, by whichever app they send the invitation with, such as Messages or Mail. Only the people the owner invites can join: Kozeni never offers a link that anyone can open, and nobody can ask to join.
+- **What everyone sees.** Everyone in a household sees all of it: its entries, categories, recurring items and budgets, who logged each entry and who set up each recurring item, and who’s in it, by the names iCloud gives or, where it gives none, by the email address or phone number they were invited at. Kozeni learns your name only from iCloud, through the household’s share; it never reads your contacts or looks anyone up. Everyone can change their own entries; the owner chooses, under Permissions, whether the others can change everyone’s entries, categories and budgets too.
+- **Joining.** When you create or join a household, your entries and recurring items move into it, Recently deleted included, and your categories are matched to the household’s. The owner’s budgets are copied in; a member’s stay where they were. While you’re in a household, everything you log goes to it, from Shortcuts and Siri too, and your own ledger is hidden until you leave.
+- **Leaving.** A member can leave, and the owner can remove someone or delete the household, on the Household page. Whoever leaves or is removed keeps a copy of their own entries, and the household keeps them too unless the person leaving, or the owner removing them, chooses otherwise. Deleting the household removes it, and everything in it, from the owner’s iCloud; everyone keeps a copy of their own entries, and the owner can keep everyone’s. Once you’re out of a household, by any of these or by signing out of iCloud, Kozeni removes it from your devices, with its highlights, its widget summary and the reminders for its recurring items.
+
+### Shortcuts and Siri
+{: .margin}
+
+Kozeni can log Apple Pay purchases for you through a shortcut. Settings&nbsp;→ Preferences&nbsp;→ Shortcuts&nbsp;→ Add automation opens a ready-made shortcut from iCloud; you add it, then turn it on in the Shortcuts app, and iOS asks your permission the first time it runs. Each time, the shortcut hands Kozeni a note (the merchant’s name, for example), an amount, a date, whether it’s an expense or income, and, optionally, a category name. Kozeni saves them as an entry, which syncs like any other. Clean up notes, on by default in the same place, first takes store numbers such as “#1234” off the note, on your device. Kozeni never reads Wallet or your cards itself; it gets only what the shortcut passes in.
+
+Kozeni’s actions in Siri and Shortcuts can also log a transaction, find entries, change or delete one, total your spending, check your budgets and log a receipt. Siri gets what an action returns, such as the entries it found, with their notes and amounts, or the totals, and [Apple’s privacy policy](https://www.apple.com/legal/privacy/en-ww/) covers what Siri does with it. Every action but Log Transaction asks you to unlock your device first. Log Transaction can run on a locked device, so the Apple Pay shortcut works, and there its result shows only what it was given, the note, the amount and the time, not the category Kozeni chose.
+
+Log Receipt reads a receipt, an image or a PDF that Siri or a shortcut hands it, on your device, with Apple’s Vision framework, and asks you before it saves. It keeps only the entry: the merchant as its note, the total, the date and a category. The file and the text read from it are never saved.
 
 ### Apple Intelligence
 {: .margin}
 
-Where Apple Intelligence is available and turned on, Kozeni uses Apple’s on-device model in two places. It makes no network request for either, and the results stay on your device.
+Where Apple Intelligence is available and turned on, Kozeni uses Apple’s on-device model in three places. It makes no network request for either, and the results stay on your device.
 
-- **Highlights.** Kozeni writes the Insights highlights itself, from the period’s figures. The model is given those lines, which can include amounts, percentages, category names, weekdays or months, and the note of the period’s largest expense or income, cut to 40&nbsp;characters. It only chooses which lines to show. Without Apple Intelligence, Kozeni shows its top-ranked lines instead. Settings&nbsp;→ Reset&nbsp;→ Reset AI analysis clears the saved ones.
-- **Categories for logged purchases.** When the shortcut passes no category name, Kozeni looks for an earlier entry with the same note, then for your default category. If it finds neither, the model is given the entry’s type, amount and note, the names of your categories of that type, and up to eight of your recent notes with the categories you gave them. It answers with one of your categories, or none. This happens only while Smart category is on and no default category is set, both in Settings&nbsp;→ Preferences&nbsp;→ Shortcuts.
+- **Highlights.** Kozeni writes the Insights highlights itself, from the period’s figures. The model is given those lines, which can include amounts, percentages, category names, weekdays or months, and the note of the period’s largest expense or income, cut to 40&nbsp;characters, and in a household the name of whoever logged it. It only chooses which lines to show. Without Apple Intelligence, Kozeni shows its top-ranked lines instead. Settings&nbsp;→ Reset&nbsp;→ Reset AI analysis clears the saved ones.
+- **Categories for logged purchases.** When Log Transaction is given no category name, or Log Receipt reads a receipt, Kozeni looks for an earlier entry with the same note, then for your default category. If it finds neither, the model is given the entry’s type, amount and note, the names of your categories of that type, and up to eight recent notes with their categories, which in a household can be anyone’s in it. It answers with one of your categories, or none. This happens only while Smart category is on and no default category is set, both in Settings&nbsp;→ Preferences&nbsp;→ Shortcuts.
+- **Receipts.** When Log Receipt has read a receipt’s text, the model is given that text, or the first 2,500 and the last 1,500&nbsp;characters of a longer one, and answers with the merchant, the total, its currency and the date. Without Apple Intelligence, Kozeni finds them in the text itself.
 
 ### Notifications
 {: .margin}
 
-If you turn them on in Settings&nbsp;→ Preferences&nbsp;→ Notifications, Kozeni schedules its reminders on your device: a daily reminder to log, and a reminder when a recurring item is due, which shows the item’s note or category, its amount and how often it repeats. Nothing is sent from a server. Reminders appear wherever your notification settings allow, such as the Lock Screen.
+If you turn them on in Settings&nbsp;→ Preferences&nbsp;→ Notifications, Kozeni schedules its reminders on your device: a daily reminder to log, and a reminder when a recurring item is due, which shows the item’s note or category, its amount and how often it repeats. In a household, When others log, on the same page and off until you turn it on, shows a notification when iCloud brings in an entry someone else logged: their name, the amount and the entry’s note or category. Kozeni makes each of these on your device, and none is sent from a server. In a household, Kozeni also receives iCloud’s silent notifications, which show nothing and only tell it to fetch what’s changed. Notifications appear wherever your notification settings allow, such as the Lock Screen.
 
 ### Kozeni Pro
 {: .margin}
 
-Kozeni Pro, in Settings&nbsp;→ Support, is one purchase through Apple’s App Store, not a subscription. It unlocks the extra Theme colors. Apple handles the payment, and we never see your payment details. Kozeni asks the App Store whether your Apple Account has Kozeni Pro, bought on any of your devices or shared with you through Family Sharing, and keeps only the answer: on your device, and in the storage it shares with the widget, so the widget can use the colors Pro unlocks. It keeps no receipt, amount or date.
+Kozeni Pro, in Settings&nbsp;→ Support, is one purchase through Apple’s App Store, not a subscription. It unlocks the extra Theme colors and creating a household. Apple handles the payment, and we never see your payment details. Kozeni asks the App Store whether your Apple Account has Kozeni Pro, bought on any of your devices or shared with you through Family Sharing, and keeps only the answer: on your device, and in the storage it shares with the widget, so the widget can use the colors Pro unlocks. It keeps no receipt, amount or date.
 
 ### Ratings
 {: .margin}
@@ -350,13 +366,13 @@ Settings&nbsp;→ Support&nbsp;→ Feedback opens a draft email to {{ site.suppo
 ### Export and import
 {: .margin}
 
-Settings&nbsp;→ Backup&nbsp;→ Export data makes three CSV files, of your entries, categories and budgets, and hands them to the share sheet; where they go next is up to you. They leave out Recently deleted, your settings and the saved highlights. Kozeni writes them to its temporary folder on your device, where they stay until iOS clears it. Import data reads one CSV file that you pick and adds its rows to Kozeni. Kozeni can’t open any file you haven’t picked.
+Settings&nbsp;→ Backup&nbsp;→ Export data makes three CSV files, of your entries, categories and budgets, and hands them to the share sheet; where they go next is up to you. They leave out Recently deleted, your settings and the saved highlights. In a household, they’re the household’s, and the entries file names who logged each entry. Kozeni writes them to its temporary folder on your device, where they stay until iOS clears it. Import data reads one CSV file that you pick and adds its rows to Kozeni; in a household, it asks first, since everyone in it will see the entries. Kozeni can’t open any file you haven’t picked.
 
 ### Deleting
 {: .margin}
 
 - **An entry.** Deleting an entry moves it to Settings&nbsp;→ Library&nbsp;→ Recently deleted, where you can swipe left on it to restore it within seven days. After that, it’s removed for good the next time Kozeni opens. The bin button at the top right clears everything there at once.
-- **Everything.** Settings&nbsp;→ Reset&nbsp;→ Erase all data deletes every entry (Recently deleted included), category, recurring item and budget, and the saved highlights. It offers to export first. With iCloud on, the deletion syncs, so it all goes from your other devices and from iCloud too. Your settings and Kozeni Pro stay, and the widget’s summary is replaced the next time you return to Kozeni.
+- **Everything.** Settings&nbsp;→ Reset&nbsp;→ Erase all data deletes every entry (Recently deleted included), category, recurring item and budget, and the saved highlights. It offers to export first. With iCloud on, the deletion syncs, so it all goes from your other devices and from iCloud too. It isn’t offered while you’re in a household: leaving one, or deleting it, is on the Household page (see Household). Your settings and Kozeni Pro stay, and the widget’s summary is replaced the next time you return to Kozeni.
 - **The app.** Deleting Kozeni deletes its data from that device. Backups of your device keep a copy until they’re replaced or deleted.
 - **iCloud.** Your data stays in iCloud, and on your other devices, until you delete it there. To remove it everywhere, use Erase all data before you delete the app. You can also delete Kozeni’s iCloud data from iCloud storage in the Settings app.
 
