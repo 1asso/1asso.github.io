@@ -12,7 +12,7 @@ There are no separate app pages and no support page. Each app's details live in 
 (`/#kozeni`, `/#lark`, `/#michi`) and in its part of the privacy page. Support is the email address on the home
 page's last screen (Contact), which the Contact link in every page's header points to.
 
-The site's 12-column grid is drawn on every page, in hairlines. The home page goes a screen at a time, and each
+Everything is set on a 12-column grid, which is felt rather than drawn. The home page goes a screen at a time, and each
 screen arrives as columns of its ground, each carrying its strip of the screen's big type (see "How the pages
 move" below).
 
@@ -116,7 +116,7 @@ assets/css/          site.css (the system: grid, type, colors, the header and th
                      page); doc.css (the privacy page); lost.css (the not-found page); michi.css, lark.css and
                      kozeni.css (the exhibits)
 assets/js/           site.js (the shared part, which runs first); grid.js (the home page: its screens and
-                     their columns, the keys and the wheel, the arrivals, the lens); doc.js (the privacy page:
+                     their columns, the keys and the wheel, the arrivals); doc.js (the privacy page:
                      its header, its running index, its parts' arrivals); lost.js (the not-found page's
                      arrival and lens); album.js, lark.js and kozeni.js (the exhibits)
 assets/fonts/        Inter Tight and IBM Plex Mono, self-hosted (OFL.txt is their license)
@@ -217,7 +217,7 @@ Actions tab shows GitHub's own "pages build and deployment" run and any error it
 
 ## Rules the site keeps
 
-The site has its own small design system: one 12-column grid, drawn on every page in hairlines; three text
+The site has its own small design system: one 12-column grid, never drawn; three text
 sizes for reading (display, text, and the mono meta); and no rules or dividers between things: space and the
 rooms' grounds do the dividing. Color comes only from the apps: the grounds of their rooms, and their bits on the
 page's canvas, never text. The big type breaks the second rule on purpose: the tagline, each room's name and

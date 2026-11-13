@@ -554,3 +554,11 @@ html:not(.gl-go) .gl-a { transform: translateY(100%); }
   .gl-mi__i { display: inline-block; line-height: 1; clip-path: inset(0.276em -0.2em -0.3em -0.2em); color: inherit; -webkit-text-fill-color: currentColor; background: none; }
   .gl-mi::after { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
+
+/* ---------------------------------------------------------------- Quiet */
+
+/* The grid is felt, not drawn, as on the home page: no column edges, at rest or in flight (a column in flight keeps
+   only its leading edge), no baselines under the title, and no lens. Set last, over everything above. */
+.gl-lines, .gl-lens { display: none !important; }
+.gl-void::before, .gl-a__ground::before, .gl-w::after { content: none !important; }
+.gl-a__ground::after { border-inline: 0; }

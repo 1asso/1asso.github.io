@@ -981,3 +981,12 @@ html:not(.gd-striking) .gd-a { transform: translateY(100%); }
   .gd-band .margin::before, .prose ul > li::before { background: #000; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
   .prose a[href^="http"]::after { content: " (" attr(href) ")"; font-family: var(--mono); font-size: var(--meta); overflow-wrap: anywhere; }
 }
+
+/* ---------------------------------------------------------------- Quiet */
+
+/* The grid is felt, not drawn, as on the home page: no column edges, at rest or in flight (a column in flight keeps
+   only its leading edge), no baseline under the title, and no big section numbers behind the bands. Set last, over
+   everything above. */
+.gd-lines, .gd-head__lines, .gd-band__lines, .gd-pane__lines, .gd-no { display: none !important; }
+.gd-void::before, .gd-a__ground::before, .gd-title__decor::after { content: none !important; }
+.gd-a__ground::after { border-inline: 0; }

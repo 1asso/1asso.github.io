@@ -11,28 +11,25 @@ scripts: [album, lark, kozeni, grid]
   The first screen is a poster, the tagline and the lede at its foot and nothing else (the rooms after it introduce
   the apps, a screen each, and the running index over them leads to each), and it arrives the way every screen after
   it does. For a beat the screen is the ink
-  (true black in dark mode, so nothing flashes white at night), its grid ruled down it in hairlines, and only the
+  (true black in dark mode, so nothing flashes white at night), and only the
   square mark lit, its bit coming out of its notch. Then twelve columns of the canvas (six on a phone) strike up the
   full height of the screen, left to right, quicker as they go, as Michi's will, each carrying its strip of the
   tagline, and push the ink out of the top; the header and the lede are uncovered column by column as the columns
   pass. Then the i's dots, square bits the width of the stem, pop
   out of their stems one after another, the square full stop slides in along the baseline and clicks onto the right
-  margin, which lights for a moment, and the poster gives a pixel and settles. Last, the redline lens sweeps once
-  across the tagline, and goes. Readable by about two thirds of a second, still by
-  about two seconds; once it's left alone, Michi's ground lifts once in the first column at the foot. With a
-  mouse the lens follows the pointer, and on a touch screen a sideways drag on the tagline scrubs it: through it the
-  poster is in outlines, with the decisions in that strip of it written on (grid.js).
+  margin, and the poster gives a pixel and settles. Readable by about two thirds of a second, still by
+  about two seconds; once it's left alone, Michi's ground lifts once in the first column at the foot (grid.js).
   Under Reduce Motion, without the script, in forced colors and on paper, the poster is simply there, composed.
 
   Then a room for each app, and the Studio with Contact: one screen each. Scrolling snaps a screen at a time (CSS
   scroll snap; the keys that step a screen and the wheel are taken by grid.js, so they go the same way in every browser,
   one press or gesture a screen). Each screen arrives as twelve columns of its ground (six on a phone), each carrying
-  its strip of the room's name and number, so the name is built a column at a time and clicks into register as the
+  its strip of the room's name, so the name is built a column at a time and clicks into register as the
   columns settle; each column pushes the strip of the screen before's big type out ahead of it, like the flaps of a
   departures board (all but a poster of three or four lines, a phone's or a tablet's, which is covered where it
   stands: too tall to push, its strips would carry its lines past each other); then the rest of the room is
   uncovered column by column. Each app's columns keep its own time:
-  Michi's struck home left to right like a postmark, Lark's in a call and its echo, Kozeni's counted in like coins
+  Michi's struck home left to right like a postmark, Lark's in from the right margin, Kozeni's counted in like coins
   with its spine dropped last into its slot; the Studio's come down as a curtain. The header runs over every screen
   in that screen's ink, and over the rooms the index, 01 to 03. Opened on a room (a link to it, /#lark or the apps'
   /#contact, or to a passage in it, a reload on it, a step back to it), the page opens on the void as the poster does,
@@ -72,23 +69,19 @@ scripts: [album, lark, kozeni, grid]
     <span class="g-snap" aria-hidden="true"></span>
     <section class="g-hero" aria-labelledby="g-hero-title" data-g-screen="0">
       {%- comment -%}
-        The void the page opens on, for a beat (grid.css): the ink, its grid ruled down it, and the mark lit alone where
+        The void the page opens on, for a beat (grid.css): the ink, and the mark lit alone where
         the header's is. The canvas strikes up over it in the poster's columns (.g-ground, below), and then it's gone;
         or, where the page opens on a room, the script lays it in that room's screen, under its columns, until they're
         up. Decorative, and never there without the script, under Reduce Motion or in forced colors.
       {%- endcomment %}
       <div class="g-void" aria-hidden="true" data-g-void>
-        <div class="g-lines g-lines--void">{% for n in (1..12) %}<i style="--c: {{ forloop.index0 }}"></i>{% endfor %}</div>
         <div class="g-void__head" inert>{% include header.html %}</div>
       </div>
       {%- comment -%}
-        The poster's ground in the deck, a column of the canvas to each column of the grid (two on a phone), each with the
-        column's two edges: they strike up over the void on arrival (grid.js), and then stay, at rest.
+        The poster's ground in the deck, a column of the canvas to each column of the grid (two on a phone): they strike up over the void on arrival (grid.js), and then stay, at rest.
       {%- endcomment %}
       <div class="g-ground" aria-hidden="true">{% for n in (1..12) %}<i style="--col: {{ forloop.index0 }}"></i>{% endfor %}</div>
       <div class="g-head" aria-hidden="true" inert>{% include header.html %}</div>
-      <div class="g-lines" aria-hidden="true">{% for n in (1..12) %}<i style="--c: {{ forloop.index0 }}"></i>{% endfor %}</div>
-      <div class="g-lens" aria-hidden="true" data-g-lens></div>
       {%- comment -%}
         The tagline's words, set once here: in the heading, and in each of the twelve columns that carry the poster in on
         arrival (.g-cast, below), each of them a copy laid out exactly as the heading is, clipped to its column.
@@ -117,9 +110,6 @@ scripts: [album, lark, kozeni, grid]
         <div class="g-cast__col" style="--col: {{ c }}"><div class="g-cast__plate g-hero__main wrap grid"><div class="g-tagline g-cast__slot"><div class="g-cast__card"><span class="g-tagline__set">{{ tagset }}</span></div></div></div></div>
         {%- endfor %}
       </div>
-      {%- comment -%} The right margin, lit for a moment as the stop clicks onto it; and the band a finger scrubs the lens in. {%- endcomment %}
-      <div class="g-flash" aria-hidden="true"></div>
-      <div class="g-scrub" aria-hidden="true" data-g-scrub></div>
       {%- comment -%} The next room, teased: once the poster is left alone, a few pixels of Michi's ground lift once in the first column, at the foot. {%- endcomment %}
       {%- assign opening = site.data.apps | first %}
       <div class="g-tease" aria-hidden="true" style="--ground: var(--{{ opening.first }}-room)"></div>
@@ -141,11 +131,6 @@ scripts: [album, lark, kozeni, grid]
       <div class="g-head" aria-hidden="true" inert>{% include header.html %}{% include grid-runner.html current=key %}</div>
       <div class="g-content">
         <div class="g-grid wrap grid">
-          <p class="g-no g-art g-art--no" aria-hidden="true" data-g-ride><span class="g-no__digits">0{{ forloop.index }}</span></p>
-          {%- if set == 'lark' %}
-          {%- comment -%} Lark's call and its echo: the name again, in outline, a column on and a little lower, as you say a sentence back a beat behind. {%- endcomment %}
-          <p class="g-echo g-art g-art--name" aria-hidden="true" data-g-ride>{{ app.name | replace: 'i', '<span class="g-i">ı<b class="g-dot"></b></span>' }}</p>
-          {%- endif %}
           <h3 class="g-name" id="{{ key }}-title"><span class="visually-hidden">{{ app.name }}</span><span class="g-art g-art--name" aria-hidden="true" data-g-ride>{{ app.name | replace: 'i', '<span class="g-i">ı<b class="g-dot"></b></span>' }}</span></h3>
           <div class="g-intro">
             {%- if app.gloss %}

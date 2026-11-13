@@ -3,9 +3,7 @@
    The first screen is a poster set on the grid, and it arrives as every screen after it does: it opens on the ink
    (the void, true black in dark mode) with only the mark lit, and twelve columns of the canvas strike up over it, left
    to right, each carrying its strip of the tagline; then the square dots of its i's pop out of their stems one after
-   another, the square full stop slides in along the baseline and clicks onto the right margin, and the redline lens
-   sweeps across the tagline once and goes. A mouse moves the lens, and on a touch screen
-   a sideways drag on the tagline scrubs it. Every screen after it (the
+   another, the square full stop slides in along the baseline and clicks onto the right margin. Every screen after it (the
    rooms, then the Studio with Contact) arrives as twelve columns of its ground, six on a phone, each carrying its
    strip of the room's big type, so the name is built a column at a time, and each pushing the strip of the screen
    before's type out ahead of it (but a poster of more than two lines, which they cover where it stands); then the
@@ -58,48 +56,31 @@
   --spring-give: linear(0, 0.0179 1.3%, 0.0927 3.1%, 0.2293 5.2%, 0.4135 7.4%, 0.6214 9.8%, 0.8257 12.3%, 1.002 15%, 1.1327 17.7%, 1.2095 20.5%, 1.2336 23.4%, 1.2145 26.3%, 1.1661 29.3%, 1.1043 32.4%, 1.0434 35.6%, 0.9938 38.8%, 0.9613 42%, 0.9467 45.4%, 0.9474 48.7%, 0.9585 52.1%, 0.9744 55.6%, 0.9902 59.1%, 1.0027 62.6%, 1.0102 66.2%, 1.0127 69.8%, 1.0115 73.4%, 1.008 77.1%, 1.0039 80.9%, 1.0004 84.6%, 0.9981 88.4%, 0.9971 92.2%, 0.9972 96.1%, 1);
   /* zeta 0.55: 12.6% past, a bit popping out of its stem */
   --spring-pop: linear(0, 0.0106 1.3%, 0.0554 3.1%, 0.1387 5.2%, 0.2549 7.4%, 0.3937 9.8%, 0.5424 12.3%, 0.6886 15%, 0.8217 17.7%, 0.9338 20.5%, 1.0203 23.4%, 1.0798 26.3%, 1.1139 29.3%, 1.1261 32.4%, 1.1213 35.6%, 1.1049 38.8%, 1.0822 42%, 1.0574 45.4%, 1.0342 48.7%, 1.0146 52.1%, 1 55.6%, 0.9904 59.1%, 0.9854 62.6%, 0.984 66.2%, 0.9853 69.8%, 0.9882 73.4%, 0.9916 77.1%, 0.995 80.9%, 0.9979 84.6%, 1 88.4%, 1.0013 92.2%, 1.0019 96.1%, 1);
-  /* The grid's hairlines are drawn in the full ink of what's around them, and rest at a tenth of it: always a whole
-     pixel, so that on a Retina screen they still read. */
-  --hair-draw: currentColor;
-  --hair-rest: 0.1;
-  /* The display type's weight, and what's measured of it: the spacing each kind of big type is set at, the stem of a
-     dotless ı (from 0.051em, 0.105em wide, in an advance of 0.2068em), which a square bit is the width of, and the ink
-     of the rooms' numbers as a phone sets them: "03" 1.124em from the 0's to the 3's, the 0's 0.035em into its box,
-     and the line running on 0.055em past the 1's and 0.040em past the 3's. */
+  /* The display type's weight, and what's measured of it: the spacing each kind of big type is set at, and the stem
+     of a dotless ı (from 0.051em, 0.105em wide, in an advance of 0.2068em), which a square bit is the width of. */
   --wt: 500;
   --ls-tag: -0.034em;
   --ls-name: -0.045em;
-  --ls-no: -0.04em;
   --ls-motto: -0.04em;
   --ls-mail: -0.04em;
   --stem-l: 0.051em;
   --stem-w: 0.105em;
   --i-adv: 0.2068em;
-  --no-ink: 1.124;
-  --no-l: 0.035em;
-  --no-r1: 0.055em;
-  --no-r3: 0.040em;
 }
 /* Light type on the dark reads heavier than dark type on the light: in dark mode the display type is set a little
    lighter (470: the font is variable), and spaced by as much as the lighter weight narrows each kind of it (its own
    measure, so every fit and every whole column holds, to a fraction of a pixel); its ı's bits are the width of the
-   lighter stem (0.098em, from 0.052em, in an advance of 0.2019em), the numbers' ink as much narrower (1.111em, its
-   bearings 0.0355em, 0.0573em and 0.041em), and the mono is a hair looser. */
+   lighter stem (0.098em, from 0.052em, in an advance of 0.2019em), and the mono is a hair looser. */
 @media (prefers-color-scheme: dark) {
   .proto-grid {
     --wt: 470;
     --ls-tag: -0.0300em;
     --ls-name: -0.0407em;
-    --ls-no: -0.036em;
     --ls-motto: -0.0374em;
     --ls-mail: -0.0350em;
     --stem-l: 0.052em;
     --stem-w: 0.098em;
     --i-adv: 0.2019em;
-    --no-ink: 1.111;
-    --no-l: 0.0355em;
-    --no-r1: 0.0573em;
-    --no-r3: 0.041em;
   }
   .proto-grid .g-set--michi { --ls-name: -0.0405em; }
   .proto-grid .g-set--lark { --ls-name: -0.0411em; }
@@ -132,10 +113,9 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
 /* ---------------------------------------------------------------- The first screen */
 
 /* A poster on the page's canvas: with the header, one screen. The tagline at the top, set to the measure; at the
-   foot, the lede, in the first three columns, and nothing else (the rooms introduce the apps). Behind it all, the
-   grid: its 24 column edges as hairlines. Its layers stack by z-index, never by
-   the order they come in: the void it opens on, its ground, the poster, the strips of the tagline the columns
-   carry, the margin's flash, the lens, the band a finger works the lens in, the tease and the header's copy (the
+   foot, the lede, in the first three columns, and nothing else (the rooms introduce the apps). The grid is felt, not drawn.
+   Its layers stack by z-index, never by the order they come in: the void it opens on, its ground, the poster, the
+   strips of the tagline the columns carry, the tease and the header's copy (the
    void lies over them all until the canvas strikes up over it, grid.js). */
 .g-stage { position: relative; z-index: 1; }
 .g-hero { position: relative; isolation: isolate; overflow: clip; background: var(--canvas); }
@@ -154,27 +134,6 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
   --foot: 108px;
   --hero-gap: clamp(12px, 2.4svh, 28px);
   --tag-h: calc(var(--sv) - var(--head-h) - var(--hero-top) - var(--hero-bottom) - var(--g-foot, var(--foot)) - var(--hero-gap));
-}
-
-/* The grid itself: one cell per column, each drawn as its two edges. In the deck the poster's ground draws them
-   (.g-ground, below), column by column; these are the stacked page's, and the void's. */
-.g-lines {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: var(--g);
-  padding-inline: var(--m);
-  pointer-events: none;
-  color: var(--ink);
-}
-/* At rest a tenth of the ink, from the first frame on. On a phone the grid is drawn as the six double columns its
-   screens arrive in. */
-.g-lines i { position: relative; border-inline: 1px solid var(--hair-draw); opacity: var(--hair-rest); }
-@media (max-width: 719px) {
-  .g-lines { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .g-lines i:nth-child(n+7) { display: none; }
 }
 
 /* The void: what the page opens on, for a beat, until the screen it opens on arrives over it (grid.js): the canvas
@@ -217,8 +176,6 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
 }
 .g-void .brand { color: var(--void-ink); }
 .g-void :is(.brand__name, .site-nav) { visibility: hidden; }
-.g-lines--void { color: var(--void-ink); }
-.g-lines--void i { opacity: 0.13; }
 
 /* Safari's toolbar. Safari 26 and later don't tint the bar from theme-color: they extend the color of a fixed element
    lying along the top of the page up under the bar, and follow that color as it changes once the element is at least
@@ -255,10 +212,9 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
 /* The poster's ground, in the deck: a column of the canvas to each column of the grid (two on a phone), laid out as
    the poster's columns of type are (.g-cast, below), meeting in the middle of the gutters half a pixel over, the first
    and last running out to the screen's edges; each a little taller than the screen at both ends (--lead, --over), as a
-   room's are, so that going past its place and back it never shows what's under it. Each draws its column's two edges
-   at a tenth of the ink (in the deck they are the poster's grid), and, while it rises over the void, those edges
-   brighter and its leading edge in the ink, which reads over the black of dark mode (grid.js says when). */
-.g-ground, .g-flash, .g-scrub { display: none; }
+   room's are, so that going past its place and back it never shows what's under it. While it rises over the void its
+   leading edge is drawn in the ink, which reads over the black of dark mode (grid.js says when). */
+.g-ground { display: none; }
 .g-ground i {
   --span: 1;
   --P: calc((100cqw - 2 * var(--m) + var(--g)) / 12);
@@ -272,17 +228,13 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
 }
 .g-ground i:first-child { --x0: 0px; width: calc(var(--m) + var(--span) * var(--P) - var(--g) / 2 + 0.5px); }
 .g-ground i:last-child { width: auto; right: 0; }
-.g-ground i::before, .g-ground i::after {
+.g-ground i::after {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
   left: calc(var(--m) + var(--col) * var(--span) * var(--P) - var(--x0));
   width: calc(var(--span) * var(--P) - var(--g));
-  border-inline: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
-}
-.g-ground i::after {
-  border-inline-color: color-mix(in srgb, var(--ink) 30%, transparent);
   border-top: 1px solid color-mix(in srgb, var(--ink) 80%, transparent);
   opacity: 0;
   transition: opacity 260ms var(--ease);
@@ -335,7 +287,7 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
 }
 .g-tagline__set { display: flex; flex-wrap: wrap; column-gap: 0.1886em; }
 .g-w { position: relative; display: block; }
-/* A word's line, trimmed to its caps and baseline (the hairline is the word's, outside it). */
+/* A word's line, trimmed to its caps and baseline. */
 .g-slot { display: block; white-space: nowrap; text-box: trim-both cap alphabetic; }
 .g-l { display: inline-block; margin-left: var(--k, 0); }
 /* A break is a flex line of its own, as tall as the gap between the lines it parts (and the lines have no gap of
@@ -344,18 +296,6 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
 .g-break--b { display: block; }
 .g-w--get { margin-left: -0.06em; }
 .g-w--bits { margin-left: auto; }
-/* Each line's baseline, a hairline across the screen, like the columns' edges, drawn by the word that begins the
-   line. */
-.g-w::after {
-  position: absolute;
-  left: -100vw;
-  right: -100vw;
-  bottom: 0;
-  border-bottom: 1px solid var(--hair-draw);
-  opacity: var(--hair-rest);
-  pointer-events: none;
-}
-.g-w--get::after, .g-w--bits::after { content: ""; }
 /* A dotless i's dot: a square bit, the width of its stem (--stem-w, from --stem-l: 0.105em from 0.051em of the
    glyph, or the lighter dark-mode stem's), its middle on the height of the round dot's (0.693em). It's set inline
    straight after the ı, on the baseline raised by its foot's height, and pulled back over the stem by what's
@@ -502,122 +442,6 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
   .g-tease { width: calc(var(--m) + 2 * (100% - 2 * var(--m) + var(--g)) / 12 - var(--g) / 2 + 0.5px); }
 }
 
-@media screen {
-  /* The right margin, lit for a moment as the stop clicks onto it (the motion, below): a hairline down the screen
-     under the header, on the margin's own pixel, which is the last column's edge. */
-  .g-fx .g-flash {
-    display: block;
-    position: absolute;
-    z-index: 4;
-    top: var(--head-h);
-    bottom: 0;
-    right: var(--m);
-    width: 0;
-    border-right: 1px solid var(--ink);
-    opacity: 0;
-    pointer-events: none;
-  }
-  /* The band a finger, or a mouse, works the lens in: the tagline's (grid.js sets its top and height). A sideways drag
-     there is the lens's; up and down is still the page's scroll, and two fingers still zoom. */
-  .g-hero.is-lensed .g-scrub {
-    display: block;
-    position: absolute;
-    z-index: 6;
-    left: 0;
-    right: 0;
-    touch-action: pan-y pinch-zoom;
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-  }
-}
-
-/* ---------------------------------------------------------------- The lens (the first screen's redlines) */
-
-/* A column of the grid (on a phone, a pair of the screen's double columns: a third of the measure) is a lens on the
-   poster's decisions (grid.js builds it, and slides its window from column to column on a spring). Through it the
-   poster is in outline, as a drawing is checked, in register with the type around it; on it, in mono, what was decided
-   in that strip: the caps and the baselines, the G's hang, the kerning put back, the word spaces, the dots' size, the
-   stop on the margin. The window is a column of the grid; the plate inside it stays where the poster is, so what you
-   see through it is always the strip it's over (grid.js moves the window and its edges, and the plate the other way,
-   each by its own translate). Once the stop has clicked home it sweeps across the tagline once and
-   goes quiet: its edges and everything drawn in it go, and the poster is simply there again. A mouse moves it, and on a
-   touch screen a sideways drag on the tagline scrubs it; a moment after it's let go, it goes quiet where it is. Its
-   window and its edges stack by z-index, never by the order they come in. */
-.g-lens { position: absolute; z-index: 5; inset: 0; pointer-events: none; display: none; }
-.g-lens.is-built { display: block; }
-.g-lens__win {
-  position: absolute;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  width: var(--lw, 0px);
-  overflow: clip;
-  opacity: 0;
-  transition: opacity 160ms var(--ease);
-}
-.g-lens__edges {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  width: var(--lw, 0px);
-  border-inline: 1px solid color-mix(in srgb, var(--ink) 55%, transparent);
-  opacity: 0;
-  transition: opacity 160ms var(--ease), border-color 360ms var(--ease);
-}
-.g-lens.is-on :is(.g-lens__win, .g-lens__edges) { opacity: 1; }
-.g-lens__plate { position: absolute; top: 0; left: 0; width: var(--w, 100vw); }
-/* The window's ground: the canvas, faintly inked, so the type it's over is hidden and only its outline shows. */
-.g-lens__ground { position: absolute; top: 0; left: 0; right: 0; background: color-mix(in srgb, var(--ink) 4%, var(--canvas)); }
-/* The poster in outline: a copy of the tagline, its letters drawn as their edges, in register with the type around
-   it, so the redlines meet them. The edge alone, 1px: a 2px stroke under a fill of the window's ground, so none of
-   the font's overlapping contours (the t's bar through its stem, the e's into its bowl) is drawn. */
-.g-lens__type {
-  position: absolute;
-  margin: 0;
-  font-weight: var(--wt);
-  line-height: 1;
-  --ls: var(--ls-tag);
-  color: color-mix(in srgb, var(--ink) 4%, var(--canvas));
-  -webkit-text-stroke: 2px var(--ink);
-  paint-order: stroke fill;
-}
-.g-lens__type .g-dot, .g-lens__type .stop { background: none; box-shadow: inset 0 0 0 1px var(--ink); }
-.g-lens__type .g-w::after { content: none !important; }
-.g-lens__type, .g-lens__type *, .g-lens__type *::before, .g-lens__type *::after { animation: none !important; translate: none; }
-/* The redlines: the metrics as hairlines across the plate, solid for caps and baselines, dotted for the x-height. */
-.g-lens__rule { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--ink); }
-.g-lens__rule--x { border-top-style: dashed; opacity: 0.6; }
-.g-lens__rule--v { right: auto; width: 0; border-top: 0; border-left: 1px solid var(--ink); }
-/* A note: mono, its name over its value, on a chip of the window's ground so it reads over an outline. A metric's
-   name stands at the column's right, against the line it names, as does every note in the last column. */
-.g-lens__note {
-  position: absolute;
-  padding: 0 3px;
-  background: color-mix(in srgb, var(--ink) 4%, var(--canvas));
-  color: var(--ink);
-  font-family: var(--mono);
-  font-size: 10px;
-  line-height: 13px;
-  letter-spacing: 0;
-  white-space: nowrap;
-}
-.g-lens__note b { display: block; font-weight: 400; }
-.g-lens__note--quiet { color: var(--ink-2); }
-.g-lens__note--end { translate: -100% 0; }
-/* A measure between two edges: a hairline with a tick at each end. */
-.g-lens__span { position: absolute; height: 0; border-top: 1px solid var(--ink); }
-.g-lens__span::before, .g-lens__span::after { content: ""; position: absolute; top: -4px; height: 7px; border-left: 1px solid var(--ink); }
-.g-lens__span::before { left: 0; }
-.g-lens__span::after { right: 0; }
-.g-lens__box { position: absolute; outline: 1px solid var(--ink); outline-offset: 2px; }
-/* Quiet (its sweep done, or a moment after it's let go): nothing of it drawn, its edges gone, the poster solid
-   through the window. */
-.g-lens__plate > * { transition: opacity 320ms var(--ease); }
-.g-lens.is-quiet .g-lens__plate > * { opacity: 0; }
-.g-lens.is-quiet .g-lens__edges { border-color: transparent; }
-
 /* ---------------------------------------------------------------- Rooms */
 
 /* A room, as in site.css (its ground, its ink), but its own ground is its screen's, so the article (taller than its
@@ -636,37 +460,14 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
   --P: calc((100cqi + var(--g)) / 12);
 }
 
-/* The big type of a room (its name, its number, the Studio's motto): one line or two, trimmed to its caps and
+/* The big type of a room (its name, the Studio's motto): one line or two, trimmed to its caps and
    baseline, so it stands exactly on its line. In the deck the columns carry copies of it (grid.js), which are what's
    seen; this one keeps its place and is read. */
 .g-art { display: block; font-weight: var(--wt); line-height: 1; white-space: nowrap; text-box: trim-both cap alphabetic; }
 .g-art--name { letter-spacing: var(--ls-name); --ls: var(--ls-name); }
-.g-art--no { letter-spacing: var(--ls-no); --ls: var(--ls-no); font-variant-numeric: lining-nums; }
 .g-name { position: relative; font-weight: var(--wt); line-height: 1; }
-.g-no__digits { display: block; text-box: trim-both cap alphabetic; }
 
-/* The room's number is architecture, not a label: set far larger than anything else in the room, behind it all,
-   cut by the screen's edges (on a phone, run to its edge, whole), and carried in by its columns like the name. Each
-   room places it its own way (below:
-   Michi's the value in a stamp's corner), and every one is the same outline, 2.5px of it at 38% of the ink, one
-   vocabulary from 01 to 03 (on Lark's and Kozeni's grounds a tint would take the small words over it under 4.5:1).
-   It's an opaque mix of the ink and the ground, so where two columns' copies overlap by their half pixel, nothing
-   shows twice.
-   An outline is the letter's edge only, never the font's own overlapping contours (where the r's shoulder meets its
-   stem, the k's arm its leg, the t's bar its stem): a stroke twice as wide painted under a fill of the ground, which
-   covers its inner half and every contour inside the letter. The room's grid is its stacking context, so the number
-   lies under the room's every word whatever the order they come in. */
 .g-grid { position: relative; isolation: isolate; }
-/* (Each of these is set twice over, .g-room .g-no, so that it holds on the columns' copies too, which take the room's
-   ink, .g-ride, otherwise.) */
-.g-room .g-no {
-  --hair: color-mix(in srgb, var(--room-ink) 38%, var(--ground));
-  z-index: -1;
-}
-.g-room .g-no.g-no { color: var(--ground); -webkit-text-stroke: 5px var(--hair); paint-order: stroke fill; }
-/* Lark's echo: its name again in outline, at the same size, a line of the room's ink at 72% (opaque, as above), a
-   two-hundredth of its size and never under 1.5px, so it holds on a large screen as on a laptop's. */
-.g-room .g-echo { display: none; position: relative; color: var(--ground); -webkit-text-stroke: calc(2 * max(1.5px, 0.005em)) color-mix(in srgb, var(--room-ink) 72%, var(--ground)); paint-order: stroke fill; }
 
 .g-gloss { color: var(--ink-3); }
 .g-gloss + .g-pitch { margin-top: 12px; }
@@ -687,56 +488,36 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
 /* Every size here is the lesser of what the columns allow and what the screen's height leaves (--avail), so a room
    fits a short laptop screen as well as a tall monitor. A room's name is a whole number of columns wide, from its
    first letter's stem to its last's (as the Studio's motto is set in by whole columns), so both its ends stand on
-   the grid's lines: the most whole columns the height allows (or, for Michi, the nearest). The numbers are measured
-   against the screen itself. */
+   the grid's lines: the most whole columns the height allows (or, for Michi, the nearest). */
 @media (orientation: landscape) and (min-width: 900px) {
-  .g-room .g-no { position: absolute; margin: 0; }
 
   /* Michi: the name across the top left, at most the first nine columns ("Mıchı" is 2.072em of ink), its M's side
      bearing hung into the margin, as many whole columns as are nearest to caps two fifths of the room's height; the
      gloss, the pitch and the badge in the last three, standing on the name's baseline; at the foot, the icon in the
-     first two columns and the album in the last nine, its stamps kept to what the name leaves of the height. Its
-     number in the top right corner, the value of a stamp, three quarters of the screen tall and cut by its top and
-     right edges. */
+     first two columns and the album in the last nine, its stamps kept to what the name leaves of the height. */
   .g-set--michi .g-grid { --michi-size: calc((min(9 * var(--P), round(var(--avail) * 0.4 / 0.7275 * 2.072 + var(--g), var(--P))) - var(--g)) / 2.072); }
   .g-set--michi .g-name { grid-column: 1 / span 9; grid-row: 1; align-self: start; font-size: var(--michi-size); }
   .g-set--michi .g-name .g-art { margin-left: -0.0586em; }
-  .g-set--michi .g-no { top: 0; right: 0; font-size: calc(var(--sv) * 0.66 / 0.737); margin: -0.16em -0.05em 0 0; }
   .g-set--michi .g-intro { grid-column: 10 / -1; grid-row: 1; align-self: end; }
   .g-set--michi .g-icon { grid-column: 1 / span 2; grid-row: 3; align-self: end; }
   .g-set--michi .g-piece { grid-column: 4 / -1; grid-row: 3; align-self: end; }
   .g-set--michi .album { max-width: calc(6 * (var(--avail) - 0.7275 * var(--michi-size) - 112px - var(--beat)) / 1.25 + 5 * var(--album-gap)); }
 
-  /* Lark: a call and its echo, as its drill plays a sentence and you say it back, one figure: the name, the call,
-     against the right margin, the k's arm on it (it reaches 0.056em past its box; "Lark" is 1.724em of ink from its L's
-     stem), and a line under it the echo, the name again in outline at the same size, a column further in, as you say a
-     sentence back a beat behind. Their size is the most whole columns (at most six) that the two lines, 1.685em tall,
-     can take of what the practice at the foot leaves of the room (--g-piece, measured by grid.js). Their columns come
-     the same way, from the right margin in, the echo's strip in each a beat behind its column (grid.js). The pitch and
-     the badge beside the name, in the three columns before it, their foot on its line's, as Michi's are beside its own
-     on the other side; and the number in outline, cut by the screen's left edge, from the room's head to the foot of
-     the band the echo leaves, under the pitch and the badge as Michi's is under its own, about as tall as the other
-     rooms' numbers, in the columns before the echo's, so that it meets neither the echo nor the practice under it (the
-     echo starts a column further in than the name, n columns wide: its box ends n - 4 columns short of the seventh's
-     edge, a gutter before the echo, and the figures are as large as its height or its width allows, whole across it).
-     At the foot, all on the room's foot line: the sentence in the first seven columns, its toggles last (the meaning,
+  /* Lark, Michi's mirror: the name against the right margin, the k's arm on it (it reaches 0.056em past its box;
+     "Lark" is 1.724em of ink from its L's stem), at most nine columns, as many whole ones as caps two fifths of the
+     room's height take, or what the practice at the foot leaves (--g-piece, measured by grid.js). Its columns come from
+     the right margin in. The pitch and the badge in the first three columns, their foot on the name's line, as Michi's
+     are in the last three. At the foot, all on the room's foot line: the sentence in the first seven columns, its toggles last (the meaning,
      kept its place while it's hidden, above them, under the sentence it gives the sense of); the rhythm of a turn in
      the next three (its runs and their labels shown while Practice runs, below), the labels over the runs; the icon in
      the last two. */
   .g-set--lark .g-grid {
     grid-template-rows: auto auto minmax(var(--beat), 1fr) auto;
-    --lark-size: calc((min(6 * var(--P), round(down, (var(--avail) - var(--g-piece, calc(var(--avail) * 0.36)) - var(--beat)) / 1.685 * 1.724 + var(--g), var(--P))) - var(--g)) / 1.724);
+    --lark-size: calc((min(9 * var(--P), round(down, min(var(--avail) * 0.4, var(--avail) - var(--g-piece, calc(var(--avail) * 0.36)) - var(--beat)) / 0.7275 * 1.724 + var(--g), var(--P))) - var(--g)) / 1.724);
   }
-  .g-set--lark .g-name { grid-column: 7 / -1; grid-row: 1; justify-self: end; align-self: start; font-size: var(--lark-size); }
+  .g-set--lark .g-name { grid-column: 4 / -1; grid-row: 1; justify-self: end; align-self: start; font-size: var(--lark-size); }
   .g-set--lark .g-name .g-art { margin-right: 0.056em; }
-  .g-set--lark .g-intro { grid-column: 5 / span 3; grid-row: 1; align-self: end; }
-  .g-set--lark .g-echo { display: block; grid-column: 1 / -1; grid-row: 2; justify-self: end; align-self: start; font-size: var(--lark-size); margin: 0.23em calc(var(--P) + 0.056em) 0 0; }
-  .g-set--lark .g-no { position: relative; grid-column: 1 / span 7; grid-row: 1 / 4; margin: clamp(8px, 1.6svh, 16px) max(0px, 1.724 * var(--lark-size) + var(--g) - 4 * var(--P)) clamp(8px, 1.6svh, 16px) calc(-1 * var(--m)); container-type: size; overflow: clip visible; }
-  /* The figures' round tops (0.737em) to the box's top, or, where its width is what holds them (their ink 0.165em
-     short of their own, cut by the screen's edge, and the outline's 2.5px outside it), lower; their feet on its foot:
-     set by the caps (0.7275em, the trim), and so lowered by what the rounds rise past them. Clipped across only, by
-     the screen's edge, so the rounds' overshoot and the outline's outer half are never cut flat. */
-  .g-set--lark .g-no__digits { font-size: min(100cqh / 0.737, (100cqw - 2.5px) / (var(--no-ink) - 0.165)); margin: calc(100cqh - 0.7275em) 0 0 -0.2em; }
+  .g-set--lark .g-intro { grid-column: 1 / span 3; grid-row: 1; align-self: end; }
   .g-set--lark .g-piece { grid-column: 1 / span 10; grid-row: 4; align-self: end; display: grid; grid-template-columns: subgrid; }
   .g-set--lark .turn { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: end; --display: min(5.2cqi, var(--avail) * 0.085); }
   .g-set--lark .covered { grid-column: 1 / span 7; }
@@ -748,18 +529,17 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
 
   /* Kozeni: the name set up the left margin, a spine reading from the foot of the room to its head, its caps
      against the margin, as long as the room is tall ("Kozenı" is 2.67em) and no wider than two columns; beside it
-     at the head the gloss, the pitch and the badge; at the foot the keypad, its keys and amount kept to what the
-     height leaves, and the icon in the last two, as every room's is. Its number on its side too, up the right edge, a second spine in
-     outline, most of the screen tall and cut by the edge. */
+     at the head the gloss, the pitch and the badge; at the foot, across from them, the keypad in the four columns
+     before the icon, its keys and amount kept to what the height leaves, and the icon in the last two, as every
+     room's is. */
   .g-set--kozeni .g-grid { --koz: min(var(--avail) / 2.68, (2 * var(--P) - var(--g)) / 0.75); }
   .g-set--kozeni .g-name { grid-column: 1 / span 2; grid-row: 1 / -1; align-self: end; font-size: var(--koz); }
   .g-set--kozeni .g-name .g-art { writing-mode: sideways-lr; margin-inline-start: -0.0586em; }   /* the K's side bearing hung below, so its stem stands on the foot line */
-  .g-set--kozeni .g-no { right: 0; bottom: 0; writing-mode: sideways-lr; font-size: calc(var(--sv) * 0.86 / 1.12); margin: 0 -0.14em 0 0; }
   /* The gloss's caps hang from the spine's head, where the name ends at the top (its box, 2.6736em long less the
      K's hang, and the ı's 0.0058em of side bearing past its end): moved, not laid out anew, so the room's height
      doesn't change. */
   .g-set--kozeni .g-intro { grid-column: 4 / span 5; grid-row: 1; align-self: start; position: relative; top: max(0px, var(--avail) - 2.6092 * var(--koz)); }
-  .g-set--kozeni .g-piece { grid-column: 4 / span 4; grid-row: 3; align-self: end; }
+  .g-set--kozeni .g-piece { grid-column: 7 / span 4; grid-row: 3; align-self: end; }
   .g-set--kozeni .g-icon { grid-column: 11 / -1; grid-row: 3; align-self: end; }
   .g-set--kozeni .keypad { --display: min(6cqi, var(--avail) * 0.1); }
   .g-set--kozeni .keypad__amount, .g-set--kozeni .keypad__keys { margin-top: clamp(8px, 1.8svh, 24px); }
@@ -770,9 +550,8 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
    which reads the same. */
 @supports not (writing-mode: sideways-lr) {
   @media (orientation: landscape) and (min-width: 900px) {
-    .g-set--kozeni .g-name .g-art, .g-set--kozeni .g-no { writing-mode: vertical-rl; rotate: 180deg; }
+    .g-set--kozeni .g-name .g-art { writing-mode: vertical-rl; rotate: 180deg; }
     .g-set--kozeni .g-name .g-art { margin-inline: 0 -0.0586em; }   /* its foot, once turned round, is its inline end */
-    .g-set--kozeni .g-no { margin: 0 -0.14em 0 0; }
   }
 }
 
@@ -780,12 +559,8 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
 
 /* Stacked: the name across the top (Michi's from the left margin, Lark's against the right one, Kozeni's up the
    left margin still where the screen is tall enough for it), then the words with the icon beside them, hung from
-   the name's foot by the same space, then the exhibit at the foot. Between them, whatever the screen leaves, and the
-   room's number in it, cut by the screen's edge: its figures as tall as the band (it's a box of that size, and
-   they're measured against it), or, where the band is too low for that (a phone's), never less than 0.28 of the
-   screen tall, centred on the band and running on behind the words and the exhibit around it, under every word of
-   the room, as a wide screen's number is: every room's number shows at every size (the owner, 22:11). (On a phone
-   the three are one size, as large as the space beside Kozeni's spine allows, each whole: below.) A name is a
+   the name's foot by the same space, then the exhibit at the foot. Between them, whatever the screen leaves, a band of
+   space (never less than its two margins, clamp(8px, 1.6svh, 16px)). A name is a
    whole number of columns (--U: on a phone, the screen's double columns, the six it draws), but where it runs to
    the screen's edge. */
 @media (orientation: portrait), (max-width: 899px) {
@@ -794,30 +569,16 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
   .g-room .g-intro { grid-column: 1 / span 8; grid-row: 2; align-self: end; margin-top: clamp(16px, 3svh, 36px); }
   .g-room .g-icon { grid-column: 10 / -1; grid-row: 2; align-self: end; margin-top: clamp(16px, 3svh, 36px); }
   .g-room .g-piece { grid-column: 1 / -1; grid-row: 4; align-self: end; }
-  .g-room .g-no {
-    position: relative;
-    grid-column: 1 / -1;
-    grid-row: 3;
-    margin: clamp(8px, 1.6svh, 16px) calc(-1 * var(--m));
-    container-type: size;
-    overflow: clip visible;
-  }
-  /* As Lark's on a wide screen: the round tops (0.737em) to the band's top and the feet on its foot, set by the caps
-     (the trim) and lowered by what the rounds rise past them; clipped across only, so nothing is cut flat. Taller
-     than the band (its least size), the figures are centred on it, by the same measure. */
-  .g-room .g-no__digits { font-size: max(100cqh / 0.737, var(--sv) * 0.28 / 0.737); margin-top: calc((100cqh - 0.737em) / 2 + 0.0095em); }
 
-  /* Michi: margin to margin, or the whole columns nearest to caps a fifth of the room's height; its number against
-     the right edge, cut by it. */
+  /* Michi: margin to margin, or the whole columns nearest to caps a fifth of the room's height. */
   .g-set--michi .g-name { font-size: calc((min(12 * var(--P), round(var(--avail) * 0.2 / 0.7275 * 2.072 + var(--g), var(--U))) - var(--g)) / 2.072); }
   .g-set--michi .g-name .g-art { margin-left: -0.0586em; }
-  .g-set--michi .g-no__digits { text-align: right; margin-right: -0.05em; }
 
   /* Lark: against the right margin, margin to margin, as Michi is, from its L's stem to the k's arm (a k that only
      just reached the screen's edge read as a slip, on a screen with rounded corners most of all); or, where the
      height won't allow that (its caps at most 0.21 of it), as many whole columns as it does, its k's arm on the
      margin. (--lark-full is 1 for the one, 0 for the other.) Under it, all on the right as it is: its pitch and badge
-     set against the icon, the icon on the margin. Its number against the left edge, cut by it. */
+     set against the icon, the icon on the margin. */
   .g-set--lark .g-grid {
     --lark-cap: calc(var(--avail) * 0.21 / 0.7275);
     --lark-w: calc(100cqi / 1.724);
@@ -829,7 +590,6 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
   .g-set--lark .g-intro { grid-column: 1 / span 9; justify-self: end; text-align: right; }
   .g-set--lark .g-intro .store { justify-items: end; }
   .g-set--lark .turn { --display: min(7.4cqi, var(--avail) * 0.06); }
-  .g-set--lark .g-no__digits { margin-left: -0.2em; }
   /* Its turn on the room's foot as it's seen at rest: the sentence, the meaning under it and the toggles last, on the
      foot, as a wide screen has them; the rhythm, hidden at rest (below), first, so the places kept for what's hidden
      are never a gap under the toggles (the owner, 09:33). */
@@ -839,15 +599,12 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
 
   /* Kozeni: its spine up the left margin from under the header, a third of the width at most and half the room's
      height, or what the keypad leaves; beside it the gloss, the pitch and the badge; at the foot the keypad, and the
-     icon beside it; its number in the band between. */
+     icon beside it; the band between. */
   .g-set--kozeni .g-grid { grid-template-rows: auto minmax(var(--beat), 1fr) auto; }
   .g-set--kozeni .g-grid { --key-h: clamp(44px, var(--avail) * 0.068, 54px); }
   .g-set--kozeni .g-name { grid-column: 1 / span 4; grid-row: 1; align-self: start; font-size: max(3rem, min((4 * var(--P) - var(--g)) / 0.75, var(--avail) * 0.52 / 2.68, (var(--avail) - 4 * var(--key-h) - var(--k-rest, 160px) - var(--beat)) / 2.68)); }   /* never under 3rem: on a short screen on its side the rooms stack, and may run past its foot */
   .g-set--kozeni .g-name .g-art { writing-mode: sideways-lr; margin-inline-start: -0.0586em; }
   .g-set--kozeni .g-intro { grid-column: 6 / -1; grid-row: 1; align-self: start; margin-top: 0; }
-  /* Its number against the right edge, cut by it (on a phone, whole, beside the spine: below). */
-  .g-set--kozeni .g-no { grid-row: 2; }
-  .g-set--kozeni .g-no__digits { text-align: right; margin-right: -0.2em; }
   .g-set--kozeni .g-piece { grid-column: 1 / span 8; grid-row: 3; align-self: end; }
   .g-set--kozeni .g-icon { grid-column: 10 / -1; grid-row: 3; align-self: end; }
   .g-set--kozeni .keypad { --display: min(10cqi, var(--avail) * 0.07); }
@@ -857,23 +614,19 @@ html.js.g-own-snap:has(> body.proto-grid) { scroll-snap-type: none; }
    which a tablet in a browser with its bars showing, 768x928, isn't; a phone wherever the room fits on its screen so,
    as grid.js measures it, .g-lark-side where it doesn't: an app's own browser, its bars taller than Safari's, can leave
    it less than 700px): it all hangs from the right margin, as its name does. Under the name, the pitch and the badge
-   set against the margin, and under them the icon, on the margin too; then the band with its number, and the practice
+   set against the margin, and under them the icon, on the margin too; then the band, and the practice
    at the foot (owner, 00:05). Elsewhere upright, the pitch and the badge against the icon, both on the right, above. */
 @media (orientation: portrait) and (min-width: 720px) and (max-aspect-ratio: 4/5),
   (max-width: 719px) and (min-width: 355px) {
   :where(:root:not(.g-lark-side)) .g-set--lark .g-grid { grid-template-rows: auto auto auto minmax(var(--beat), 1fr) auto; }
   :where(:root:not(.g-lark-side)) .g-set--lark .g-intro { grid-column: 4 / -1; }
   :where(:root:not(.g-lark-side)) .g-set--lark .g-icon { grid-column: 10 / -1; grid-row: 3; align-self: start; margin-top: clamp(14px, 2.6svh, 24px); }
-  /* Its number beside the icon, against the left edge and cut by it, as tall as the icon's row and the band under it
-     together, no taller, so it crosses neither the icon nor the practice. */
-  :where(:root:not(.g-lark-side)) .g-set--lark .g-no { grid-column: 1 / span 8; grid-row: 3 / 5; }
-  :where(:root:not(.g-lark-side)) .g-set--lark .g-no__digits { font-size: calc(100cqh / 0.737); margin-top: 0.0095em; }
   :where(:root:not(.g-lark-side)) .g-set--lark .g-piece { grid-row: 5; }
 }
 /* A tablet held upright, in a browser with its bars showing (744x1033, 768x928): the keypad's spacing kept to what
    the height leaves, as its keys are, and the spine set to what the room really takes besides the keys: the
    keypad's two spaces, its amount (at most 0.0672 of the height), its title and the gaps between its keys (34px),
-   and the band under the spine, which is never less than the number's margins. So the room is never taller than
+   and the band under the spine, which is never less than its two margins. So the room is never taller than
    the screen. */
 @media (orientation: portrait) and (min-width: 720px), (min-width: 720px) and (max-width: 899px) {
   .g-set--kozeni .g-grid { --k-rest: calc(2 * clamp(8px, 1.8svh, 24px) + 2 * clamp(8px, 1.6svh, 16px) + var(--avail) * 0.0672 + 34px); }
@@ -930,7 +683,7 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
    keep to a line each on a 375px screen; Lark's two toggles closer, so they keep to a row down to 300px or so;
    Kozeni's keys a little shorter, never under 44px, and its words from the third double column, beside the spine,
    its spine as long as what the keypad leaves (--k-rest: the keypad's two spaces and the band's two, its amount, and
-   its title and the gaps between its keys, 28px). The rooms' numbers one size (below). */
+   its title and the gaps between its keys, 28px). */
 @media (max-width: 719px) {
   .proto-grid { --room-top: clamp(8px, 2svh, 22px); --room-bottom: clamp(12px, 2.4svh, 24px); }
   .g-grid { --U: calc(2 * var(--P)); }
@@ -942,7 +695,7 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
 
   /* Michi's stamps as large as the room allows, three across, up to the measure: their two rows take what the
      screen leaves under the words and the icon (--g-words, how far down the room they reach, measured by grid.js), less
-     the band's least (the beat, or the number's two margins, clamp(8px, 1.6svh, 16px), where they're more), the bottom
+     the band's least (the beat, or its two margins, clamp(8px, 1.6svh, 16px), where they're more), the bottom
      margin and the album's own lines: the shelves' names (their caps, 0.698 of the label size), the space under a name
      (--album-line), the space between a shelf's rows, which is the space between its stamps across (--album-gap), and
      the space between the shelves (--album-shelf). A stamp is 1.25 times as tall as it's wide. Two rows in every
@@ -999,24 +752,6 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
   .g-set--kozeni .key { height: var(--key-h, 44px); }
   .g-set--kozeni .keypad__keys { gap: 6px; }
 
-  /* The rooms' numbers, here, are one figure in three rooms: the same size in each, the largest at which all three are
-     whole, which Kozeni's sets, its "03" running from the third of the drawn columns (a gutter clear of the spine, in
-     the first two) to the screen's right edge; and never past 0.28 of the screen, the least they are elsewhere. Each
-     stands on its band's foot, under the room's words and exhibit as ever, and runs to the screen's edge, its outline
-     whole along it (the outline's 2.5px outside the letters' ink): Michi's and Kozeni's to the right edge, Lark's from
-     the left, as on every screen. Michi's band, under its name, can be too short for it on a short screen (a phone's
-     with Safari's bars showing): there it stands lower, its round tops kept the number's margin under the name's foot
-     (--g-name, how far down the room the name reaches, measured by grid.js), its foot running on behind the album's
-     top, so it never touches the name. */
-  .g-room .g-no__digits {
-    --x5: calc(var(--m) + (100cqw - 2 * var(--m) + var(--g)) / 3);
-    font-size: min((100cqw - var(--x5) - 5px) / var(--no-ink), var(--sv) * 0.28 / 0.737);
-    margin: calc(100cqh - 0.7275em) 0 0;
-  }
-  .g-set--michi .g-no__digits { text-align: right; margin-right: calc(2.5px - var(--no-r1)); margin-top: max(100cqh - 0.7275em, var(--g-name, -100vh) - var(--g-words, 0px) + 0.0095em); }
-  .g-set--kozeni .g-no__digits { text-align: right; margin-right: calc(2.5px - var(--no-r3)); }
-  .g-set--lark .g-no { grid-column: 1 / -1; }
-  .g-set--lark .g-no__digits { margin-left: calc(2.5px - var(--no-l)); }
 }
 
 /* ---------------------------------------------------------------- The Studio, with Contact */
@@ -1254,7 +989,6 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
   .g-fx .g-hero__main { min-height: var(--sv); padding-top: calc(var(--head-h) + var(--hero-top)); }
   /* The poster's ground and its grid are its columns' (.g-ground). */
   .g-fx .g-ground { display: block; position: absolute; z-index: 1; inset: 0; container-type: inline-size; pointer-events: none; }
-  .g-fx .g-hero > .g-lines { display: none; }
 
   /* An article: track, screen, tail. It starts two screens up, on the screen before the one before it, and a jump
      to it (/#lark) lands a screen further on, where its screen rests; so does Contact, which starts where the
@@ -1293,58 +1027,18 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
   /* Michi's album, its postmarks blended onto their stamps, is drawn once, in a layer of its own: else Safari on a phone
      paints it again in every frame of Lark's columns rising over it (Michi to Lark at 40 frames a second, not 60). */
   .g-fx .album { will-change: transform; }
-  /* The column under a mouse in a room at rest (grid.js): its edges brightened, its number at the foot. */
-  .g-colhi {
-    position: absolute;
-    z-index: 1;   /* over the columns by its own z-index, not by coming after them */
-    top: var(--head-h);
-    bottom: 0;
-    border-inline: 1px solid color-mix(in srgb, var(--room-ink) 46%, transparent);
-    opacity: 0;
-    transition: opacity 200ms var(--ease);
-    pointer-events: none;
-  }
-  .g-colhi.is-on { opacity: 1; }
-  .g-colhi__no {
-    position: absolute;
-    left: 6px;
-    top: calc(var(--sv) - var(--head-h) - 22px);
-    color: var(--room-ink-3);
-    font-family: var(--mono);
-    font-size: 10px;
-    font-weight: 400;
-    line-height: 14px;
-  }
   /* The type the columns carry, each column's strip of it moving with its column, over all the grounds and under the
      room's own words, and cut off under the header's band, which it never crosses. */
   .g-fx .g-types { display: block; position: absolute; z-index: 1; inset: 0; clip-path: inset(var(--head-h) 0 0 0); pointer-events: none; }
   /* A screen wholly covered by a room at rest over it paints nothing (grid.js), until that room moves. (Its own name
      for it: lark.css's .is-covered is the covered sentence's, which a screen's would hide.) */
   .g-fx :is(.g-screen, .g-hero).g-covered { clip-path: inset(0 0 100% 0); }
-  /* The grid in every room: each column's two edges, at a tenth of the room's ink, and at the foot of the screen a
-     tick on each, brighter, like a rule's. They come with their columns. */
-  .g-slab__col {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    border-inline: 1px solid color-mix(in srgb, var(--room-ink) 10%, transparent);
-  }
-  .g-slab__col::after {
-    content: "";
-    position: absolute;
-    top: calc(var(--y0, 0px) + var(--sv) - 8px);
-    left: -1px;
-    right: -1px;
-    height: 8px;
-    border-inline: 1px solid color-mix(in srgb, var(--room-ink) 42%, transparent);
-  }
   .g-slab__lines {
     position: absolute;
     top: 0;
     bottom: 0;
     left: var(--l0, 0px);
     right: var(--r0, 0px);
-    border-inline: 1px solid color-mix(in srgb, var(--room-ink) 30%, transparent);
     border-top: 1px solid var(--edge);
     opacity: 0;
     transition: opacity 260ms var(--ease);
@@ -1354,10 +1048,6 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
   .g-fx .g-slabs { --edge: color-mix(in srgb, #0D0E10 80%, transparent); }
   @media (prefers-color-scheme: dark) { .g-fx .g-slabs { --edge: color-mix(in srgb, #EDEEF0 80%, transparent); } }
   .g-slab.is-flying .g-slab__lines { opacity: 1; transition-duration: 60ms; }
-  /* Kozeni's coins carry its number: each column's strip of the 03 solid, in its line's color, while the column is in
-     flight, and thinning to the outline as it lands, so its count is read as the coins come in. */
-  .g-set--kozeni .g-slab .g-ride.g-no { transition: color 280ms var(--ease); }
-  .g-set--kozeni .g-slab.is-flying .g-ride.g-no { color: var(--hair); transition-duration: 0s; }
   /* A column's copy of the room's big type, where the room has it; set by the script to the very pixel. */
   /* Placed by the script to the pixel where the room has the original (its offsets, margins and translation all
      measured into that), so nothing of the original's own placing may move a copy again. */
@@ -1503,8 +1193,6 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
      margin (620ms), which lights for a moment; and the poster gives a pixel and a half the way the stop was going, and
      rings back (780ms). They play on the heading and on the columns' copies of it alike, so whichever is showing shows
      them. A poster laid out at once (no arrival, or one cut short) has none of them. */
-  .g-void .g-lines i { transform-origin: 50% 0; animation: g-rule 380ms var(--ease) backwards; animation-delay: calc(var(--c, 0) * 14ms); }
-  @keyframes g-rule { from { transform: scaleY(0); } }
   .g-void .mark__bit { animation: g-bit-out 460ms var(--spring-pop) 40ms backwards; }
   @keyframes g-bit-out { from { transform: translate(-6px, 6px); } }
   /* A dot is a bit that comes out of the top of its stem, the way the mark's bit leaves its notch: it starts sunk
@@ -1518,8 +1206,6 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
      rings back; and the margin lights. */
   .g-hero.is-struck .g-tagline__set { animation: g-give 520ms var(--spring-give) 780ms; }
   @keyframes g-give { from { translate: -1.5px 0; } to { translate: 0 0; } }
-  .g-hero.is-struck .g-flash { animation: g-flash 700ms var(--ease) 770ms; }
-  @keyframes g-flash { 6% { opacity: 1; } }
 
   /* The tease, once the poster has been left alone a moment (grid.js, .is-teased): Michi's ground lifts a few pixels in
      the first column, once, and sinks back. */
@@ -1546,8 +1232,6 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
   .g-live .g-room .g-ride .g-i ~ .g-i ~ .g-i .g-dot { animation-delay: 230ms; }
   .g-live .g-ride .g-stop { translate: calc(var(--m) + 0.3em) 0; }
   .g-live .g-room.is-here .g-ride .g-stop { translate: none; animation: g-stop-in 500ms var(--spring-click) 320ms backwards; }
-  .g-slab__col::before { content: ""; position: absolute; top: 0; bottom: 0; right: -1px; border-right: 1px solid var(--room-ink); opacity: 0; }
-  .g-live .g-room--studio.is-here .g-slab:last-child .g-slab__col::before { animation: g-flash 900ms var(--ease) 470ms; }
   .g-live .g-mail .g-mi::after { translate: 0 0.2em; }
   .g-live .g-mail .g-ms::after { scale: 0; transform-origin: 50% 100%; }
   .g-live .g-room.is-here .g-mail .g-mi::after { translate: none; animation: g-dot 420ms var(--spring-pop) 300ms backwards; }
@@ -1558,7 +1242,7 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
 
   /* Arrived while laid out at once (on load, after a resize or a jump, .is-still), a room is simply there, its dots
      already out. */
-  .is-still :is(.g-ride .g-dot, .g-ride .g-stop), .is-still .g-mail .g-mi::after, .is-still .g-mail .g-ms::after, .is-still .g-slab__col::before { animation: none !important; }
+  .is-still :is(.g-ride .g-dot, .g-ride .g-stop), .is-still .g-mail .g-mi::after, .is-still .g-mail .g-ms::after { animation: none !important; }
   /* Kozeni's spine dropped into its slot: the room gives two pixels under it, and rings back. */
   .g-room.is-give .g-content, .g-room.is-give .g-slab:not(.g-slab--drop) { animation: g-room-give 460ms var(--spring-give); }
   @keyframes g-room-give { from { translate: 0 2.5px; } to { translate: 0 0; } }
@@ -1574,10 +1258,10 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
 
 /* Forced colors take the grounds: no deck (the script that would draw it doesn't), no grid, no columns. */
 @media (forced-colors: active) {
-  .g-lines, .g-lens, .g-lens.is-built, .g-w::after, .g-no, .g-room .g-echo, .g-tease, .g-void, .g-ground, .g-hero.is-lensed .g-scrub { display: none; }
+  .g-tease, .g-void, .g-ground { display: none; }
   /* Forced colors set a plate behind each line of text, and each word of the tagline is a box of its own, whose
      plate would cut off the descenders of the line above (the y of "tiny"): the big type goes without. */
-  .g-tagline, .g-name, .g-no, .g-motto, .g-mail { forced-color-adjust: none; color: CanvasText; }
+  .g-tagline, .g-name, .g-motto, .g-mail { forced-color-adjust: none; color: CanvasText; }
   .g-dot { forced-color-adjust: none; background: CanvasText; }
   /* The address is a link: its letters, its i's bits and its stop all in the link's color. */
   .g-mail__link { color: LinkText; }
@@ -1585,11 +1269,8 @@ html:not(.js) .g-set--lark .rhythm { position: absolute; width: 1px; height: 1px
   .g-mi::after, .g-ms::after { background: LinkText; }
 }
 @media print {
-  .g-lines, .g-lens, .g-lens.is-built, .g-w::after, .g-room .g-echo, .g-tease, .g-void { display: none; }
+  .g-tease, .g-void { display: none; }
   .g-screen { background: none; }
-  /* The rooms' numbers on paper: their outlines alone, in grey (the ground isn't printed, and the room's words are
-     the ink). */
-  .g-room .g-no.g-no { color: var(--canvas); -webkit-text-stroke: 5px color-mix(in srgb, var(--ink) 38%, var(--canvas)); paint-order: stroke fill; }
   /* What grid.js measured on the screen (a room's foot, Michi's words and name, the Studio's paragraph and footer, the
      first screen's foot) means nothing on the page: the sheet's own sizes are taken, as they are without the script. */
   :root, .g-room { --g-foot: initial !important; --g-piece: initial !important; --g-para: initial !important; --g-words: initial !important; --g-name: initial !important; }

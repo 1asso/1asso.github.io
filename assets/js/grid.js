@@ -1,5 +1,5 @@
 // The home page (index.html, grid.css): the deck, its columns and the rooms' arrivals; the header's ink; the arrival of
-// the screen the page opens on, from the void (the first screen's, or a room's); and the first screen's lens.
+// the screen the page opens on, from the void (the first screen's, or a room's).
 //
 // The page scrolls as any other, and snaps a screen at a time (CSS scroll snap). A finger scrolls it, and the deck
 // reads that, and draws. Everything else that would scroll it a screen at a time, the deck takes itself, as one
@@ -272,13 +272,6 @@
         el.className = 'g-slab' + (c.from < 0 ? ' g-slab--drop' : '');
         el.style.left = x0.toFixed(2) + 'px';
         el.style.width = (x1 - x0).toFixed(2) + 'px';
-        // The grid's column in it drawn as its two edges at rest, and a tick on each at the foot: one column of the
-        // grid, or on a phone the two it carries, as one.
-        var col = document.createElement('i');
-        col.className = 'g-slab__col';
-        col.style.left = (m + i * per * P - x0).toFixed(2) + 'px';
-        col.style.width = (per * P - gap).toFixed(2) + 'px';
-        el.appendChild(col);
         var lines = document.createElement('b');
         lines.className = 'g-slab__lines';
         var colL = m + i * per * P, colR = m + (i + 1) * per * P - gap;
@@ -298,14 +291,6 @@
       });
       r.bed.appendChild(frag);
       r.types.appendChild(tfrag);
-      // The column under the pointer, brightened (pointer, below): its two edges, and its number at the foot.
-      r.hi = document.createElement('i');
-      r.hi.className = 'g-colhi';
-      r.hi.style.left = m.toFixed(2) + 'px';
-      r.hi.style.width = (per * P - gap).toFixed(2) + 'px';
-      r.hi.appendChild(document.createElement('b')).className = 'g-colhi__no';
-      r.bed.appendChild(r.hi);
-      r.grid12 = { m: m, step: per * P, gap: gap, n: n, per: per };
     }, function () {
       // The columns are as tall as the screen and a little more on both sides: on their trailing side, so that going
       // past their place they never show what's under their foot, and on their leading side, so that springing back
@@ -318,7 +303,6 @@
     }, function () {
       r.slabs.forEach(function (sl, i) {
         var x0 = bounds[i][0] - 0.5, x1 = bounds[i][1] + 0.5, top = sl.from < 0 ? -r.over : -r.lead;
-        sl.el.style.setProperty('--y0', (-top).toFixed(1) + 'px');
         rides.forEach(function (d) {
           if (d.left + d.width + d.pad < x0 || d.left - d.pad > x1) return;
           var copy = d.el.cloneNode(true);
@@ -682,7 +666,6 @@
       if (t - jump.landed > 2400 || (there && rooms.every(still))) { settle(); setAnchor(nearest(Y())); }
     }
     holdAll(y);
-    lens.follow(lensable());
     // A key pressed on the way, taken once the step before it has arrived (Keys, below).
     if (pending != null) { busy = true; flush(); }
     if (busy && !raf) raf = requestAnimationFrame(tick);
@@ -736,7 +719,7 @@
   };
   // The scroll moving by itself (a finger, the browser's own glide and snap, the scrollbar): its columns follow it
   // (tick), and once it has got to the next stop (or back to the one before), the reader is on that screen, whatever
-  // they do next (the screen kept for the tab, the lens, and a key's step, a jump or a new layout taken from there).
+  // they do next (the screen kept for the tab, and a key's step, a jump or a new layout taken from there).
   var follow = function (y) {
     if (jump) return;
     while (anchor < stops.length - 1 && y >= stops[anchor + 1] - 1 && !rooms[anchor].frozen) setAnchor(anchor + 1, true);
@@ -1129,7 +1112,6 @@
   // index, the classes on the page (each of which restyles all of it, which is never done while anything moves).
   var setAnchor = function (k, quiet) {
     var moved = k !== anchor;
-    if (moved) pointer.off();
     anchor = k;
     var key = k === 0 ? '' : rooms[k - 1].key;
     if (moved) {
@@ -1143,7 +1125,6 @@
       // the address says (start, below), and doesn't open on the void (index.html reads it).
       try { sessionStorage.setItem('g-screen', String(k)); } catch (e) { /* no storage: nothing kept */ }
     }
-    lens.follow(lensable());
     if (quiet) return;
     var el = k === 0 ? hero : rooms[k - 1].screen;
     var c = getComputedStyle(el).color;
@@ -1161,10 +1142,6 @@
       var is = k > 0 && screenOf(l.to) === k;
       if (is !== l.a.hasAttribute('aria-current')) { if (is) l.a.setAttribute('aria-current', 'location'); else l.a.removeAttribute('aria-current'); }
     });
-  };
-  // The lens is shown while the poster is the screen and up, with nothing over it.
-  var lensable = function () {
-    return anchor === 0 && !jump && arrival.up() && !(rooms[0] && rooms[0].slabs.some(function (s) { return s.y > 0.001; }));
   };
   var rest = 0;
   var rested = function (letGo) {
@@ -1367,7 +1344,7 @@
       var top = natTop(k, y), walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), r = document.createRange();
       for (var node = walk.nextNode(); node; node = walk.nextNode()) {
         var p = node.parentElement;
-        if (!node.nodeValue.trim() || p.closest('[inert], .g-lens') || getComputedStyle(p).visibility === 'hidden') continue;
+        if (!node.nodeValue.trim() || p.closest('[inert]') || getComputedStyle(p).visibility === 'hidden') continue;
         r.selectNodeContents(node);
         var lines = list(r.getClientRects()).filter(function (b) { return b.height > 0; });
         for (var i = 0; i < lines.length; i++) for (var j = i; j < lines.length && j < i + 4; j++) {
@@ -1676,11 +1653,10 @@
         measure();
         settle();
         setAnchor(nearest(Y()));
-        lens.reset();
       }
     });
   });
-  var change = function () { decide(where()); lens.reset(); };
+  var change = function () { decide(where()); };
   still.addEventListener('change', change);
   // Back from the back/forward cache, the page is as it was left: on the screen the reader was on, at rest, as the
   // browser has already shown it (its picture of the page, before any of this runs), so it's not played again. Safari
@@ -1699,564 +1675,6 @@
     setAnchor(nearest(Y()));
   });
 
-  // ------------------------------------------------------------ The lens
-
-  // On the first screen a column of the grid is a lens on the poster's decisions: through it the poster is drawn in
-  // outline, in register, and on it, in mono, what was decided in that strip: each line's cap height,
-  // x-height and baseline, the G hung into the margin, the kerning put back between letters set apart, the word
-  // spaces, the lead, the dots' size, and the stop on the margin. Its window moves from column to column on a spring,
-  // a little past and back. Where a column is too narrow to write in, the lens is two of them and moves two at a time
-  // (on a phone, a third of the measure), so no note is ever cut off. Once the stop has clicked home it sweeps across
-  // the tagline, once, and goes quiet on the stop's column: nothing of it is drawn, and the poster is simply there. A
-  // mouse over the tagline wakes it where the pointer is and moves it; on a touch screen a sideways drag on the
-  // tagline scrubs it, and a tap puts it where the finger is; either way, a moment after it's let go, it goes quiet
-  // where it is. It's built when it's first wanted, and again when the page is laid out anew.
-  var lens = (function () {
-    var el = hero.querySelector('[data-g-lens]');
-    var scrub = hero.querySelector('[data-g-scrub]');
-    var main = hero.querySelector('[data-g-hero-main]');
-    var tagline = hero.querySelector('[data-g-tagline]');
-    var win = null, plate = null, sides = null, U = null;
-    var x = 0, v = 0, aimed = 0, spring = 0, then = 0, at = -1, built = false, wanted = false, shown = true;
-    var sweeping = 0, hush = true, back = 0, drag = null;
-    // What's drawn on the plate, where it lies (a box with its outline, a span with its ticks, a hairline), so that
-    // what's written keeps clear of it; the boxes on their own too.
-    var marks = [], boxes = [];
-
-    var quiet = function (yes) { hush = yes; el.classList.toggle('is-quiet', yes); };
-    var paint = function () { el.classList.toggle('is-on', built && wanted && shown); };
-    var lh = 13;   // a note's line
-    // A note's width, in the mono's 0.6em figures, 10px, padded 3px a side.
-    var wide = function (key, value) { return 6 + 6 * Math.max(key.length, (value || '').length); };
-    var meets = function (a, b) { return Math.min(a.r, b.r) - Math.max(a.l, b.l) > 0.5 && Math.min(a.b, b.b) - Math.max(a.t, b.t) > 0.5; };
-    // A note: its name, and under it its value (or, flat, beside it), in mono, inside the column it's in (or against its
-    // right edge). It keeps where it lies (gBox).
-    var note = function (key, value, left, top, opts) {
-      opts = opts || {};
-      var n = document.createElement('span');
-      n.className = 'g-lens__note' + (opts.quiet ? ' g-lens__note--quiet' : '') + (opts.end ? ' g-lens__note--end' : '');
-      n.textContent = opts.flat ? key + ' ' + value : key;
-      if (value && !opts.flat) { var b = document.createElement('b'); b.textContent = value; n.appendChild(b); }
-      n.style.left = left.toFixed(1) + 'px';
-      n.style.top = top.toFixed(1) + 'px';
-      var w = opts.flat ? wide(key + ' ' + value) : wide(key, value);
-      n.gBox = { l: opts.end ? left - w : left, t: top, r: opts.end ? left : left + w, b: top + (value && !opts.flat ? 2 : 1) * lh };
-      plate.appendChild(n);
-      return n;
-    };
-    var rule = function (cls, top, left, height) {
-      var r = document.createElement('i');
-      r.className = 'g-lens__rule' + (cls ? ' g-lens__rule--' + cls : '');
-      r.style.top = top.toFixed(1) + 'px';
-      if (cls === 'v') {
-        r.style.left = left.toFixed(1) + 'px';
-        r.style.height = height.toFixed(1) + 'px';
-        marks.push({ l: left, t: top, r: left + 1, b: top + height });
-      }
-      plate.appendChild(r);
-      return r;
-    };
-    var span = function (x0, x1, top) {
-      var s = document.createElement('i');
-      s.className = 'g-lens__span';
-      s.style.left = Math.min(x0, x1).toFixed(1) + 'px';
-      s.style.width = Math.abs(x1 - x0).toFixed(1) + 'px';
-      s.style.top = top.toFixed(1) + 'px';
-      plate.appendChild(s);
-      marks.push({ l: Math.min(x0, x1), t: top - 4, r: Math.max(x0, x1), b: top + 4 });
-    };
-    var boxAround = function (b) {
-      var o = document.createElement('i');
-      o.className = 'g-lens__box';
-      o.style.left = b.left.toFixed(1) + 'px';
-      o.style.top = b.top.toFixed(1) + 'px';
-      o.style.width = b.width.toFixed(1) + 'px';
-      o.style.height = b.height.toFixed(1) + 'px';
-      plate.appendChild(o);
-      var around = { l: b.left - 3, t: b.top - 3, r: b.left + b.width + 3, b: b.top + b.height + 3 };
-      marks.push(around);
-      boxes.push(around);
-      return o;
-    };
-    var fmt = function (em) { return (em > 0 ? '+' : em < 0 ? '−' : '') + Math.abs(em).toFixed(4).replace(/0+$/, '').replace(/\.$/, '') + 'em'; };
-    var bare = function (em) { return fmt(em).replace(/^[+−]/, ''); };
-    // Where each line's baseline is: a zero-sized mark set on it, on them all at once, so the page is laid out again
-    // once for them, not once for each.
-    var basesOf = function (nodes, top) {
-      var ms = nodes.map(function (node) {
-        var m = document.createElement('i');
-        m.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
-        node.appendChild(m);
-        return m;
-      });
-      var ys = ms.map(function (m) { return m.getBoundingClientRect().top - top; });
-      ms.forEach(function (m) { m.remove(); });
-      return ys;
-    };
-
-    // Measured at rest: whatever of the tagline is still on its way (the dots, the stop, the give, if the lens is
-    // wanted before they're home) taken to its end for the moment of measuring, and put back, in the same frame.
-    var steady = function (fn) {
-      var anims = tagline.getAnimations({ subtree: true });
-      var times = anims.map(function (a) {
-        var t = a.currentTime, end = a.effect.getComputedTiming().endTime;
-        if (t != null && isFinite(end)) a.currentTime = end + 1;
-        return t;
-      });
-      try { fn(); } finally { anims.forEach(function (a, i) { if (times[i] != null) a.currentTime = times[i]; }); }
-    };
-    var build = function () { steady(make); };
-    var make = function () {
-      el.textContent = '';
-      marks = [];
-      boxes = [];
-      built = false;
-      var h = hero.getBoundingClientRect();
-      if (!h.width || !tagline.getBoundingClientRect().width) return;
-      var rel = function (b) { return { left: b.left - h.left, top: b.top - h.top, right: b.right - h.left, bottom: b.bottom - h.top, width: b.width, height: b.height }; };
-      var s = getComputedStyle(main), W = main.clientWidth;
-      var m = parseFloat(s.paddingLeft) || 0, gap = parseFloat(s.columnGap) || 0, P = (W - 2 * m + gap) / 12;
-      // The lens's unit is a column of the grid, or on a phone the pair of them the screen arrives in; where that's
-      // too narrow to write in, the lens is two units, and moves two at a time.
-      var per = W < 720 ? 2 : 1, n = 12 / per;
-      var pair = per * P - gap < 84 ? 2 : 1;
-      U = { left: m, step: pair * per * P, w: pair * per * P - gap, count: Math.floor(n / pair), per: per * pair };
-      var fs = parseFloat(getComputedStyle(tagline).fontSize) || 100;
-      var tb = rel(tagline.getBoundingClientRect());
-      // The window starts under the header.
-      var head = document.querySelector('.g-hero > .g-head .site-head');
-      var top = Math.max(0, head.getBoundingClientRect().bottom - h.top);
-      if (!on) top = 0;
-      // (Its window is drawn off the page and put on it once it's all there, so nothing written in it has the page
-      // laid out again before the next thing is measured.)
-      win = document.createElement('div');
-      win.className = 'g-lens__win';
-      plate = document.createElement('div');
-      plate.className = 'g-lens__plate';
-      plate.style.setProperty('--w', h.width.toFixed(1) + 'px');
-      plate.style.top = (-top).toFixed(1) + 'px';
-      plate.style.height = h.height.toFixed(1) + 'px';
-      win.appendChild(plate);
-
-      // The lines: each row of words, its baseline found on the type itself, its caps 0.7275em above it, its
-      // x-height 0.546em.
-      var rows = [], slots = list(tagline.querySelectorAll('.g-slot'));
-      var slotBoxes = slots.map(function (slot) { return rel(slot.getBoundingClientRect()); }), bases = basesOf(slots, h.top);
-      slots.forEach(function (slot, i) {
-        var b = slotBoxes[i], base = bases[i];
-        var row = rows.filter(function (r) { return Math.abs(r.base - base) < 2; })[0];
-        if (!row) rows.push(row = { base: base, words: [] });
-        row.words.push({ box: b });
-      });
-      rows.sort(function (a, b) { return a.base - b.base; });
-      rows.forEach(function (r) { r.cap = r.base - fs * 0.7275; r.x = r.base - fs * 0.546; r.words.sort(function (a, b) { return a.box.left - b.box.left; }); });
-      var rowOf = function (b) { var mid = (b.top + b.bottom) / 2; return rows.filter(function (r) { return mid > r.cap - fs * 0.3 && mid < r.base + fs * 0.3; })[0] || rows[0]; };
-      var last = rows[rows.length - 1];
-      var bandEnd = last.base + fs * 0.3;
-      var ground = document.createElement('i');
-      ground.className = 'g-lens__ground';
-      plate.appendChild(ground);
-      // The poster in outline, in register: a copy of the tagline, laid out as it is (its words'
-      // margins, which are measured against the poster's columns, set in pixels).
-      var copy = tagline.cloneNode(true);
-      copy.removeAttribute('data-g-tagline');
-      copy.classList.add('g-lens__type');
-      copy.style.left = tb.left.toFixed(1) + 'px';
-      copy.style.top = tb.top.toFixed(1) + 'px';
-      // A pixel over: its words' margins come back from getComputedStyle rounded, and a line that just fits must
-      // still fit (to a tenth of a pixel, "right." went to a line of its own at 1512x982 and 1536x864). The words are
-      // set from the left, by their margins, so nothing moves.
-      copy.style.width = (tb.width + 1) + 'px';
-      copy.style.fontSize = fs + 'px';
-      copy.style.letterSpacing = getComputedStyle(tagline).letterSpacing;
-      var from = tagline.querySelectorAll('.g-w'), into = copy.querySelectorAll('.g-w');
-      for (var w = 0; w < from.length && w < into.length; w++) {
-        var ws = getComputedStyle(from[w]);
-        into[w].style.marginLeft = ws.marginLeft;
-        into[w].style.marginRight = ws.marginRight;
-      }
-      plate.appendChild(copy);
-      rows.forEach(function (r) { rule('', r.cap); rule('x', r.x); rule('', r.base); });
-      var uLeft = function (k) { return U.left + k * U.step; };
-      var unitOf = function (px) { return Math.max(0, Math.min(U.count - 1, Math.floor((px - U.left + gap / 2) / U.step))); };
-      // Each line's metrics, named at each unit's right edge (the last line's baseline names kept, by unit, for a
-      // decision that must stand in their place, below). Where the lines are set close (on a phone), a line's caps
-      // after the first's go unnamed, their name running into the baseline's just over it; and where the x-height's
-      // name would run into the caps' (on a phone on its side), the x-height's dashed rule goes unnamed.
-      var names = [], caps = [], metrics = [];
-      for (var k = 0; k < U.count; k++) {
-        rows.forEach(function (r, i) {
-          if (!i || r.cap - lh - 2 >= rows[i - 1].base + lh + 4) {
-            var nc = note('cap', '', uLeft(k) + U.w - 4, r.cap - lh - 2, { quiet: true, end: true });
-            if (!i) caps[k] = nc;
-            metrics.push(nc);
-          }
-          if (r.x - lh - 2 >= r.cap + 1) metrics.push(note('x', '', uLeft(k) + U.w - 4, r.x - lh - 2, { quiet: true, end: true }));
-          var nb = note('base', '', uLeft(k) + U.w - 4, r.base + 3, { quiet: true, end: true });
-          if (r === last) names[k] = nb;
-          metrics.push(nb);
-        });
-      }
-      // What was decided where, each noted in its own unit, once it's all drawn: above the first line's caps, or
-      // under its line's baseline (or, for the first line, under it when the space above is taken by the header)
-      // where that's clear of the next line's caps and of any box on them; or else (more than the lines set close
-      // leave room for, on a phone) under the last line, with what was decided on that, in the order of the lines
-      // (below). In the last unit, against its right edge.
-      // Under the last line, the foot (the lede) bounds what's written: the window never lies over it, and stops 8px
-      // over it at the most, as the not-found page's does.
-      var foot = main.querySelector('.g-foot');
-      var floor = rel(foot.getBoundingClientRect()).top - 8;
-      // (tight, by unit and line: how what's under the line goes there; 1, from the baseline's name's place; 2, there on
-      // one line, the only one; 3, that one written.)
-      var taken = {}, used = {}, firsts = {}, tight = {}, found = [];
-      var decide = function (key, value, px, row) { found.push({ key: key, value: value, px: px, row: row, n: found.length }); };
-      // (False for a note under a line that isn't the last, where it isn't clear of the next one. at, for one under the
-      // last line: where it goes, and whether on one line.)
-      var put = function (key, value, px, row, at) {
-        var k = unitOf(px), first = row === rows[0], id = k + ':' + rows.indexOf(row);
-        var slot = taken[id] || 0;
-        var y = first ? row.cap - 2 * lh - 6 - slot * (2 * lh + 4) : row.base + lh + 10 + slot * (2 * lh + 4);
-        // Over the first line, as many as the header leaves room for (none, on a short screen); the rest under it.
-        if (first && y < top + 2) y = row.base + lh + 10 + (slot - Math.max(0, Math.floor((row.cap - 2 * lh - 8 - top) / (2 * lh + 4)) + 1)) * (2 * lh + 4);
-        var end = k === U.count - 1, side = false, flat = false, w = wide(key, value);
-        if (at) {
-          y = at.y;
-          flat = at.flat;
-          if (flat) w = wide(key + ' ' + value);
-        } else if (row !== last && y > row.base) {
-          var next = rows[rows.indexOf(row) + 1], fw = wide(key + ' ' + value);
-          var clear = function (t, ww, hh) {
-            var x0 = end ? uLeft(k) + U.w - 4 - ww : uLeft(k) + 5, b = { l: x0, t: t, r: x0 + ww, b: t + hh };
-            return ww <= U.w - 6 && b.b <= next.cap - 2 && !boxes.some(function (o) { return meets(o, b); });
-          };
-          // Under the baseline's name; or, where the lines are too close for that, in its place (the name gives way to
-          // it, below), and the next in the unit under that; or, closer still (on a phone), in its place on one line,
-          // its name and its value side by side, the only one there.
-          if (tight[id] === undefined) tight[id] = clear(y, w, 2 * lh) ? 0 : clear(y - lh - 7, w, 2 * lh) ? 1 : clear(y - lh - 7, fw, lh) ? 2 : 0;
-          if (tight[id] === 3) return false;
-          if (tight[id]) y -= lh + 7;
-          flat = tight[id] === 2;
-          if (!clear(y, flat ? fw : w, flat ? lh : 2 * lh)) return false;
-          if (flat) { tight[id] = 3; w = fw; }
-        }
-        taken[id] = slot + 1;
-        // Under the last line, where it would run into the foot: the first as low as there's room for, in place of
-        // the baseline's name if it must be; one more beside it, against the unit's other edge, if the two fit side
-        // by side; any other left out.
-        if (!at && row === last && y > row.base && y + 2 * lh > floor) {
-          var one = firsts[id];
-          if (!one) {
-            y = Math.max(row.base + 3, floor - 2 * lh);
-            if (y < row.base + lh + 6 && names[k]) { names[k].remove(); names[k] = null; }
-          } else {
-            if (one.side || one.w + w + 9 > U.w) return true;
-            one.side = side = true;
-            y = one.y;
-          }
-        }
-        var e = end !== side;
-        // Over the first line's caps, a decision is on the line of that unit's "cap", which it would run into, or come
-        // within a few pixels of and read as one run with: the lane is the decision's, and the name gives way to it.
-        if (first && caps[k] && y < row.cap && y + 2 * lh > row.cap - lh - 2) { caps[k].remove(); caps[k] = null; }
-        note(key, value, e ? uLeft(k) + U.w - 4 : uLeft(k) + 5, y, { end: e, flat: flat });
-        if (!slot) firsts[id] = { y: y, w: w };
-        used[k] = 1;
-        return true;
-      };
-      // The G, hung 0.06em into the left margin so its curve sits on it.
-      var G = tagline.querySelector('.g-w--get .g-l');
-      var g = rel(G.getBoundingClientRect());
-      rule('v', rows[0].cap - fs * 0.05, m, fs * 0.83);
-      span(g.left, m, rows[0].x + fs * 0.12);
-      decide('G hangs', fmt(-0.06), m, rows[0]);
-      // The kerning put back as a margin, where letters set apart would lose it.
-      list(tagline.querySelectorAll('.g-l')).forEach(function (l) {
-        var kv = l.style.getPropertyValue('--k');
-        if (!kv) return;
-        var b = rel(l.getBoundingClientRect()), row = rowOf(b), prev = l.previousElementSibling;
-        rule('v', row.cap - fs * 0.05, b.left, fs * 0.83);
-        decide(prev.textContent + l.textContent, fmt(parseFloat(kv)), b.left + 1, row);
-      });
-      // The word spaces.
-      rows.forEach(function (r) {
-        for (var i = 1; i < r.words.length; i++) {
-          var a = r.words[i - 1].box, b = r.words[i].box;
-          if (b.left - a.right < fs * 0.1) continue;
-          span(a.right, b.left, r.x + fs * 0.27);
-          decide('space', bare((b.left - a.right) / fs), (a.right + b.left) / 2, r);
-        }
-      });
-      // The dots: square bits, the width of the stem.
-      list(tagline.querySelectorAll('.g-dot')).forEach(function (d) {
-        var b = rel(d.getBoundingClientRect());
-        boxAround(b);
-        decide('ı + bit', bare(Math.round(b.width / fs * 1000) / 1000), b.left, rowOf({ top: b.top + fs * 0.4, bottom: b.bottom + fs * 0.4 }));
-      });
-      // The stop, on the margin: its box, the margin, and what it measured.
-      var stop = tagline.querySelector('.g-stop');
-      var sb = rel(stop.getBoundingClientRect());
-      var edge = W - m;
-      boxAround(sb);
-      rule('v', rows[0].cap - fs * 0.05, edge, last.base - rows[0].cap + fs * 0.1);
-      decide('stop 0.15em', Math.round(Math.abs(sb.right - edge)) + 'px off', sb.left, rowOf(sb));
-      // Each where it's clear to go, and the rest under the last line, in the order of their lines.
-      var under = [];
-      found.forEach(function (d) { if (d.row === last || !put(d.key, d.value, d.px, d.row)) under.push(d); });
-      under.sort(function (a, b) { return rows.indexOf(a.row) - rows.indexOf(b.row) || a.n - b.n; });
-      // Under the last line, a unit's notes one under another, each on its two lines, under the baseline's name and the
-      // tails of the letters on that line. Where they'd run into the foot so: from the baseline's name's place, the name
-      // giving way to them, where no tail hangs into it; or on one line each, where the unit is wide enough for that.
-      // Where they still would, one of them goes under another line of its unit where there's room (the nearest to its
-      // own), and the rest are tried again; and whatever is still left is put as ever: the first as low as there's room
-      // for, one more beside it, any other left out.
-      var tails = list(tagline.querySelectorAll('.g-l')).filter(function (l) { return /[gjpqy,]/.test(l.textContent); })
-        .map(function (l) { return rel(l.getBoundingClientRect()); }).filter(function (b) { return rowOf(b) === last; });
-      var stack = function (q, ds) {
-        var hung = tails.some(function (b) { return b.right > uLeft(q) && b.left < uLeft(q) + U.w; });
-        var tries = hung ? [[lh + 10, false], [lh + 10, true]] : [[lh + 10, false], [3, false], [3, true]];
-        for (var t = 0; t < tries.length; t++) {
-          var hs = ds.map(function (d) { return tries[t][1] && wide(d.key + ' ' + d.value) <= U.w - 6 ? lh : 2 * lh; });
-          if (last.base + tries[t][0] + hs.reduce(function (sum, hh) { return sum + hh + 4; }, -4) <= floor) return { y: last.base + tries[t][0], hs: hs };
-        }
-        return null;
-      };
-      // (spots, by note: where each goes there, once its unit is planned; none, for one put as ever. Written in the
-      // order of their lines, whichever unit they're in.)
-      var spots = under.map(function () { return null; });
-      range(U.count, function (q) { return q; }).forEach(function (q) {
-        var ds = under.filter(function (d) { return unitOf(d.px) === q; });
-        if (!ds.length) return;
-        var plan = stack(q, ds);
-        while (!plan && ds.length > 1) {
-          var tries = [], moved = null;
-          ds.forEach(function (d, i) {
-            rows.forEach(function (r, j) { if (r !== last && r !== d.row) tries.push({ d: d, r: r, far: Math.abs(j - rows.indexOf(d.row)), i: i }); });
-          });
-          tries.sort(function (a, b) { return a.far - b.far || a.i - b.i; });
-          for (var t = 0; t < tries.length && !moved; t++) {
-            // (An unused place under a line is weighed for this note, not for one that didn't fit there before.)
-            var id = q + ':' + rows.indexOf(tries[t].r), was = tight[id];
-            if (!taken[id]) delete tight[id];
-            if (put(tries[t].d.key, tries[t].d.value, tries[t].d.px, tries[t].r)) moved = tries[t].d;
-            else tight[id] = was;
-          }
-          if (!moved) break;
-          moved.moved = true;
-          ds.splice(ds.indexOf(moved), 1);
-          plan = stack(q, ds);
-        }
-        if (!plan) return;
-        var y = plan.y;
-        ds.forEach(function (d, i) { spots[under.indexOf(d)] = { y: y, flat: plan.hs[i] === lh }; y += plan.hs[i] + 4; });
-      });
-      under.forEach(function (d, i) { if (!d.moved) put(d.key, d.value, d.px, last, spots[i] || undefined); });
-      // The lead, from one line's baseline to the next one's caps, in the unit nearest the middle with nothing else
-      // to say: written between them, or, where they're too close to write in, under the last line.
-      if (rows.length > 1) {
-        var free = range(U.count, function (q) { return q; }).filter(function (q) { return !used[q]; })
-          .sort(function (a, b) { return Math.abs(a - (U.count - 1) / 2) - Math.abs(b - (U.count - 1) / 2); })[0];
-        if (free != null) {
-          var gx = uLeft(free) + U.w / 2, lead = rows[1].cap - rows[0].base;
-          rule('v', rows[0].base, gx, lead);
-          if (lead >= 2 * lh + 4) note('lead', bare(lead / fs), gx + 5, (rows[0].base + rows[1].cap) / 2 - lh);
-          else put('lead', bare(lead / fs), gx, last);
-          used[free] = 1;
-        }
-      }
-      // A unit with nothing else to say gives the tracking: over the first line, or under it where the header leaves
-      // no room there, or under the last line where the first is set too close to the next to write in; never on a box.
-      var ty = rows[0].cap - 2 * lh - 6;
-      if (ty < top + 2) ty = rows.length > 1 && rows[0].base + 3 * lh + 10 > rows[1].cap - 2 ? last.base + lh + 10 : rows[0].base + lh + 10;
-      // (Under the last line, only if there's room for it before the foot.)
-      if (!(ty > last.base && ty + 2 * lh > floor))
-        for (var q = 0; q < U.count; q++) {
-          if (used[q]) continue;
-          var qe = q === U.count - 1, tx = qe ? uLeft(q) + U.w - 4 : uLeft(q) + 5, tw = wide('tracking', '−0.034em');
-          var tq = { l: qe ? tx - tw : tx, t: ty, r: qe ? tx : tx + tw, b: ty + 2 * lh };
-          if (boxes.some(function (b) { return meets(b, tq); })) continue;
-          if (caps[q] && ty < rows[0].cap) { caps[q].remove(); caps[q] = null; }
-          note('tracking', '−0.034em', tx, ty, { quiet: true, end: qe });
-        }
-      // A metric's name gives way to anything else written or drawn where it is: a note, a box, a span, a hairline.
-      var over = marks.concat(list(plate.querySelectorAll('.g-lens__note')).filter(function (nt) { return metrics.indexOf(nt) < 0; })
-        .map(function (nt) { return nt.gBox; }));
-      metrics.forEach(function (nt) { if (nt.parentNode && over.some(function (b) { return meets(nt.gBox, b); })) nt.remove(); });
-      // Each unit's number and width, under everything else written in it: in a row under the band, where there's
-      // room for that before the foot; where there isn't (a short screen, the tagline as large as the foot leaves room
-      // for), in a row as close under the notes as they go, or else in each unit as close under its own; and in a unit
-      // with no room left at all, not there, what was decided in it standing in its place.
-      var lowest = range(U.count, function () { return 0; });
-      list(plate.querySelectorAll('.g-lens__note')).forEach(function (nt) {
-        var q = unitOf(parseFloat(nt.style.left));
-        lowest[q] = Math.max(lowest[q], parseFloat(nt.style.top) + (nt.querySelector('b') ? 2 : 1) * lh);
-      });
-      var low = Math.max(bandEnd + 8, Math.max.apply(null, lowest) + 6);
-      if (low + 2 * lh > floor) low = Math.max.apply(null, lowest) + 6;
-      for (var u = 0; u < U.count; u++) {
-        var c0 = u * U.per + 1, cn = (u + 1) * U.per, end = u === U.count - 1;
-        var label = U.per > 1 ? 'cols ' + (c0 < 10 ? '0' : '') + c0 + '–' + (cn < 10 ? '0' : '') + cn : 'col ' + (u < 9 ? '0' : '') + (u + 1);
-        var ly = low + 2 * lh > floor ? lowest[u] + 6 : low;
-        if (ly + 2 * lh > floor) continue;
-        note(label, Math.round(U.w) + 'px', end ? uLeft(u) + U.w - 4 : uLeft(u) + 5, ly, { quiet: true, end: end });
-        lowest[u] = ly + 2 * lh;
-      }
-      // The window, from under the header to 6px under its lowest note, and past the last line's descenders, but
-      // never over the foot.
-      var deep = Math.min(Math.max(Math.max.apply(null, lowest) + 6, last.base + fs * 0.25), floor);
-      var winH = deep - top;
-      win.style.top = top.toFixed(1) + 'px';
-      win.style.height = winH.toFixed(1) + 'px';
-      ground.style.height = deep.toFixed(1) + 'px';
-      sides = document.createElement('i');
-      sides.className = 'g-lens__edges';
-      sides.style.top = top.toFixed(1) + 'px';
-      sides.style.height = winH.toFixed(1) + 'px';
-      // The band the lens is worked in: the tagline's, from the header down.
-      scrub.style.top = top.toFixed(1) + 'px';
-      scrub.style.height = Math.max(0, bandEnd - top).toFixed(1) + 'px';
-      el.appendChild(win);
-      el.appendChild(sides);
-      el.style.setProperty('--lw', U.w.toFixed(2) + 'px');
-      el.classList.add('is-built');
-      hero.classList.add('is-lensed');
-      built = true;
-      at = U.count - 1;
-      x = aimed = posX(at);
-      v = 0;
-      place(x);
-      quiet(hush);
-      paint();
-    };
-    var posX = function (j) { return U.left + j * U.step; };
-    // The window and its edges where the lens is, and the plate in it as far the other way, so the poster stays where
-    // it is through it: set on the three themselves (as a property of the lens they'd take from it, it would have
-    // everything written in the window restyled at each step).
-    var place = function (px) {
-      var t = px.toFixed(2) + 'px 0';
-      win.style.translate = t;
-      sides.style.translate = t;
-      plate.style.translate = (-px).toFixed(2) + 'px 0';
-    };
-    var run = function (t) {
-      var dt = Math.min(0.032, Math.max(0.001, (t - then) / 1000));
-      then = t;
-      var w = 2 * Math.PI * 4.2, z = 0.68;
-      v += (-w * w * (x - aimed) - 2 * z * w * v) * dt;
-      x += v * dt;
-      if (Math.abs(x - aimed) < 0.1 && Math.abs(v) < 1) { x = aimed; v = 0; spring = 0; }
-      else spring = requestAnimationFrame(run);
-      place(x);
-    };
-    var to = function (j, instant) {
-      if (!built) return;
-      at = Math.max(0, Math.min(U.count - 1, j));
-      aimed = posX(at);
-      if (sweeping) return;
-      if (instant || still.matches) { cancelAnimationFrame(spring); spring = 0; x = aimed; v = 0; place(x); return; }
-      if (!spring) { then = now(); spring = requestAnimationFrame(run); }
-    };
-    // A moment after it's let go, quiet where it is.
-    var park = function (ms) {
-      clearTimeout(back);
-      back = setTimeout(function () { if (!drag) quiet(true); }, ms);
-    };
-    var halt = function () {
-      cancelAnimationFrame(sweeping); sweeping = 0;
-      cancelAnimationFrame(spring); spring = 0;
-      clearTimeout(back);
-    };
-    // The sweep: once, from the first unit to the stop's, eased in and out, then quiet there.
-    var sweep = function () {
-      if (!built) build();
-      if (!built || still.matches) return;
-      halt();
-      wanted = true;
-      quiet(false);
-      var from = posX(0), t0 = now(), D = 400;
-      at = U.count - 1;
-      aimed = posX(at);
-      x = from;
-      place(x);
-      paint();
-      var go = function (t) {
-        var u = clamp((t - t0) / D);
-        u = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
-        x = from + (aimed - from) * u;
-        place(x);
-        if (u < 1) sweeping = requestAnimationFrame(go);
-        else { sweeping = 0; x = aimed; place(x); if (at === U.count - 1 && !drag) quiet(true); }
-      };
-      sweeping = requestAnimationFrame(go);
-    };
-    var unitAt = function (clientX) {
-      var px = clientX - hero.getBoundingClientRect().left;
-      return Math.floor((px - U.left + (U.step - U.w) / 2) / U.step);
-    };
-    // Woken from quiet, it's there under the pointer at once; awake, it springs after it.
-    var wake = function (clientX) { clearTimeout(back); if (hush) { quiet(false); to(unitAt(clientX), true); } else to(unitAt(clientX)); };
-    var live = function () { return built && wanted && shown; };
-    // A mouse over the band moves it, and a moment after it leaves, it goes quiet. A finger's sideways drag scrubs it
-    // (an up or down one is the page's scroll, and lets it be), and a tap puts it where the finger is.
-    scrub.addEventListener('pointermove', function (e) {
-      if (!live()) return;
-      if (e.pointerType === 'mouse') { if (!sweeping) wake(e.clientX); return; }
-      if (!drag || drag.id !== e.pointerId) return;
-      var dx = e.clientX - drag.x, dy = e.clientY - drag.y;
-      if (!drag.side) {
-        if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy) * 1.2) drag.side = true;
-        else if (Math.abs(dy) > 10) { drag = null; return; }
-      }
-      if (drag.side) { e.preventDefault(); if (sweeping) halt(); wake(e.clientX); }
-    });
-    scrub.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && built) park(1100); });
-    scrub.addEventListener('pointerdown', function (e) {
-      if (e.pointerType === 'mouse' || !live()) return;
-      drag = { id: e.pointerId, x: e.clientX, y: e.clientY, side: false, t: now() };
-    });
-    var lift = function (e) {
-      if (!drag || drag.id !== e.pointerId) return;
-      if (!drag.side && now() - drag.t < 350 && Math.abs(e.clientX - drag.x) < 8 && Math.abs(e.clientY - drag.y) < 8) { if (sweeping) halt(); wake(e.clientX); }
-      drag = null;
-      park(2600);
-    };
-    scrub.addEventListener('pointerup', lift);
-    scrub.addEventListener('pointercancel', function (e) { if (drag && drag.id === e.pointerId) drag = null; });
-    return {
-      // Shown only while the poster is the screen, with nothing over it.
-      follow: function (yes) {
-        if (yes === shown) return;
-        shown = yes;
-        if (!yes) { drag = null; clearTimeout(back); if (built && !hush && !sweeping) { to(U.count - 1, true); quiet(true); } }
-        paint();
-      },
-      // Parked on the stop, quiet, at once: the poster laid out without its arrival, or the arrival cut short.
-      rest: function () {
-        if (!built) build();
-        if (!built) return;
-        halt();
-        wanted = true;
-        to(U.count - 1, true);
-        quiet(true);
-        paint();
-      },
-      sweep: sweep,
-      // Built ahead, unseen (while the void holds the screen and nothing moves), so the sweep has only to move it.
-      prepare: function () { if (!built) build(); },
-      // The page laid out anew (a resize that changes the layout, the fonts, Reduce Motion): built again (the type may
-      // have moved), and parked, if it was showing.
-      reset: function () {
-        var was = built, showing = built && wanted;
-        halt();
-        built = false;
-        el.classList.remove('is-built', 'is-on');
-        hero.classList.remove('is-lensed');
-        el.textContent = '';
-        if (was) { build(); if (built && showing) { to(U.count - 1, true); quiet(true); paint(); } }
-      },
-      busy: function () { return !!drag || !!sweeping || !hush; }
-    };
-  })();
-
   // ------------------------------------------------------------ The first screen's arrival, or the room landed on
 
   // Whatever screen the page opens on arrives (index.html tells it). The void holds the screen from the first frame
@@ -2270,7 +1688,7 @@
   // so clicks into register as the columns settle. The header's copy is uncovered over each column once its leading
   // edge has passed most of the header's band, and the poster's foot over each as it lands. Once the last has settled,
   // the heading takes over from the columns' copies, and the void is let go. The beats that finish the poster are
-  // grid.css's, timed from .is-struck; the lens's sweep and the tease are timed here.
+  // grid.css's, timed from .is-struck; the tease is timed here.
   // A room, where the page opens on one (a link to it, /#lark or the apps' /#contact, or to a passage in it; a reload
   // or a step back to it: start, below): the void is laid in its screen, under its columns (grid.css), which are held
   // down there; then they rise over it as a step's do, by time, in the room's own rhythm, carrying its name and its
@@ -2403,7 +1821,7 @@
     window.addEventListener('pointermove', function (e) { if (e.pointerType !== 'mouse' || Math.abs(e.movementX) + Math.abs(e.movementY) > 2) poke(); }, { passive: true });
     var tries = 0;
     var tease = function () {
-      var free = on && anchor === 0 && !jump && Y() <= 1 && !document.hidden && !lens.busy() && now() - calm > 1500;
+      var free = on && anchor === 0 && !jump && Y() <= 1 && !document.hidden && now() - calm > 1500;
       if (!free) { if (++tries < 5) later(1200, tease); return; }
       hero.classList.add('is-teased');
       later(1500, function () { hero.classList.remove('is-teased'); });
@@ -2427,8 +1845,6 @@
       t0 = now();
       hero.classList.add('is-arriving', 'is-striking', 'is-struck');
       strike(t0);
-      // The lens's one sweep once the stop is home and the margin's light and the poster's give have died away.
-      later(1150, function () { lens.sweep(); });
       later(1600, function () { hero.classList.remove('is-struck'); });
       later(2300, tease);
       queue();
@@ -2463,7 +1879,6 @@
         tinted = true;
         if (drawn()) { if (on) chrome(anchor); else unchrome(); }
       }
-      lens.rest();
     };
     return {
       // Whether it plays: the deck is on, the reader's on a screen at its stop (the first, or the one the page
@@ -2495,7 +1910,6 @@
           var go = function () {
             if (document.hidden || state !== 'void') return;
             document.removeEventListener('visibilitychange', go);
-            if (!room) lens.prepare();
             hold();
           };
           if (document.hidden) document.addEventListener('visibilitychange', go);
@@ -2517,7 +1931,7 @@
       // Played in the deck's frame: the poster's columns; or, a room's being played by the deck, whether it's done.
       frame: function (t) {
         if (state !== 'strike') return false;
-        if (room) { if (room.done) { letGo(); setTimeout(function () { lens.rest(); }, 60); return false; } return true; }
+        if (room) { if (room.done) { letGo(); return false; } return true; }
         strike(t);
         return true;
       },
@@ -2536,56 +1950,8 @@
         if (state === '') return drawn();
         if (state !== 'void' && state !== 'strike') return false;
         return room ? 2 * (room.capped || 0) < room.n : !tinted;
-      },
-      // The lens may be shown: the poster is up.
-      up: function () { return state === 'done' || state === ''; }
-    };
-  })();
-
-  // ------------------------------------------------------------ The pointer's column
-
-  // In a room at rest, with a mouse, the grid's column under the pointer is brightened, as the lens does on the first
-  // screen: its two edges come up from a tenth of the room's ink to nearly half, and its number shows at the foot,
-  // by the ticks. It slides from column to column on a spring, a little past and back.
-  var pointer = (function () {
-    var mouse = window.matchMedia('(hover: hover) and (pointer: fine)');
-    var room = null, x = 0, v = 0, aimed = 0, frame = 0, then = 0, col = -1;
-    var place = function () { if (room) room.hi.style.translate = x.toFixed(2) + 'px 0'; };
-    var spring = function (t) {
-      var dt = Math.min(0.032, Math.max(0.001, (t - then) / 1000));
-      then = t;
-      var w = 2 * Math.PI * 4.2, z = 0.68;
-      v += (-w * w * (x - aimed) - 2 * z * w * v) * dt;
-      x += v * dt;
-      if (Math.abs(x - aimed) < 0.1 && Math.abs(v) < 1) { x = aimed; v = 0; frame = 0; }
-      else frame = requestAnimationFrame(spring);
-      place();
-    };
-    var off = function () {
-      if (room) room.hi.classList.remove('is-on');
-      room = null; col = -1;
-    };
-    document.addEventListener('pointermove', function (event) {
-      if (!on || !mouse.matches || (event.pointerType !== 'mouse' && event.pointerType !== 'pen')) return;
-      var r = anchor > 0 ? rooms[anchor - 1] : null;
-      if (!r || !r.done || jump) { off(); return; }
-      var g = r.grid12, box = r.screen.getBoundingClientRect();
-      var px = event.clientX - box.left, py = event.clientY - box.top;
-      if (py < r.headH || px < 0 || px > r.width) { off(); return; }
-      var c = Math.max(0, Math.min(g.n - 1, Math.floor((px - g.m + g.gap / 2) / g.step)));
-      var target = c * g.step;
-      if (room !== r) { off(); room = r; x = aimed = target; v = 0; place(); }
-      aimed = target;
-      if (c !== col) {
-        col = c;
-        r.hi.firstChild.textContent = ('0' + (c * g.per + 1)).slice(-2);
-        if (!r.hi.classList.contains('is-on') || still.matches) { x = aimed; v = 0; place(); }
-        else if (!frame) { then = now(); frame = requestAnimationFrame(spring); }
       }
-      r.hi.classList.add('is-on');
-    }, { passive: true });
-    document.documentElement.addEventListener('mouseleave', off);
-    return { off: off };
+    };
   })();
 
   // ------------------------------------------------------------ Setting it going
@@ -2636,7 +2002,6 @@
       var k = where();
       decide(k);
       if (on) { buildAll(); restore(k); measure(); settle(); setAnchor(nearest(Y())); }
-      lens.reset();
     });
   }
 })();
