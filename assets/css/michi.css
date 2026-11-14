@@ -59,15 +59,20 @@
 .album .album__stamp.is-lifted .album__print { rotate: 0deg; scale: 1.08; filter: drop-shadow(0 18px 16px rgb(0 0 0 / 0.14)); }
 .album__stamp:not(.is-postmarked) .stamp__postmark { opacity: 0; }
 
-/* A stamp: paper that stays light in dark mode, as in Michi, printed in its trip's ink (--ink, set on
-   each stamp's svg), the deep shade Michi prints stamps in: the sea solid, the land the paper, no coast drawn. */
+/* A stamp: white paper that stays light in dark mode, as in Michi, printed in its trip's ink, set on each stamp's svg:
+   a square plate of its deep shade (--ink) with the map's window in it, the sea in a bright shade of it (--sea), the
+   land a pale tint (--land), an inland map's hills a step deeper (--hills), no coast drawn; the route in the deep
+   shade, and in the paper where it runs out to sea. */
 .stamp__svg { display: block; width: 100%; height: auto; overflow: visible; forced-color-adjust: none; }
-.stamp__paper { fill: #FFFDF8; }
+.stamp__paper { fill: #FFFFFF; }
 .stamp__ink { fill: var(--ink); }
-.stamp__line, .stamp__casing { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
-.stamp__casing { stroke: #FFFDF8; }
-.stamp__tablet { fill: #FFFDF8; stroke: var(--ink); }
-.stamp__land { fill: #FFFDF8; }
+.stamp__sea { fill: var(--sea); }
+.stamp__land { fill: var(--land); }
+.stamp__hills { fill: var(--hills); }
+.stamp__line, .stamp__sea-line, .stamp__paper-line, .stamp__river { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
+.stamp__sea-line { stroke: var(--sea); }
+.stamp__paper-line { stroke: #FFFFFF; }
+.stamp__river { stroke: var(--sea); }
 .stamp__cancel { fill: none; stroke: #2B2620; opacity: 0.72; }   /* one translucent coat of Michi's cancellation ink, however its strokes cross */
 .stamp__struck { mix-blend-mode: multiply; }
 .stamp__mark { fill: #2B2620; stroke: none; font-family: var(--sans); font-weight: 700; }
@@ -75,12 +80,10 @@
    Michi strikes it in dark mode: masked to the stamp, in its dark ink, and where it runs off onto the page, in the
    page's light ink, as translucent and laid on rather than multiplied, where the dark one would vanish. The page
    is dark in dark mode, and in either mode on the blue of Michi's room (a room whose text is light); on paper it's
-   white, and with forced colors the room's ground is gone and the scheme decides. Where it crosses the sea it's
-   struck in the light ink too, in either mode, where the dark one would vanish into the ink. */
-.stamp__struck--page { display: none; }
-.stamp__struck--page, .stamp__struck--sea { mix-blend-mode: normal; }
-:is(.stamp__struck--page, .stamp__struck--sea) .stamp__cancel { stroke: #EDE6DA; }
-:is(.stamp__struck--page, .stamp__struck--sea) .stamp__mark { fill: #EDE6DA; }
+   white, and with forced colors the room's ground is gone and the scheme decides. */
+.stamp__struck--page { display: none; mix-blend-mode: normal; }
+.stamp__struck--page .stamp__cancel { stroke: #EDE6DA; }
+.stamp__struck--page .stamp__mark { fill: #EDE6DA; }
 @media screen and (prefers-color-scheme: dark) {
   .stamp__light-page { display: none; }
   .stamp__struck--page { display: inline; }
@@ -90,7 +93,7 @@
   .room--text-light .stamp__struck--page { display: inline; }
 }
 /* New York where the browser offers it (Safari's ui-serif), else a serif whose numerals stand on the line:
-   Georgia's 3, 4, 5 and 9 hang below it, into the DAYS under them. */
+   Georgia's 3, 4, 5 and 9 hang below it, out of line with the title's capitals. */
 .stamp__serif { font-family: ui-serif, Charter, "Bitstream Charter", "Sitka Text", Cambria, "Noto Serif", serif; font-variant-numeric: lining-nums; }
 .stamp__caps { font-family: var(--sans); }
 
