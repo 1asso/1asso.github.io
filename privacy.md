@@ -410,3 +410,5 @@ Lark’s App Store screenshots show stills from these videos, and lines of the f
 - [ALBALATE DEL ARZOBISPO \| Pueblos con encanto a vista de dron](https://www.youtube.com/watch?v=fgS2YxBWT5c) by La COMARCA TV
 
 Their creators aren’t connected with Tiny Bit Studio and don’t endorse Lark.
+
+Michi’s seal is Wu Ju’s 道, adapted from [Modelbooks of the Three Rarities Hall, Vol. 17: Transcription of Six Poems, Including “A Tamed Flying Deity Being Saddled”](https://digitalarchive.npm.gov.tw/opendata/Pub/Detail/21773?dep=P&mode=full). The National Palace Museum, Taipei, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) @ www.npm.gov.tw. The museum doesn’t endorse Michi.
